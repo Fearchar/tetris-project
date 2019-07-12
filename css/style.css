@@ -1,3 +1,20 @@
 * {
-  background: gold;
-}
+  box-sizing: border-box; }
+
+body {
+  margin: 0; }
+  body #game #board {
+    display: flex;
+    flex-flow: row wrap;
+    width: 600px; }
+    body #game #board .square {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 150px;
+      height: 150px;
+      border: 2px solid black; }
+      body #game #board .square.full {
+        background-color: #ffe599; }
+
+/*# sourceMappingURL=style.css.map */

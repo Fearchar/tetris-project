@@ -1,0 +1,32 @@
+$squareWidth: 150px;
+$testColor: #ffe599;
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+
+  #game {
+
+    #board {
+      display: flex;
+      flex-flow: row wrap;
+      width: $squareWidth * 4;
+
+      .square {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: $squareWidth;
+        height: $squareWidth;
+        border: 2px solid black;
+
+        &.full {
+          background-color: $testColor;
+        }
+      }
+    }
+  }
+}
