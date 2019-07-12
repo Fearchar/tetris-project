@@ -7,7 +7,7 @@ body {
     display: flex;
     flex-flow: row wrap;
     width: 300px; }
-    body #game #board .square {
+    body #game #board .board-square {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -15,7 +15,7 @@ body {
       height: 30px;
       border: 2px solid grey;
       color: grey; }
-      body #game #board .square.full {
+      body #game #board .board-square.has-active-block {
         background-color: #ffe599; }
 
 /*# sourceMappingURL=style.css.map */
