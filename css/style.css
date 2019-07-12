@@ -17,5 +17,15 @@ body {
       color: grey; }
       body #game #board .board-square.has-active-block {
         background-color: #ffe599; }
+      body #game #board .board-square.red {
+        background: red; }
+      body #game #board .board-square.green {
+        background: green; }
+      body #game #board .board-square.blue {
+        background: blue; }
+      body #game #board .board-square.gold {
+        background: gold; }
+      body #game #board .board-square.purple {
+        background: purple; }
 
 /*# sourceMappingURL=style.css.map */

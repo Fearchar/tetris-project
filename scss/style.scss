@@ -29,6 +29,26 @@ body {
         &.has-active-block {
           background-color: $testColor;
         }
+
+        &.red {
+          background: red;
+        }
+
+        &.green {
+          background: green;
+        }
+
+        &.blue {
+          background: blue;
+        }
+
+        &.gold {
+          background: gold;
+        }
+
+        &.purple {
+          background: purple;
+        }
       }
     }
   }
