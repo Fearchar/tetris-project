@@ -32,28 +32,38 @@ document.addEventListener('DOMContentLoaded', () => {
       // !!! Change blocksquare name
       this.currentRotation.forEach(blockSquare => {
         // !!! Consider making next line pure re boardSquares
-        boardSquares[blockSquare + this.homeIndex].classList.remove('.has-active-block')
+        boardSquares[blockSquare + this.homeIndex].classList.remove('has-active-block')
       })
     }
+    // !!! Change updateHome name to something to do with moving
     updateHome(direction) {
-      // switch(direction) {
-      //   case left:
-      //     this.index -= 1
-      //     break
-      //   case up:
-      //     this.index -= width
-      //     break
-      //   case left:
-      //     this.index += 1
-      //     break
-      //   case right:
-      //     this.index += width
-      //     break
-      // }
+      switch(direction) {
+        case 'left':
+          this.homeIndex -= 1
+          break
+        case 'right':
+          this.homeIndex += 1
+          break
+        case 'up':
+          this.homeIndex -= width
+          break
+        case 'down':
+          this.homeIndex += width
+          break
+      }
     }
     move(direction) {
       this.clearLastMove()
+      this.updateHome(direction)
       /// !!! Consider changeing position name
+      this.currentRotation.forEach(position => {
+        boardSquares[this.homeIndex + position].classList.add('has-active-block')
+      })
+    }
+    // !!! Update and move are doing awfully similar things. Intergrate somehow?
+    rotate() {
+      this.clearLastMove()
+      this.rotationIndex = (this.rotationIndex + 1) % 4
       this.currentRotation.forEach(position => {
         boardSquares[this.homeIndex + position].classList.add('has-active-block')
       })
@@ -65,12 +75,42 @@ document.addEventListener('DOMContentLoaded', () => {
       super(
         homeIndex,
         [
-          [-4, -1, 0, +1],
-          [-4, 0, +1, +4],
-          [-1, 0, +1, +4],
-          [-4, -1, 0, +4]
+          [-width, -1, 0, +1],
+          [-width, 0, +1, +width],
+          [-1, 0, +1, +width],
+          [-width, -1, 0, +width]
         ]
       )
     }
   }
+
+  class tBlock extends block {
+    constructor(homeIndex) {
+      super(
+        homeIndex,
+        [
+          [-width, -1, 0, +1],
+          [-width, 0, +1, +width],
+          [-1, 0, +1, +width],
+          [-width, -1, 0, +width]
+        ]
+      )
+    }
+  }
+
+  const a = new tBlock(44)
+  a.move()
+  a.move('right')
+  a.move('left')
+  a.move('right')
+  a.move('left')
+  a.move('up')
+  a.move('down')
+  a.move('right')
+  a.rotate()
+  a.rotate()
+  a.rotate()
+  a.rotate()
+  a.rotate()
+  a.rotate()
 })
