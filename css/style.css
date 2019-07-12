@@ -6,14 +6,15 @@ body {
   body #game #board {
     display: flex;
     flex-flow: row wrap;
-    width: 600px; }
+    width: 300px; }
     body #game #board .square {
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 150px;
-      height: 150px;
-      border: 2px solid black; }
+      width: 30px;
+      height: 30px;
+      border: 2px solid grey;
+      color: grey; }
       body #game #board .square.full {
         background-color: #ffe599; }
 

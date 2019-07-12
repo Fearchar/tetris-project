@@ -1,5 +1,7 @@
-$squareWidth: 150px;
+$squareWidth: 30px;
+$boardWidth: 10;
 $testColor: #ffe599;
+
 
 * {
   box-sizing: border-box;
@@ -13,7 +15,7 @@ body {
     #board {
       display: flex;
       flex-flow: row wrap;
-      width: $squareWidth * 4;
+      width: $squareWidth * $boardWidth;
 
       .square {
         display: flex;
@@ -21,7 +23,8 @@ body {
         align-items: center;
         width: $squareWidth;
         height: $squareWidth;
-        border: 2px solid black;
+        border: 2px solid grey;
+        color: grey;
 
         &.full {
           background-color: $testColor;
