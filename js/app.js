@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  class tBlock extends Block {
+  class TBlock extends Block {
     constructor(homeIndex) {
       super(
         homeIndex,
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  class iBlock extends Block {
+  class IBlock extends Block {
     constructor(homeIndex) {
       super(
         homeIndex,
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  class jBlock extends Block {
+  class JBlock extends Block {
     constructor(homeIndex) {
       super(
         homeIndex,
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  class lBlock extends Block {
+  class LBlock extends Block {
     constructor(homeIndex) {
       super(
         homeIndex,
@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  class sBlock extends Block {
+  class SBlock extends Block {
     constructor(homeIndex) {
       super(
         homeIndex,
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  class zBlock extends Block {
+  class ZBlock extends Block {
     constructor(homeIndex) {
       super(
         homeIndex,
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  class oBlock extends Block {
+  class OBlock extends Block {
     constructor(homeIndex) {
       super(homeIndex)
     }
@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  const a = new zBlock(44)
+  const a = new ZBlock(44)
 
   addEventListener('keydown', (e) => {
     if (e.keyCode === 37) {
