@@ -17,15 +17,19 @@ body {
       color: grey; }
       body #game #board .board-square.has-active-block {
         background-color: #ffe599; }
-      body #game #board .board-square.red {
+      body #game #board .board-square.i-square {
         background: red; }
-      body #game #board .board-square.green {
+      body #game #board .board-square.j-square {
         background: green; }
-      body #game #board .board-square.blue {
+      body #game #board .board-square.l-square {
         background: blue; }
-      body #game #board .board-square.gold {
+      body #game #board .board-square.o-square {
         background: gold; }
-      body #game #board .board-square.purple {
+      body #game #board .board-square.s-square {
         background: purple; }
+      body #game #board .board-square.t-square {
+        background: grey; }
+      body #game #board .board-square.z-square {
+        background: black; }
 
 /*# sourceMappingURL=style.css.map */

@@ -1,5 +1,7 @@
 const width = 10
 const height = 20
+let dropInterval = null
+let activeBlock = null
 
 function buildBoard(boardSelector) {
   for (var i = 0; i < width * height; i++) {
@@ -22,17 +24,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // !!! Consider name change
     // !!! Should include calculation of where the bits are
-    get indexsOccupied() {
+    get indexesOccupied() {
       return this.rotations[this.rotationIndex].map(index => index + this.homeIndex)
     }
-    clearLastMove() {
+    clearBlock() {
       // !!! Change index name
-      this.indexsOccupied.forEach(index => {
+      this.indexesOccupied.forEach(index => {
         // !!! Consider making next line pure re boardSquares
         // !!! The next line is VERY similar to something in move. Bring it out of both?
-        if (index >= 0) {
-          boardSquares[index].classList.remove('has-active-block', this.color)
-        }
+        if (index >= 0) boardSquares[index].classList.remove('has-active-block', this.styleClass)
       })
     }
     // !!! Change updateHome name to something to do with moving
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
     /// !!! How similar is this to checkIfInWall and vice versa ???
     checkCanMove(direction) {
       // !!! Change index name
-      for (const index of this.indexsOccupied) {
+      for (const index of this.indexesOccupied) {
         if (index % width === 0 && direction === 'left') {
           return false
         } else if (index % width === width - 1 && direction === 'right') {
@@ -69,12 +69,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // !!! This isShifting stuff is a poor patchup join. Needs a fix
     move(direction, isShifting) {
       if (this.checkCanMove(direction ) || isShifting) {
-        this.clearLastMove()
+        this.clearBlock()
         this.updateHome(direction)
         /// !!! Consider changeing position name
-        this.indexsOccupied.forEach(index => {
+        this.indexesOccupied.forEach(index => {
           if (index >= 0) {
-            boardSquares[index].classList.add('has-active-block', this.color)
+            boardSquares[index].classList.add('has-active-block', this.styleClass)
           }
         })
       }
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
     checkIfInWall() {
       let atLeftWall
       let atRightWall
-      for (const index of this.indexsOccupied) {
+      for (const index of this.indexesOccupied) {
         if (index % width === 0) {
           atLeftWall = index
         } else if (index % width === width - 1) {
@@ -101,10 +101,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // !!! Might want to make it so that the blocks check if they can rotate before rotating, rather than going through the motions and adjusting
     rotate() {
-      this.clearLastMove()
+      this.clearBlock()
       this.rotationIndex = (this.rotationIndex + 1) % 4
-      this.indexsOccupied.forEach(index => {
-        boardSquares[index].classList.add('has-active-block', this.color)
+      this.indexesOccupied.forEach(index => {
+        boardSquares[index].classList.add('has-active-block', this.styleClass)
       })
       if (this.checkIfInWall() === 'inLeftWall') {
         this.move('right', true)
@@ -114,20 +114,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // !!! Alphabetise
   // !!! swap minus widths with units so it goes X Y not Y X
-  class TBlock extends Block {
-    constructor(homeIndex) {
-      super(
-        homeIndex,
-        [
-          [-width, -1, 0, +1],
-          [-width, 0, +1, +width],
-          [-1, 0, +1, +width],
-          [-width, -1, 0, +width]
-        ]
-      )
-    }
-  }
 
   class IBlock extends Block {
     constructor(homeIndex) {
@@ -140,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
           [-width*2+1, -width+1, +1, +width+1]
         ]
       )
-      this.color = 'red'
+      this.styleClass = 'i-square'
     }
   }
 
@@ -155,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
           [-width, 0, +width-1, +width]
         ]
       )
-      this.color = 'green'
+      this.styleClass = 'j-square'
     }
   }
 
@@ -170,7 +158,22 @@ document.addEventListener('DOMContentLoaded', () => {
           [-width-1, -width, 0, width]
         ]
       )
-      this.color = 'blue'
+      this.styleClass = 'l-square'
+    }
+  }
+
+  class OBlock extends Block {
+    constructor(homeIndex) {
+      super(
+        homeIndex,
+        [
+          [-width-1, -width, -1, 0]
+        ]
+      )
+      this.styleClass = 'o-square'
+    }
+    rotate() {
+      return false
     }
   }
 
@@ -185,6 +188,22 @@ document.addEventListener('DOMContentLoaded', () => {
           [-width-1, -1, 0, +width]
         ]
       )
+      this.styleClass = 's-square'
+    }
+  }
+
+  class TBlock extends Block {
+    constructor(homeIndex) {
+      super(
+        homeIndex,
+        [
+          [-width, -1, 0, +1],
+          [-width, 0, +1, +width],
+          [-1, 0, +1, +width],
+          [-width, -1, 0, +width]
+        ]
+      )
+      this.styleClass = 't-square'
     }
   }
 
@@ -199,33 +218,48 @@ document.addEventListener('DOMContentLoaded', () => {
           [-width, -1, 0, +width-1]
         ]
       )
-      this.color = 'purple'
-    }
-  }
-
-  class OBlock extends Block {
-    constructor(homeIndex) {
-      super(
-        homeIndex,
-        [
-          [-width-1, -width, -1, 0]
-        ]
-      )
-    }
-    rotate() {
-      return false
+      this.styleClass = 'z-square'
     }
   }
 
   const blockPrototypes = [TBlock, IBlock, JBlock, LBlock, SBlock, ZBlock, OBlock]
+
   function generateBlock() {
     const randomIndex = Math.floor(Math.random() * blockPrototypes.length)
     return new blockPrototypes[randomIndex](5)
   }
 
-  // !!! ----------- Testing Junk -----------
+  function lockBlock() {
+    activeBlock.indexesOccupied.forEach(index => {
+      // !!! I don't think has active block is doing anything
+      boardSquares[index].classList.remove('has-active-block')
+      boardSquares[index].classList.add('locked', activeBlock.styleClass)
+    })
+    activeBlock = null
+  }
 
-  generateBlock().move()
+  function dropBlocks() {
+    if (!activeBlock) {
+      activeBlock = generateBlock(width / 2)
+      activeBlock.move()
+
+    } else if (
+      activeBlock
+        .indexesOccupied
+        .some(index => {
+          const nextLineIndex = index + width
+          return nextLineIndex > boardSquares.length ||
+            boardSquares[nextLineIndex].classList.contains('locked')
+        })
+    ) {
+      lockBlock()
+    } else {
+      activeBlock.move('down')
+    }
+  }
+
+  // !!! ----------- Testing Junk -----------
+  dropInterval = setInterval(dropBlocks ,200)
   // const z = new ZBlock(14)
   // const t = new TBlock(46)
   // const l = new LBlock(74)

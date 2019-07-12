@@ -30,24 +30,32 @@ body {
           background-color: $testColor;
         }
 
-        &.red {
+        &.i-square {
           background: red;
         }
 
-        &.green {
+        &.j-square {
           background: green;
         }
 
-        &.blue {
+        &.l-square {
           background: blue;
         }
 
-        &.gold {
+        &.o-square {
           background: gold;
         }
 
-        &.purple {
+        &.s-square {
           background: purple;
+        }
+
+        &.t-square {
+          background: grey;
+        }
+
+        &.z-square {
+          background: black;
         }
       }
     }
