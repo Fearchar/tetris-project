@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /// !!! ----- Working Here -----
 
-  class block {
+  class Block {
     constructor(homeIndex, possibleRotations) {
       this.homeIndex = homeIndex
       this.rotationIndex = 0
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  class tBlock extends block {
+  class tBlock extends Block {
     constructor(homeIndex) {
       super(
         homeIndex,
@@ -84,33 +84,96 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  class tBlock extends block {
+  class iBlock extends Block {
     constructor(homeIndex) {
       super(
         homeIndex,
         [
-          [-width, -1, 0, +1],
-          [-width, 0, +1, +width],
-          [-1, 0, +1, +width],
-          [-width, -1, 0, +width]
+          [-1, 0, +1, +2],
+          [-width*2, -width, 0, +width],
+          [-width-1, -width, -width+1, -width+2],
+          [-width*2+1, -width+1, +1, +width+1]
         ]
       )
     }
   }
 
-  const a = new tBlock(44)
-  a.move()
-  a.move('right')
-  a.move('left')
-  a.move('right')
-  a.move('left')
-  a.move('up')
-  a.move('down')
-  a.move('right')
-  a.rotate()
-  a.rotate()
-  a.rotate()
-  a.rotate()
-  a.rotate()
-  a.rotate()
+  class jBlock extends Block {
+    constructor(homeIndex) {
+      super(
+        homeIndex,
+        [
+          [-width-1, -1, 0, +1],
+          [-width, -width+1, 0, +width],
+          [-1, 0, +1, +width+1],
+          [-width, 0, +width-1, +width]
+        ]
+      )
+    }
+  }
+
+  class lBlock extends Block {
+    constructor(homeIndex) {
+      super(
+        homeIndex,
+        [
+          [-width+1, -1, 0, +1],
+          [-width, 0, +width, +width+1],
+          [-1, 0, +1, +width-1],
+          [-width-1, -width, 0, width]
+        ]
+      )
+    }
+  }
+
+  class sBlock extends Block {
+    constructor(homeIndex) {
+      super(
+        homeIndex,
+        [
+          [-width, -width+1, -1, 0],
+          [-width, 0, +1, +width+1],
+          [0, +1, +width-1, +width],
+          [-width-1, -1, 0, +width]
+        ]
+      )
+    }
+  }
+
+  class zBlock extends Block {
+    constructor(homeIndex) {
+      super(
+        homeIndex,
+        [
+          [-width-1, -width, 0, +1],
+          [-width+1, 0, +1, +width],
+          [-1, 0, +width, +width+1],
+          [-width, -1, 0, +width-1]
+        ]
+      )
+    }
+  }
+
+  class oBlock extends Block {
+    constructor(homeIndex) {
+      super(homeIndex)
+    }
+    rotate() {
+      return false
+    }
+  }
+
+  const a = new zBlock(44)
+
+  addEventListener('keydown', (e) => {
+    if (e.keyCode === 37) {
+      a.move('left')
+    } else if (e.keyCode === 39) {
+      a.move('right')
+    } else if (e.keyCode === 40) {
+      a.move('down')
+    } else if (e.keyCode === 38) {
+      a.rotate()
+    }
+  })
 })
