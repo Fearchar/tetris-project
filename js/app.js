@@ -25,14 +25,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // !!! Consider name change
     // !!! Should include calculation of where the bits are
-    get currentRotation() {
-      return this.rotations[this.rotationIndex]
+    get indexsOccupied() {
+      return this.rotations[this.rotationIndex].map(index => index + this.homeIndex)
     }
     clearLastMove() {
-      // !!! Change blocksquare name
-      this.currentRotation.forEach(blockSquare => {
+      // !!! Change index name
+      this.indexsOccupied.forEach(index => {
         // !!! Consider making next line pure re boardSquares
-        boardSquares[blockSquare + this.homeIndex].classList.remove('has-active-block')
+        boardSquares[index].classList.remove('has-active-block')
       })
     }
     // !!! Change updateHome name to something to do with moving
@@ -52,24 +52,38 @@ document.addEventListener('DOMContentLoaded', () => {
           break
       }
     }
+    checkCanMove(direction) {
+      // !!! Change index name
+      for (const index of this.indexsOccupied) {
+        if (index % width === 0 && direction === 'left') {
+          return false
+        } else if (index % width === width - 1 && direction === 'right') {
+          return false
+        }
+      }
+      return true
+    }
     move(direction) {
-      this.clearLastMove()
-      this.updateHome(direction)
-      /// !!! Consider changeing position name
-      this.currentRotation.forEach(position => {
-        boardSquares[this.homeIndex + position].classList.add('has-active-block')
-      })
+      if (this.checkCanMove(direction)) {
+        this.clearLastMove()
+        this.updateHome(direction)
+        /// !!! Consider changeing position name
+        this.indexsOccupied.forEach(index => {
+          boardSquares[index].classList.add('has-active-block')
+        })
+      }
     }
     // !!! Update and move are doing awfully similar things. Intergrate somehow?
     rotate() {
       this.clearLastMove()
       this.rotationIndex = (this.rotationIndex + 1) % 4
-      this.currentRotation.forEach(position => {
-        boardSquares[this.homeIndex + position].classList.add('has-active-block')
+      this.indexsOccupied.forEach(index => {
+        boardSquares[index].classList.add('has-active-block')
       })
     }
   }
 
+  // !!! swap minus widths with units so it goes X Y not Y X
   class TBlock extends Block {
     constructor(homeIndex) {
       super(
@@ -156,24 +170,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
   class OBlock extends Block {
     constructor(homeIndex) {
-      super(homeIndex)
+      super(
+        homeIndex,
+        [
+          [-width-1, -width, -1, 0]
+        ]
+      )
     }
     rotate() {
       return false
     }
   }
 
-  const a = new ZBlock(44)
+  const z = new ZBlock(44)
+  const t = new TBlock(14)
+  const l = new LBlock(65)
+  const o = new OBlock(95)
 
   addEventListener('keydown', (e) => {
     if (e.keyCode === 37) {
-      a.move('left')
+      z.move('left')
+      t.move('left')
+      l.move('left')
+      o.move('left')
     } else if (e.keyCode === 39) {
-      a.move('right')
+      z.move('right')
+      t.move('right')
+      l.move('right')
+      o.move('right')
     } else if (e.keyCode === 40) {
-      a.move('down')
+      z.move('down')
+      t.move('down')
+      l.move('down')
+      o.move('down')
     } else if (e.keyCode === 38) {
-      a.rotate()
+      z.rotate()
+      t.rotate()
+      l.rotate()
+      o.rotate()
     }
   })
 })
