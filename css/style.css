@@ -28,7 +28,7 @@ body {
       body #game #board .board-square.s-square {
         background: purple; }
       body #game #board .board-square.t-square {
-        background: grey; }
+        background: lightgrey; }
       body #game #board .board-square.z-square {
         background: black; }
 

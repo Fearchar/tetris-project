@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const board = document.querySelector('#board')
   /// !!! Change buildBoard() so it doesn't have to go here
   buildBoard(board)
-  const boardSquares = document.querySelectorAll('.board-square')
+  const boardSquares = Array.from(document.querySelectorAll('.board-square'))
 
   // !!! Consider adding boardSquares to the parameters for the block class so that it can increase in purity and move up out of the dom to it's rightful place near the top of the code.
   class Block {
@@ -194,7 +194,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // !!! Alphabetise
+
+
   // !!! swap minus widths with units so it goes X Y not Y X
 
   class IBlock extends Block {
@@ -320,6 +321,41 @@ document.addEventListener('DOMContentLoaded', () => {
   //   activeBlock.move()
   // }
 
+  function checkForCompleteLines() {
+    const linesToRemove = []
+    const numberOfLines = boardSquares.length / width
+    for (var i = 0; i < numberOfLines; i++) {
+      if(boardSquares.slice(i * width, (i * width) + width).every(square => {
+        return square.classList.contains('locked')
+      })) linesToRemove.push(i)
+    }
+    return linesToRemove[0] ? linesToRemove : false
+  }
+
+  // function dropLockedLines() {
+  //
+  // }
+
+  function sumSumTinTin() {
+    const linesToRemove = checkForCompleteLines()
+    if (linesToRemove) {
+      linesToRemove.forEach(line => {
+        for (var i = 0; i < width; i++) {
+          boardSquares[(line * width) + i].classList.remove(
+            'locked',
+            'i-square',
+            'j-square',
+            'l-square',
+            'o-square',
+            's-square',
+            't-square',
+            'z-square'
+          )
+        }
+      })
+    }
+  }
+
   function dropBlocks() {
     if (
       activeBlock
@@ -333,6 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     ) {
       activeBlock.lockBlock()
+      sumSumTinTin()
     } else {
       activeBlock.move('down')
     }
