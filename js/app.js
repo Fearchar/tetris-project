@@ -144,11 +144,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // !!! Change name
     newPositionIfCanRotate() {
       let canRotate
-      let indexesToOccupy
-      let newRotationIndex
       let iterationCheck
-      newRotationIndex = (this.rotationIndex + 1) % 4
-      indexesToOccupy = this.rotations[newRotationIndex].map(index => index + this.homeIndex)
+      const newRotationIndex = (this.rotationIndex + 1) % 4
+      const indexesToOccupy = this.rotations[newRotationIndex].map(index => index + this.homeIndex)
       let atLeftWall
       let atRightWall
       for (const index of indexesToOccupy) {
@@ -181,7 +179,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       this.clearBlock()
       this.rotationIndex = newRotationIndex
-      if (iterationCheck > 3) console.log('ERROR:', this)
       return true
     }
 
@@ -309,7 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function generateBlock() {
     const randomIndex = Math.floor(Math.random() * blockPrototypes.length)
-    return new blockPrototypes[1](5)
+    return new blockPrototypes[randomIndex](5)
   }
 
   // function lockBlock() {
