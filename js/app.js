@@ -27,12 +27,17 @@ document.addEventListener('DOMContentLoaded', () => {
     get indexesOccupied() {
       return this.rotations[this.rotationIndex].map(index => index + this.homeIndex)
     }
-    clearBlock() {
-      // !!! Change index name
-      this.indexesOccupied.forEach(index => {
-        // !!! Consider making next line pure re boardSquares
-        // !!! The next line is VERY similar to something in move. Bring it out of both?
-        if (index >= 0) boardSquares[index].classList.remove('has-active-block', this.styleClass)
+    // clearBlock() {
+    //   // !!! Change index name
+    //   this.indexesOccupied.forEach(index => {
+    //     // !!! Consider making next line pure re boardSquares
+    //     // !!! The next line is VERY similar to something in move. Bring it out of both?
+    //     if (index >= 0) boardSquares[index].classList.remove('has-active-block', this.styleClass)
+    //   })
+    // }
+    clearBlock(){
+      boardSquares.forEach(square => {
+        if (square.classList.contains('has-active-block')) square.classList.remove('has-active-block', this.styleClass)
       })
     }
     // !!! Change updateHome name to something to do with moving
@@ -128,43 +133,52 @@ document.addEventListener('DOMContentLoaded', () => {
         return 'inRightWall'
       }
     }
+    //!!! Change name
+    shift(direction, amount=1) {
+      if (direction === 'right') {
+        this.homeIndex += amount
+      } else if (direction === 'left') {
+        this.homeIndex -= amount
+      }
+    }
+    // !!! Change name
     newPositionIfCanRotate() {
       let canRotate
       let indexesToOccupy
       let newRotationIndex
       let iterationCheck
-      do {
-        this.clearBlock()
-        newRotationIndex = (this.rotationIndex + 1) % 4
-        indexesToOccupy = this.rotations[newRotationIndex].map(index => index + this.homeIndex)
-        let atLeftWall
-        let atRightWall
-        for (const index of indexesToOccupy) {
-          if (index % width === 0) {
-            atLeftWall = index
-          } else if (index % width === width - 1) {
-            atRightWall = index
-          }
+      newRotationIndex = (this.rotationIndex + 1) % 4
+      indexesToOccupy = this.rotations[newRotationIndex].map(index => index + this.homeIndex)
+      let atLeftWall
+      let atRightWall
+      for (const index of indexesToOccupy) {
+        if (index % width === 0) {
+          atLeftWall = index
+        } else if (index % width === width - 1) {
+          atRightWall = index
         }
-        if (!atLeftWall || !atRightWall) {
-          canRotate = true
-        } else if (this.homeIndex % width === 0) {
-          this.move('right')
-        } else {
-          this.move('left')
-        }
-        iterationCheck ++
-      } while (!canRotate || iterationCheck > 3)
+      }
+      if (!atLeftWall || !atRightWall) {
+        canRotate = true
+      } else if (this.homeIndex % width === 0) {
+        this.shift('right')
+        if (this instanceof IBlock) this.shift('right')
+      } else {
+        this.shift('left')
+        if (this instanceof IBlock) this.shift('left')
+      }
+      this.clearBlock()
       this.rotationIndex = newRotationIndex
       if (iterationCheck > 3) console.log('ERROR:', this)
-      return indexesToOccupy
+      return true
     }
 
     // !!! Might want to make it so that the blocks check if they can rotate before rotating, rather than going through the motions and adjusting
     rotate() {
-      const newIndexesToOccupy = this.newPositionIfCanRotate()
-      if (newIndexesToOccupy) {
-        newIndexesToOccupy.forEach(index => {
+
+      if (this.newPositionIfCanRotate()) {
+        // !!! If the below stays as it is you can have a function that just paints the block where ever it is and use it on this and move (and shift? If that still exists)
+        this.indexesOccupied.forEach(index => {
           if (index >= 0) boardSquares[index].classList.add('has-active-block', this.styleClass)
         })
       }
@@ -278,8 +292,8 @@ document.addEventListener('DOMContentLoaded', () => {
       this.styleClass = 'z-square'
     }
   }
-
-  const blockPrototypes = [TBlock, IBlock, JBlock, LBlock, SBlock, ZBlock, OBlock]
+  // !!! Missing I block for testing purposes
+  const blockPrototypes = [TBlock, TBlock, JBlock, LBlock, SBlock, ZBlock, OBlock]
 
   function generateBlock() {
     const randomIndex = Math.floor(Math.random() * blockPrototypes.length)
