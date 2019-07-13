@@ -37,40 +37,71 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // !!! Change updateHome name to something to do with moving
     updateHome(direction) {
+      let newHomeIndex = this.homeIndex
       switch(direction) {
         case 'left':
-          this.homeIndex -= 1
+          newHomeIndex -= 1
           break
         case 'right':
-          this.homeIndex += 1
+          newHomeIndex += 1
           break
         case 'up':
-          this.homeIndex -= width
+          newHomeIndex -= width
           break
         case 'down':
-          this.homeIndex += width
+          newHomeIndex += width
           break
         default:
-          this.homeIndex
+          newHomeIndex
       }
+      return newHomeIndex
     }
     /// !!! How similar is this to checkIfInWall and vice versa ???
-    checkCanMove(direction) {
+    checkIfMovingIntoWall(direction, index) {
       // !!! Change index name
-      for (const index of this.indexesOccupied) {
-        if (index % width === 0 && direction === 'left') {
-          return false
-        } else if (index % width === width - 1 && direction === 'right') {
-          return false
-        }
+      if (index % width === width - 1 && direction === 'left') {
+        return true
+      } else if (index % width === 0 && direction === 'right') {
+        return true
       }
-      return true
+      return false
     }
-    // !!! This isShifting stuff is a poor patchup join. Needs a fix
+    // } else if (boardSquares[index].classList.contains('locked')) {
+    //   returnObject.value = false, returnObject.describer = 'lockedBlock'
+    //   break
+    // }
+    // }
+    newHomeIfCanMove(direction, isShifting) {
+      // !!! This isShifting stuff is a poor patchup join. Needs a fix
+      // !!! With the if(!this.checkIfMovingIntoWall) we're unnecissairly running the same loop twice. Reduce checkIfMovingIntoWall to just conditional and move down into some
+      // !!! Also bring the logic that stops it from going through the bottom into here maybe?
+      const potentialHomeIndex = this.updateHome(direction)
+      const indexesToOccupy = this.rotations[this.rotationIndex].map(index => index + potentialHomeIndex)
+      return !indexesToOccupy.some(index => {
+        if (
+          (index >= 0 &&
+          boardSquares[index].classList.contains('locked')) ||
+          (this.checkIfMovingIntoWall(direction, index) || isShifting)
+        ) return true
+      }) ? potentialHomeIndex : false
+    }
+    lockBlock() {
+      this.indexesOccupied.forEach(index => {
+        // !!! I don't think has active block is doing anything
+        boardSquares[index].classList.remove('has-active-block')
+        boardSquares[index].classList.add('locked', this.styleClass)
+      })
+      // !!! The need to use active block here is possibly another argument to bring these functions out fo the blocks
+      activeBlock = null
+      activeBlock = generateBlock(width / 2)
+      activeBlock.move()
+    }
     move(direction, isShifting) {
-      if (this.checkCanMove(direction ) || isShifting) {
+      // !!! This isShifting stuff is a poor patchup join. Needs a fix
+      const newHomeIndex = this.newHomeIfCanMove(direction, isShifting)
+      if (newHomeIndex) {
         this.clearBlock()
-        this.updateHome(direction)
+        this.homeIndex = newHomeIndex
         /// !!! Consider changeing position name
         this.indexesOccupied.forEach(index => {
           if (index >= 0) {
@@ -80,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
     // !!! Update and move are doing awfully similar things. Intergrate somehow?
-    // !!! everything relating to the checks for movement and walls are super dodgey. Firstly they need to happen repeatedly. Secondly they won't work for anything other than walls (so not the blocks at the bottom), thirdly I've added this really dodgey isShifting boolean to move to ignore the checkCanMove. I need a major restructure / rethink
+    // !!! everything relating to the checks for movement and walls are super dodgey. Firstly they need to happen repeatedly. Secondly they won't work for anything other than walls (so not the blocks at the bottom), thirdly I've added this really dodgey isShifting boolean to move to ignore the checkIfMovingIntoWall. I need a major restructure / rethink
     checkIfInWall() {
       let atLeftWall
       let atRightWall
@@ -104,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
       this.clearBlock()
       this.rotationIndex = (this.rotationIndex + 1) % 4
       this.indexesOccupied.forEach(index => {
-        boardSquares[index].classList.add('has-active-block', this.styleClass)
+        if (index >= 0) boardSquares[index].classList.add('has-active-block', this.styleClass)
       })
       if (this.checkIfInWall() === 'inLeftWall') {
         this.move('right', true)
@@ -229,16 +260,16 @@ document.addEventListener('DOMContentLoaded', () => {
     return new blockPrototypes[randomIndex](5)
   }
 
-  function lockBlock() {
-    activeBlock.indexesOccupied.forEach(index => {
-      // !!! I don't think has active block is doing anything
-      boardSquares[index].classList.remove('has-active-block')
-      boardSquares[index].classList.add('locked', activeBlock.styleClass)
-    })
-    activeBlock = null
-    activeBlock = generateBlock(width / 2)
-    activeBlock.move()
-  }
+  // function lockBlock() {
+  //   activeBlock.indexesOccupied.forEach(index => {
+  //     // !!! I don't think has active block is doing anything
+  //     boardSquares[index].classList.remove('has-active-block')
+  //     boardSquares[index].classList.add('locked', activeBlock.styleClass)
+  //   })
+  //   activeBlock = null
+  //   activeBlock = generateBlock(width / 2)
+  //   activeBlock.move()
+  // }
 
   function dropBlocks() {
     if (
@@ -246,13 +277,13 @@ document.addEventListener('DOMContentLoaded', () => {
         .indexesOccupied
         .some(index => {
           const nextLineIndex = index + width
-          if (nextLineIndex > boardSquares.length) {
+          if (nextLineIndex > boardSquares.length - 1) {
             return true
           } else if (boardSquares[nextLineIndex].classList.contains('locked'))
             return true
         })
     ) {
-      lockBlock()
+      activeBlock.lockBlock()
     } else {
       activeBlock.move('down')
     }
