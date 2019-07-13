@@ -236,20 +236,20 @@ document.addEventListener('DOMContentLoaded', () => {
       boardSquares[index].classList.add('locked', activeBlock.styleClass)
     })
     activeBlock = null
+    activeBlock = generateBlock(width / 2)
+    activeBlock.move()
   }
 
   function dropBlocks() {
-    if (!activeBlock) {
-      activeBlock = generateBlock(width / 2)
-      activeBlock.move()
-
-    } else if (
+    if (
       activeBlock
         .indexesOccupied
         .some(index => {
           const nextLineIndex = index + width
-          return nextLineIndex > boardSquares.length ||
-            boardSquares[nextLineIndex].classList.contains('locked')
+          if (nextLineIndex > boardSquares.length) {
+            return true
+          } else if (boardSquares[nextLineIndex].classList.contains('locked'))
+            return true
         })
     ) {
       lockBlock()
@@ -259,7 +259,28 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // !!! ----------- Testing Junk -----------
-  dropInterval = setInterval(dropBlocks ,200)
+  activeBlock = generateBlock(width / 2)
+  dropInterval = setInterval(dropBlocks ,500)
+
+  document.addEventListener('keydown', (e) => {
+    switch(e.keyCode) {
+      case 37:
+        activeBlock.move('left')
+        break
+      case 39:
+        activeBlock.move('right')
+        break
+      case 40:
+        // !!! Good argument to add this to the block itself? (or maybe take all the functions off the block?)
+        dropBlocks()
+        break
+      case 38:
+        activeBlock.rotate()
+        break
+    }
+  })
+
+
   // const z = new ZBlock(14)
   // const t = new TBlock(46)
   // const l = new LBlock(74)
