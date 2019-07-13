@@ -94,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // !!! I don't think has active block is doing anything
         boardSquares[index].classList.remove('has-active-block')
         boardSquares[index].classList.add('locked', this.styleClass)
+        boardSquares[index].setAttribute('data-style-class', this.styleClass)
       })
       // !!! The need to use active block here is possibly another argument to bring these functions out fo the blocks
       activeBlock = null
@@ -320,11 +321,11 @@ document.addEventListener('DOMContentLoaded', () => {
   //   activeBlock = generateBlock(width / 2)
   //   activeBlock.move()
   // }
-
+  // !!! Should make delete from the the end of the grid rather than the begggining
   function checkForCompleteLines() {
     const linesToRemove = []
     const numberOfLines = boardSquares.length / width
-    for (var i = 0; i < numberOfLines; i++) {
+    for (var i = numberOfLines - 1; i >= 0; i--) {
       if(boardSquares.slice(i * width, (i * width) + width).every(square => {
         return square.classList.contains('locked')
       })) linesToRemove.push(i)
@@ -332,27 +333,29 @@ document.addEventListener('DOMContentLoaded', () => {
     return linesToRemove[0] ? linesToRemove : false
   }
 
-  // function dropLockedLines() {
-  //
-  // }
+  function dropLockedLines(removedLines) {
+    removedLines.forEach(() => {
+      for (let i = (removedLines[0] * width) - 1; i >= 0; i--) {
+        const square = boardSquares[i].classList.contains('locked') ? boardSquares[i] : null
+        const newSquare = boardSquares[i + width]
+        if (square) {
+          newSquare.classList.add('locked', square.getAttribute('data-style-class'))
+          square.className = 'board-square'
+          square.setAttribute('data-style-class', '')
+        }
+      }
+    })
+  }
 
-  function sumSumTinTin() {
+  function deleteFullLines() {
     const linesToRemove = checkForCompleteLines()
     if (linesToRemove) {
       linesToRemove.forEach(line => {
         for (var i = 0; i < width; i++) {
-          boardSquares[(line * width) + i].classList.remove(
-            'locked',
-            'i-square',
-            'j-square',
-            'l-square',
-            'o-square',
-            's-square',
-            't-square',
-            'z-square'
-          )
+          boardSquares[(line * width) + i].className = 'board-square'
         }
       })
+      dropLockedLines(linesToRemove)
     }
   }
 
@@ -369,7 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     ) {
       activeBlock.lockBlock()
-      sumSumTinTin()
+      deleteFullLines()
     } else {
       activeBlock.move('down')
     }
