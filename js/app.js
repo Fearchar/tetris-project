@@ -160,12 +160,24 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (!atLeftWall || !atRightWall) {
         canRotate = true
-      } else if (this.homeIndex % width === 0) {
-        this.shift('right')
-        if (this instanceof IBlock) this.shift('right')
+      } else if (
+        !(this instanceof IBlock)
+      ) {
+        if (this.homeIndex % width === 0) {
+          this.shift('right')
+        } else {
+          this.shift('left')
+        }
       } else {
-        this.shift('left')
-        if (this instanceof IBlock) this.shift('left')
+        if (newRotationIndex === 2 && this.homeIndex % width === 0) {
+          this.shift('right')
+        } else if (newRotationIndex === 2) {
+          this.shift('left', 2)
+        } else if (newRotationIndex === 0 && this.homeIndex % width === width - 1) {
+          this.shift('right', 2)
+        } else {
+          this.shift('left')
+        }
       }
       this.clearBlock()
       this.rotationIndex = newRotationIndex
@@ -292,12 +304,12 @@ document.addEventListener('DOMContentLoaded', () => {
       this.styleClass = 'z-square'
     }
   }
-  // !!! Missing I block for testing purposes
-  const blockPrototypes = [TBlock, TBlock, JBlock, LBlock, SBlock, ZBlock, OBlock]
+
+  const blockPrototypes = [TBlock, IBlock, JBlock, LBlock, SBlock, ZBlock, OBlock]
 
   function generateBlock() {
     const randomIndex = Math.floor(Math.random() * blockPrototypes.length)
-    return new blockPrototypes[randomIndex](5)
+    return new blockPrototypes[1](5)
   }
 
   // function lockBlock() {
