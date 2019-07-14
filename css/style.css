@@ -31,5 +31,7 @@ body {
         background: lightgrey; }
       body #game #board .board-square.z-square {
         background: black; }
+      body #game #board .board-square.project {
+        border: 2px solid black; }
 
 /*# sourceMappingURL=style.css.map */

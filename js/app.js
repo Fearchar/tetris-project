@@ -134,6 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         })
       }
+      this.projectDrop()
     }
     // !!! Update and move are doing awfully similar things. Intergrate somehow?
     // !!! everything relating to the checks for movement and walls are super dodgey. Firstly they need to happen repeatedly. Secondly they won't work for anything other than walls (so not the blocks at the bottom), thirdly I've added this really dodgey  boolean to move to ignore the checkIfMovingIntoWall. I need a major restructure / rethink
@@ -205,16 +206,33 @@ document.addEventListener('DOMContentLoaded', () => {
       this.rotationIndex = newRotationIndex
       return true
     }
-
     // !!! Might want to make it so that the blocks check if they can rotate before rotating, rather than going through the motions and adjusting
     rotate() {
-
       if (this.newPositionIfCanRotate()) {
         // !!! If the below stays as it is you can have a function that just paints the block where ever it is and use it on this and move (and correctPlacement? If that still exists)
         this.indexesOccupied.forEach(index => {
           if (index >= 0) boardSquares[index].classList.add('has-active-block', this.styleClass)
         })
       }
+    }
+    projectDrop() {
+      // !!! Change blah name
+      const blah = this.indexesOccupied.reduce((aboveHighestLocked, current) => {
+        const lowestSquareIndex = ((height - 1) * width) + (current % width)
+        for (let i = height - 1; i >= 0; i--) {
+          const indexToCheck = (i * width) + (current % width)
+          const squareToCheck = boardSquares[indexToCheck]
+          if (squareToCheck.classList.contains('locked') && indexToCheck < aboveHighestLocked) {
+            return indexToCheck
+          } else if (lowestSquareIndex < aboveHighestLocked) {
+            return lowestSquareIndex
+          }
+
+        }
+      }, (height * width) - 1)
+      blah.classList.add('project')
+      const lineToProjectOn = Math.floor(blah / width)
+
     }
   }
 
