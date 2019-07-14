@@ -334,15 +334,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function dropLockedLines(removedLines) {
-    removedLines.forEach(() => {
-      for (let i = (removedLines[0] * width) - 1; i >= 0; i--) {
-        const square = boardSquares[i].classList.contains('locked') ? boardSquares[i] : null
-        const newSquare = boardSquares[i + width]
-        if (square) {
-          newSquare.classList.add('locked', square.getAttribute('data-style-class'))
-          square.className = 'board-square'
-          square.setAttribute('data-style-class', '')
-        }
+    removedLines.forEach((line, i) => {
+      for (let j = ((line + i) * width) - 1 ; j >= 0; j--) {
+        const square = boardSquares[j]
+        const newSquare = boardSquares[j + width]
+        newSquare.className = square.className
+        square.className = 'board-square'
       }
     })
   }
@@ -367,6 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const nextLineIndex = index + width
           if (nextLineIndex > boardSquares.length - 1) {
             return true
+          // !!! Error that kills game raised by below when rotating IBlock on generation
           } else if (boardSquares[nextLineIndex].classList.contains('locked'))
             return true
         })
