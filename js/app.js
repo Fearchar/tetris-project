@@ -116,40 +116,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // !!! Update and move are doing awfully similar things. Intergrate somehow?
     // !!! everything relating to the checks for movement and walls are super dodgey. Firstly they need to happen repeatedly. Secondly they won't work for anything other than walls (so not the blocks at the bottom), thirdly I've added this really dodgey  boolean to move to ignore the checkIfMovingIntoWall. I need a major restructure / rethink
-    checkIfInWall() {
-      let atLeftWall
-      let atRightWall
-      for (const index of this.indexesOccupied) {
-        if (index % width === 0) {
-          atLeftWall = index
-        } else if (index % width === width - 1) {
-          atRightWall = index
-        }
-      }
-      if (!atLeftWall || !atRightWall) {
-        return false
-      } else if (this.homeIndex % width === 0) {
-        return 'inLeftWall'
-      } else {
-        return 'inRightWall'
-      }
-    }
+    // checkIfInWall() {
+    //   let atLeftWall
+    //   let atRightWall
+    //   for (const index of this.indexesOccupied) {
+    //     if (index % width === 0) {
+    //       atLeftWall = index
+    //     } else if (index % width === width - 1) {
+    //       atRightWall = index
+    //     }
+    //   }
+    //   if (!atLeftWall || !atRightWall) {
+    //     return false
+    //   } else if (this.homeIndex % width === 0) {
+    //     return 'inLeftWall'
+    //   } else {
+    //     return 'inRightWall'
+    //   }
+    // }
     //!!! Change name
     shift(direction, amount=1) {
       if (direction === 'right') {
-        this.homeIndex += amount
+        return this.homeIndex + amount
       } else if (direction === 'left') {
-        this.homeIndex -= amount
+        return this.homeIndex - amount
       }
     }
     // !!! Change name
+    // So much refactoring needed
     newPositionIfCanRotate() {
       let canRotate
-      let iterationCheck
       const newRotationIndex = (this.rotationIndex + 1) % 4
-      const indexesToOccupy = this.rotations[newRotationIndex].map(index => index + this.homeIndex)
+      let indexesToOccupy = this.rotations[newRotationIndex].map(index => index + this.homeIndex)
+      let newHomeIndex = this.homeIndex
       let atLeftWall
       let atRightWall
+      // ### Checking if in wall
       for (const index of indexesToOccupy) {
         if (index % width === 0) {
           atLeftWall = index
@@ -158,26 +160,44 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
       if (!atLeftWall || !atRightWall) {
+        /// !!! Doing nothing, but the condtition is important. Figure out how to safely remove this
         canRotate = true
+        // ### Responding if in wall
       } else if (
         !(this instanceof IBlock)
       ) {
         if (this.homeIndex % width === 0) {
-          this.shift('right')
+          newHomeIndex = this.shift('right')
         } else {
-          this.shift('left')
+          newHomeIndex = this.shift('left')
         }
       } else {
         if (newRotationIndex === 2 && this.homeIndex % width === 0) {
-          this.shift('right')
+          newHomeIndex = this.shift('right')
         } else if (newRotationIndex === 2) {
-          this.shift('left', 2)
+          newHomeIndex = this.shift('left', 2)
         } else if (newRotationIndex === 0 && this.homeIndex % width === width - 1) {
-          this.shift('right', 2)
+          newHomeIndex = this.shift('right', 2)
         } else {
-          this.shift('left')
+          newHomeIndex = this.shift('left')
+        }
+        indexesToOccupy = this.rotations[newRotationIndex].map(index => index + newHomeIndex)
+      }
+      // ### Checking if rotating into locked block
+      for (const index of indexesToOccupy) {
+        // !!! Can be replaced by a terniary?
+        if (
+          index >= boardSquares.length  ||
+          (
+            index >= 0 &&
+            boardSquares[index].classList.contains('locked')
+          )
+        ) {
+          return false
         }
       }
+      this.homeIndex = newHomeIndex
+      this.move()
       this.clearBlock()
       this.rotationIndex = newRotationIndex
       return true
@@ -364,8 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const nextLineIndex = index + width
           if (nextLineIndex > boardSquares.length - 1) {
             return true
-          // !!! Error that kills game raised by below when rotating IBlock on generation
-          } else if (boardSquares[nextLineIndex].classList.contains('locked'))
+          } else if (nextLineIndex >= 0 && boardSquares[nextLineIndex].classList.contains('locked'))
             return true
         })
     ) {
