@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
     /// !!! How similar is this to checkIfInWall and vice versa ???
     checkIfMovingIntoWall(direction, index) {
       // !!! Change index name
-      if (index % width === width - 1 && direction === 'left') {
+      if ((index + width) % width === width - 1 && direction === 'left') {
         return true
       } else if (index % width === 0 && direction === 'right') {
         return true
@@ -328,7 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function generateBlock() {
     const randomIndex = Math.floor(Math.random() * blockPrototypes.length)
-    return new blockPrototypes[randomIndex](5)
+    return new blockPrototypes[4](5)
   }
 
   // function lockBlock() {
