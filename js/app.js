@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const boardSquares = Array.from(document.querySelectorAll('.board-square'))
   const scoreDisplay = document.querySelector('#score-display')
   const levelDisplay = document.querySelector('#level-display')
+  const linelsClearedDisplay = document.querySelector('#lines-cleared-display')
   const nextLevelDisplay = document.querySelector('#next-level-display')
   const start = document.querySelector('#start')
   const reset = document.querySelector('#reset')
@@ -390,6 +391,7 @@ document.addEventListener('DOMContentLoaded', () => {
         score += 10
         scoreDisplay.textContent = score
         linesCleared ++
+        linelsClearedDisplay.textContent = linesCleared
         if (linesCleared === levelsAtLines[level] && level < 9) {
           level = levelUp(level)
           levelDisplay.textContent = level
@@ -426,6 +428,14 @@ document.addEventListener('DOMContentLoaded', () => {
     boardSquares.forEach(square => {
       square.className = 'board-square'
     })
+    score = 0
+    scoreDisplay.textContent = score
+    level = 1
+    levelDisplay.textContent = level
+    linesCleared = 0
+    linelsClearedDisplay.textContent = linesCleared
+    nextLevelDisplay.textContent = 5
+    score
   }
 
   function checkForGameOver() {
@@ -436,12 +446,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function startGame() {
-    activeBlock = generateBlock(width / 2)
-    // !!! This is only ness becuase you've chosen the starting co-ords for it's rotations unwisely. It's probably best to cylce them so that 2 is 0. This will require you to change the logic on the rotation blocking function. Be Warned
-    if(activeBlock instanceof IBlock) {
-      activeBlock.homeInext - width
+    if(!activeBlock) {
+      activeBlock = generateBlock(width / 2)
+      // !!! This is only ness becuase you've chosen the starting co-ords for it's rotations unwisely. It's probably best to cylce them so that 2 is 0. This will require you to change the logic on the rotation blocking function. Be Warned
+      if(activeBlock instanceof IBlock) {
+        activeBlock.homeInext - width
+      }
+      dropInterval = setInterval(dropBlocks, 500)
     }
-    dropInterval = setInterval(dropBlocks, 500)
   }
 
   function resetGame() {
