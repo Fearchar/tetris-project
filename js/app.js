@@ -2,6 +2,11 @@ const width = 10
 const height = 20
 let dropInterval = null
 let activeBlock = null
+let nextBlocks = []
+let score = 0
+let linesCleared = 0
+let level = 0
+
 
 function buildBoard(boardSelector) {
   for (var i = 0; i < width * height; i++) {
@@ -14,6 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
   /// !!! Change buildBoard() so it doesn't have to go here
   buildBoard(board)
   const boardSquares = Array.from(document.querySelectorAll('.board-square'))
+  const scoreDisplay = document.querySelector('#score-counter')
+  const start = document.querySelector('#start')
+  const reset = document.querySelector('#reset')
+
 
   // !!! Consider adding boardSquares to the parameters for the block class so that it can increase in purity and move up out of the dom to it's rightful place near the top of the code.
   class Block {
@@ -90,16 +99,23 @@ document.addEventListener('DOMContentLoaded', () => {
       }) ? potentialHomeIndex : false
     }
     lockBlock() {
-      this.indexesOccupied.forEach(index => {
-        // !!! I don't think has active block is doing anything
-        boardSquares[index].classList.remove('has-active-block')
-        boardSquares[index].classList.add('locked', this.styleClass)
-        boardSquares[index].setAttribute('data-style-class', this.styleClass)
-      })
-      // !!! The need to use active block here is possibly another argument to bring these functions out fo the blocks
-      activeBlock = null
-      activeBlock = generateBlock(width / 2)
-      activeBlock.move()
+      if(checkForGameOver()) {
+        gameOver()
+      } else {
+        this.indexesOccupied.forEach(index => {
+          // !!! I don't think has active block is doing anything
+          boardSquares[index].classList.remove('has-active-block')
+          boardSquares[index].classList.add('locked', this.styleClass)
+          boardSquares[index].setAttribute('data-style-class', this.styleClass)
+        })
+        // !!! The need to use active block here is possibly another argument to bring these functions out fo the blocks
+        activeBlock = generateBlock(width / 2)
+        // !!! This is only ness becuase you've chosen the starting co-ords for it's rotations unwisely. It's probably best to cylce them so that 2 is 0. This will require you to change the logic on the rotation blocking function. Be Warned
+        if(activeBlock instanceof IBlock) {
+          activeBlock.homeInext - width
+        }
+        activeBlock.move()
+      }
     }
     move(direction) {
       const newHomeIndex = this.newHomeIfCanMove(direction)
@@ -116,26 +132,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // !!! Update and move are doing awfully similar things. Intergrate somehow?
     // !!! everything relating to the checks for movement and walls are super dodgey. Firstly they need to happen repeatedly. Secondly they won't work for anything other than walls (so not the blocks at the bottom), thirdly I've added this really dodgey  boolean to move to ignore the checkIfMovingIntoWall. I need a major restructure / rethink
-    // checkIfInWall() {
-    //   let atLeftWall
-    //   let atRightWall
-    //   for (const index of this.indexesOccupied) {
-    //     if (index % width === 0) {
-    //       atLeftWall = index
-    //     } else if (index % width === width - 1) {
-    //       atRightWall = index
-    //     }
-    //   }
-    //   if (!atLeftWall || !atRightWall) {
-    //     return false
-    //   } else if (this.homeIndex % width === 0) {
-    //     return 'inLeftWall'
-    //   } else {
-    //     return 'inRightWall'
-    //   }
-    // }
     //!!! Change name
-    shift(direction, amount=1) {
+    correctPlacement(direction, amount=1) {
       if (direction === 'right') {
         return this.homeIndex + amount
       } else if (direction === 'left') {
@@ -167,19 +165,19 @@ document.addEventListener('DOMContentLoaded', () => {
         !(this instanceof IBlock)
       ) {
         if (this.homeIndex % width === 0) {
-          newHomeIndex = this.shift('right')
+          newHomeIndex = this.correctPlacement('right')
         } else {
-          newHomeIndex = this.shift('left')
+          newHomeIndex = this.correctPlacement('left')
         }
       } else {
         if (newRotationIndex === 2 && this.homeIndex % width === 0) {
-          newHomeIndex = this.shift('right')
+          newHomeIndex = this.correctPlacement('right')
         } else if (newRotationIndex === 2) {
-          newHomeIndex = this.shift('left', 2)
+          newHomeIndex = this.correctPlacement('left', 2)
         } else if (newRotationIndex === 0 && this.homeIndex % width === width - 1) {
-          newHomeIndex = this.shift('right', 2)
+          newHomeIndex = this.correctPlacement('right', 2)
         } else {
-          newHomeIndex = this.shift('left')
+          newHomeIndex = this.correctPlacement('left')
         }
         indexesToOccupy = this.rotations[newRotationIndex].map(index => index + newHomeIndex)
       }
@@ -207,15 +205,13 @@ document.addEventListener('DOMContentLoaded', () => {
     rotate() {
 
       if (this.newPositionIfCanRotate()) {
-        // !!! If the below stays as it is you can have a function that just paints the block where ever it is and use it on this and move (and shift? If that still exists)
+        // !!! If the below stays as it is you can have a function that just paints the block where ever it is and use it on this and move (and correctPlacement? If that still exists)
         this.indexesOccupied.forEach(index => {
           if (index >= 0) boardSquares[index].classList.add('has-active-block', this.styleClass)
         })
       }
     }
   }
-
-
 
   // !!! swap minus widths with units so it goes X Y not Y X
 
@@ -326,22 +322,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const blockPrototypes = [TBlock, IBlock, JBlock, LBlock, SBlock, ZBlock, OBlock]
 
-  function generateBlock() {
-    const randomIndex = Math.floor(Math.random() * blockPrototypes.length)
-    return new blockPrototypes[4](5)
+  function shuffleBlocks() {
+    const blockSequence = blockPrototypes.slice(0)
+    let currentIndex = blockSequence.length
+    let temporaryValue
+    let randomIndex
+    // !!! While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+      // !!! Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex)
+      currentIndex -= 1
+      // !!! And swap it with the current element.
+      temporaryValue = blockSequence[currentIndex]
+      blockSequence[currentIndex] = blockSequence[randomIndex]
+      blockSequence[randomIndex] = temporaryValue
+    }
+    return blockSequence
   }
 
-  // function lockBlock() {
-  //   activeBlock.indexesOccupied.forEach(index => {
-  //     // !!! I don't think has active block is doing anything
-  //     boardSquares[index].classList.remove('has-active-block')
-  //     boardSquares[index].classList.add('locked', activeBlock.styleClass)
-  //   })
-  //   activeBlock = null
-  //   activeBlock = generateBlock(width / 2)
-  //   activeBlock.move()
-  // }
-  // !!! Should make delete from the the end of the grid rather than the begggining
+  function generateBlock() {
+    if (nextBlocks.length < 1) {
+      nextBlocks = shuffleBlocks()
+    }
+    const nextBlock = nextBlocks.shift()
+    return new nextBlock(width / 2)
+  }
+
   function checkForCompleteLines() {
     const linesToRemove = []
     const numberOfLines = boardSquares.length / width
@@ -364,15 +370,19 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   }
 
-  function deleteFullLines() {
+  function clearFullLines() {
     const linesToRemove = checkForCompleteLines()
     if (linesToRemove) {
       linesToRemove.forEach(line => {
         for (var i = 0; i < width; i++) {
           boardSquares[(line * width) + i].className = 'board-square'
         }
+        score += 10
+        scoreDisplay.textContent = score
+        linesCleared ++
       })
       dropLockedLines(linesToRemove)
+      activeBlock.move()
     }
   }
 
@@ -389,76 +399,63 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     ) {
       activeBlock.lockBlock()
-      deleteFullLines()
+      clearFullLines()
     } else {
       activeBlock.move('down')
     }
   }
 
-  // !!! ----------- Testing Junk -----------
-  activeBlock = generateBlock(width / 2)
-  dropInterval = setInterval(dropBlocks ,500)
+  function gameOver() {
+    activeBlock = null
+    clearInterval(dropInterval)
+    boardSquares.forEach(square => {
+      square.className = 'board-square'
+    })
+  }
 
+  function checkForGameOver() {
+    if(activeBlock.indexesOccupied.some(index => index < 0)) {
+      return true
+    }
+    return false
+  }
+
+  function startGame() {
+    activeBlock = generateBlock(width / 2)
+    // !!! This is only ness becuase you've chosen the starting co-ords for it's rotations unwisely. It's probably best to cylce them so that 2 is 0. This will require you to change the logic on the rotation blocking function. Be Warned
+    if(activeBlock instanceof IBlock) {
+      activeBlock.homeInext - width
+    }
+    dropInterval = setInterval(dropBlocks, 500)
+  }
+
+  function resetGame() {
+    gameOver()
+    score = 0
+    scoreDisplay.textContent = 0
+  }
+
+  start.addEventListener('click', startGame)
+  reset.addEventListener('click', resetGame)
   document.addEventListener('keydown', (e) => {
-    switch(e.keyCode) {
-      case 37:
-        activeBlock.move('left')
-        break
-      case 39:
-        activeBlock.move('right')
-        break
-      case 40:
-        // !!! Good argument to add this to the block itself? (or maybe take all the functions off the block?)
-        dropBlocks()
-        break
-      case 38:
-        activeBlock.rotate()
-        break
+    if(activeBlock) {
+      switch(e.keyCode) {
+        case 37:
+          activeBlock.move('left')
+          break
+        case 39:
+          activeBlock.move('right')
+          break
+        case 40:
+          // !!! Good argument to add this to the block itself? (or maybe take all the functions off the block?)
+          dropBlocks()
+          score ++
+          scoreDisplay.textContent = score
+          break
+        case 38:
+          activeBlock.rotate()
+          break
+      }
     }
   })
-
-
-  // const z = new ZBlock(14)
-  // const t = new TBlock(46)
-  // const l = new LBlock(74)
-  // const o = new OBlock(106)
-  // const i = new IBlock(134)
-  // const j = new JBlock(154)
-  // const s = new SBlock(174)
-
-  // addEventListener('keydown', (e) => {
-  //   if (e.keyCode === 37) {
-  //     z.move('left')
-  //     t.move('left')
-  //     l.move('left')
-  //     i.move('left')
-  //     o.move('left')
-  //     j.move('left')
-  //     s.move('left')
-  //   } else if (e.keyCode === 39) {
-  //     z.move('right')
-  //     t.move('right')
-  //     l.move('right')
-  //     i.move('right')
-  //     o.move('right')
-  //     j.move('right')
-  //     s.move('right')
-  //   } else if (e.keyCode === 40) {
-  //     z.move('down')
-  //     t.move('down')
-  //     l.move('down')
-  //     i.move('down')
-  //     o.move('down')
-  //     j.move('down')
-  //     s.move('down')
-  //   } else if (e.keyCode === 38) {
-  //     z.rotate()
-  //     t.rotate()
-  //     l.rotate()
-  //     i.rotate()
-  //     o.rotate()
-  //     j.rotate()
-  //     s.rotate()
-  //   }
-  // })
 })
