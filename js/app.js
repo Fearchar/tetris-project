@@ -5,7 +5,8 @@ let activeBlock = null
 let nextBlocks = []
 let score = 0
 let linesCleared = 0
-let level = 0
+let level = 1
+const levelsAtLines = [1, 5, 10, 15, 25, 35, 50, 70, 100]
 
 
 function buildBoard(boardSelector) {
@@ -19,7 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
   /// !!! Change buildBoard() so it doesn't have to go here
   buildBoard(board)
   const boardSquares = Array.from(document.querySelectorAll('.board-square'))
-  const scoreDisplay = document.querySelector('#score-counter')
+  const scoreDisplay = document.querySelector('#score-display')
+  const levelDisplay = document.querySelector('#level-display')
+  const nextLevelDisplay = document.querySelector('#next-level-display')
   const start = document.querySelector('#start')
   const reset = document.querySelector('#reset')
 
@@ -370,6 +373,13 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   }
 
+  function levelUp(currentLevel) {
+    clearInterval(dropInterval)
+    console.log(500 - (currentLevel * 60))
+    dropInterval = setInterval(dropBlocks, 500 - (currentLevel * 60))
+    return currentLevel + 1
+  }
+
   function clearFullLines() {
     const linesToRemove = checkForCompleteLines()
     if (linesToRemove) {
@@ -380,6 +390,11 @@ document.addEventListener('DOMContentLoaded', () => {
         score += 10
         scoreDisplay.textContent = score
         linesCleared ++
+        if (linesCleared === levelsAtLines[level] && level < 9) {
+          level = levelUp(level)
+          levelDisplay.textContent = level
+        }
+        nextLevelDisplay.textContent = levelsAtLines[level] - linesCleared || '∞'
       })
       dropLockedLines(linesToRemove)
       activeBlock.move()
