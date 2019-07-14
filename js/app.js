@@ -2,7 +2,7 @@ const width = 10
 const height = 20
 let dropInterval = null
 let activeBlock = null
-let nextBlocks = []
+let shuffledBlocks = []
 let score = 0
 let linesCleared = 0
 let level = 1
@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const levelDisplay = document.querySelector('#level-display')
   const linelsClearedDisplay = document.querySelector('#lines-cleared-display')
   const nextLevelDisplay = document.querySelector('#next-level-display')
+  const nextThreeDisplay = document.querySelector('#next-three-display')
   const start = document.querySelector('#start')
   const reset = document.querySelector('#reset')
 
@@ -331,12 +332,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentIndex = blockSequence.length
     let temporaryValue
     let randomIndex
-    // !!! While there remain elements to shuffle...
     while (0 !== currentIndex) {
-      // !!! Pick a remaining element...
       randomIndex = Math.floor(Math.random() * currentIndex)
       currentIndex -= 1
-      // !!! And swap it with the current element.
       temporaryValue = blockSequence[currentIndex]
       blockSequence[currentIndex] = blockSequence[randomIndex]
       blockSequence[randomIndex] = temporaryValue
@@ -345,11 +343,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function generateBlock() {
-    if (nextBlocks.length < 1) {
-      nextBlocks = shuffleBlocks()
+    if (shuffledBlocks.length <= 3) {
+      shuffledBlocks = shuffledBlocks.concat(shuffleBlocks())
     }
-    const nextBlock = nextBlocks.shift()
+    const nextBlock = shuffledBlocks.shift()
+    nextThreeDisplay.textContent =
+      `${shuffledBlocks[0].name},
+      ${shuffledBlocks[1].name},
+      ${shuffledBlocks[2].name}`
     return new nextBlock(width / 2)
+
   }
 
   function checkForCompleteLines() {
