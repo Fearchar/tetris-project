@@ -26,20 +26,19 @@ function clearBlocks(squares){
   })
 }
 
-function checkIfMovingIntoWall(direction, index) {
-  // !!! Change index name
-  if ((index + width) % width === width - 1 && direction === 'left') {
+function checkIfMovingIntoWall(direction, squareIndex) {
+  // !!! Change squareIndex name
+  if ((squareIndex + width) % width === width - 1 && direction === 'left') {
     return true
-  } else if (index % width === 0 && direction === 'right') {
+  } else if (squareIndex % width === 0 && direction === 'right') {
     return true
   }
   return false
 }
 
 //!! If classes get moved up to the top this may need to moved
-
-function calculateBlockIndexes(block, rotation, homeIndex) {
-  return block.rotations[rotation].map(index => index + homeIndex)
+function calculateBlockIndexes(block, rotationIndex, homeIndex) {
+  return block.rotations[rotationIndex].map(index => index + homeIndex)
 }
 
 
@@ -65,6 +64,24 @@ function updateHome(direction, block) {
   return newHomeIndex
 }
 
+function canBlockMove(boardSquares, direction, index) {
+  if (
+    (index >= 0 &&
+    boardSquares[index].classList.contains('locked')) ||
+    (checkIfMovingIntoWall(direction, index))
+  ) return true
+  else return false
+}
+
+function newHomeIfCanMove(boardSquares, block, direction) {
+  // !!! Also bring the logic that stops it from going through the bottom into here maybe?
+  const potentialHomeIndex = updateHome(direction, block)
+  const indexesToOccupy =  calculateBlockIndexes(block, block.rotationIndex, potentialHomeIndex)
+  return !indexesToOccupy.some(index => {
+    return canBlockMove(boardSquares, direction, index)
+  }) ? potentialHomeIndex : false
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const board = document.querySelector('#board')
   const boardSquares = buildBoard(board)
@@ -85,33 +102,19 @@ document.addEventListener('DOMContentLoaded', () => {
       this.rotations = possibleRotations
     }
     get indexesOccupied() {
-      return this.rotations[this.rotationIndex].map(index => index + this.homeIndex)
-    }
-    newHomeIfCanMove(direction) {
-      // !!! Also bring the logic that stops it from going through the bottom into here maybe?
-      const potentialHomeIndex = updateHome(direction, this)
-      const indexesToOccupy = this.rotations[this.rotationIndex].map(index => index + potentialHomeIndex)
-      return !indexesToOccupy.some(index => {
-        if (
-          (index >= 0 &&
-          boardSquares[index].classList.contains('locked')) ||
-          (checkIfMovingIntoWall(direction, index))
-        ) return true
-      }) ? potentialHomeIndex : false
+      return calculateBlockIndexes(this, this.rotationIndex, this.homeIndex)
     }
     move(direction) {
-      const newHomeIndex = this.newHomeIfCanMove(direction)
+      const newHomeIndex = newHomeIfCanMove(boardSquares, this, direction)
       if (newHomeIndex) {
         clearBlocks(boardSquares)
         this.homeIndex = newHomeIndex
-        /// !!! Consider changeing position name
         this.indexesOccupied.forEach(index => {
           if (index >= 0) {
             boardSquares[index].classList.add('has-active-block', this.styleClass)
           }
         })
       }
-
     }
     // !!! Update and move are doing awfully similar things. Intergrate somehow?
     // !!! everything relating to the checks for movement and walls are super dodgey. Firstly they need to happen repeatedly. Secondly they won't work for anything other than walls (so not the blocks at the bottom), thirdly I've added this really dodgey  boolean to move to ignore the checkIfMovingIntoWall. I need a major restructure / rethink
