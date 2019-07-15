@@ -216,24 +216,64 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
     projectDrop() {
-      // !!! Change blah name
-      const blah = this.indexesOccupied.reduce((aboveHighestLocked, current) => {
-        const lowestSquareIndex = ((height - 1) * width) + (current % width)
-        for (let i = height - 1; i >= 0; i--) {
-          const indexToCheck = (i * width) + (current % width)
-          const squareToCheck = boardSquares[indexToCheck]
-          if (squareToCheck.classList.contains('locked') && indexToCheck < aboveHighestLocked) {
-            return indexToCheck
-          } else if (lowestSquareIndex < aboveHighestLocked) {
-            return lowestSquareIndex
+      // !! Change placeholder name
+      const placeHolder = this.indexesOccupied.map(occupiedIndex => {
+        const columnOffset = ((occupiedIndex + width) % width)
+        for (let i = 0; i < height - 1; i ++) {
+          const currentLine = i *  width
+          const currentSquareIndex = currentLine + columnOffset
+          if (boardSquares[currentSquareIndex].classList.contains('locked')) {
+            return currentSquareIndex - width
           }
-
         }
-      }, (height * width) - 1)
-      blah.classList.add('project')
-      const lineToProjectOn = Math.floor(blah / width)
-
+        const lowestSquareIndex = ((height -1) * width) + columnOffset
+        return lowestSquareIndex
+      })
+      const highestLine = placeHolder.reduce((line, current) => {
+        const currentLine = Math.floor((current / width))
+        return currentLine < line ? currentLine : line
+      }, height - 1)
+      const projectionHomeIndex = (this.homeIndex % width) + (width * (highestLine))
+      const indexesToOccupy = this.rotations[this.rotationIndex].map(index => index + projectionHomeIndex)
+      boardSquares.forEach(square => square.classList.remove('project'))
+      indexesToOccupy.forEach(index => {
+        boardSquares[index].classList.add('project')
+      })
+      // const indexOfHighest = placeHolder.reduce((highestIndex, current, i) => {
+      //   return current < placeHolder[highestIndex] ? i : highestIndex
+      // }, 0)
+      // const projectionHomeIndex = this.homeIndex + this.rotations[this.rotationIndex][indexOfHighest]
+      // boardSquares[projectionHomeIndex].classList.add('o-sqare')
+      // placeHolder.forEach(p => {
+      //   boardSquares[p].classList.add('project')
+      // })
     }
+    // projectDrop() {
+    //   // !!! Need to move this into move and or rotate inorder make project move more responsively with the block
+    //   boardSquares.forEach(square => {
+    //     square.classList.remove('project')
+    //   })
+    //   // !!! Change blah name
+    //   const blah = this.indexesOccupied.reduce((aboveHighestLocked, current) => {
+    //     const lowestSquareIndex = ((height - 1) * width) + (current % width)
+    //     let store = aboveHighestLocked
+    //     for (let i = height - 1; i >= 0; i--) {
+    //       const indexToCheck = (i * width) + (current % width)
+    //       const squareToCheck = boardSquares[indexToCheck]
+    //       if (squareToCheck.classList.contains('locked') && indexToCheck < aboveHighestLocked) {
+    //         store = indexToCheck
+    //       } else if (lowestSquareIndex < aboveHighestLocked) {
+    //         store = lowestSquareIndex
+    //       } else {
+    //         store = aboveHighestLocked
+    //       }
+    //     }
+    //     return store
+    //   }, (height * width) - 1)
+    //   boardSquares[blah].classList.add('project')
+    //   const lineToProjectOn = Math.floor(blah / width)
+    //
+    // }
   }
 
   // !!! swap minus widths with units so it goes X Y not Y X
@@ -449,8 +489,6 @@ document.addEventListener('DOMContentLoaded', () => {
     boardSquares.forEach(square => {
       square.className = 'board-square'
     })
-    score = 0
-    scoreDisplay.textContent = score
     level = 1
     levelDisplay.textContent = level
     linesCleared = 0
@@ -473,14 +511,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if(activeBlock instanceof IBlock) {
         activeBlock.homeInext - width
       }
+      score = 0
+      scoreDisplay.textContent = 0
       dropInterval = setInterval(dropBlocks, 500)
     }
   }
 
   function resetGame() {
     gameOver()
-    score = 0
-    scoreDisplay.textContent = 0
   }
 
   start.addEventListener('click', startGame)
