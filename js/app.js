@@ -145,7 +145,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // !!! Change name
     // So much refactoring needed
     newPositionIfCanRotate() {
-      let canRotate
       const newRotationIndex = (this.rotationIndex + 1) % 4
       let indexesToOccupy = this.rotations[newRotationIndex].map(index => index + this.homeIndex)
       let newHomeIndex = this.homeIndex
