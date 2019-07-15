@@ -8,18 +8,66 @@ let linesCleared = 0
 let level = 1
 const levelsAtLines = [1, 5, 10, 15, 25, 35, 50, 70, 100]
 
-
 function buildBoard(boardSelector) {
+  const boardSquares = []
   for (var i = 0; i < width * height; i++) {
-    boardSelector.innerHTML += `<div class="board-square">${i}</div>`
+    const square = document.createElement('div')
+    square.className = 'board-square'
+    square.textContent = i
+    boardSelector.appendChild(square)
+    boardSquares.push(square)
   }
+  return boardSquares
+}
+
+function clearBlocks(squares){
+  squares.forEach(square => {
+    if (square.classList.contains('has-active-block')) square.className = 'board-square'
+  })
+}
+
+function checkIfMovingIntoWall(direction, index) {
+  // !!! Change index name
+  if ((index + width) % width === width - 1 && direction === 'left') {
+    return true
+  } else if (index % width === 0 && direction === 'right') {
+    return true
+  }
+  return false
+}
+
+//!! If classes get moved up to the top this may need to moved
+
+function calculateBlockIndexes(block, rotation, homeIndex) {
+  return block.rotations[rotation].map(index => index + homeIndex)
+}
+
+
+// !!! Change updateHome name to something to do with moving
+function updateHome(direction, block) {
+  let newHomeIndex = block.homeIndex
+  switch(direction) {
+    case 'left':
+      newHomeIndex -= 1
+      break
+    case 'right':
+      newHomeIndex += 1
+      break
+    case 'up':
+      newHomeIndex -= width
+      break
+    case 'down':
+      newHomeIndex += width
+      break
+    default:
+      newHomeIndex
+  }
+  return newHomeIndex
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   const board = document.querySelector('#board')
-  /// !!! Change buildBoard() so it doesn't have to go here
-  buildBoard(board)
-  const boardSquares = Array.from(document.querySelectorAll('.board-square'))
+  const boardSquares = buildBoard(board)
   const scoreDisplay = document.querySelector('#score-display')
   const levelDisplay = document.querySelector('#level-display')
   const linelsClearedDisplay = document.querySelector('#lines-cleared-display')
@@ -36,96 +84,25 @@ document.addEventListener('DOMContentLoaded', () => {
       this.rotationIndex = 0
       this.rotations = possibleRotations
     }
-    // !!! Consider name change
-    // !!! Should include calculation of where the bits are
     get indexesOccupied() {
       return this.rotations[this.rotationIndex].map(index => index + this.homeIndex)
     }
-    // clearBlock() {
-    //   // !!! Change index name
-    //   this.indexesOccupied.forEach(index => {
-    //     // !!! Consider making next line pure re boardSquares
-    //     // !!! The next line is VERY similar to something in move. Bring it out of both?
-    //     if (index >= 0) boardSquares[index].classList.remove('has-active-block', this.styleClass)
-    //   })
-    // }
-    clearBlock(){
-      boardSquares.forEach(square => {
-        if (square.classList.contains('has-active-block')) square.classList.remove('has-active-block', this.styleClass)
-      })
-    }
-    // !!! Change updateHome name to something to do with moving
-    updateHome(direction) {
-      let newHomeIndex = this.homeIndex
-      switch(direction) {
-        case 'left':
-          newHomeIndex -= 1
-          break
-        case 'right':
-          newHomeIndex += 1
-          break
-        case 'up':
-          newHomeIndex -= width
-          break
-        case 'down':
-          newHomeIndex += width
-          break
-        default:
-          newHomeIndex
-      }
-      return newHomeIndex
-    }
-    /// !!! How similar is this to checkIfInWall and vice versa ???
-    checkIfMovingIntoWall(direction, index) {
-      // !!! Change index name
-      if ((index + width) % width === width - 1 && direction === 'left') {
-        return true
-      } else if (index % width === 0 && direction === 'right') {
-        return true
-      }
-      return false
-    }
-    // } else if (boardSquares[index].classList.contains('locked')) {
-    //   returnObject.value = false, returnObject.describer = 'lockedBlock'
-    //   break
-    // }
-    // }
     newHomeIfCanMove(direction) {
-      // !!! With the if(!this.checkIfMovingIntoWall) we're unnecissairly running the same loop twice. Reduce checkIfMovingIntoWall to just conditional and move down into some
       // !!! Also bring the logic that stops it from going through the bottom into here maybe?
-      const potentialHomeIndex = this.updateHome(direction)
+      const potentialHomeIndex = updateHome(direction, this)
       const indexesToOccupy = this.rotations[this.rotationIndex].map(index => index + potentialHomeIndex)
       return !indexesToOccupy.some(index => {
         if (
           (index >= 0 &&
           boardSquares[index].classList.contains('locked')) ||
-          (this.checkIfMovingIntoWall(direction, index))
+          (checkIfMovingIntoWall(direction, index))
         ) return true
       }) ? potentialHomeIndex : false
-    }
-    lockBlock() {
-      if(checkForGameOver()) {
-        gameOver()
-      } else {
-        this.indexesOccupied.forEach(index => {
-          // !!! I don't think has active block is doing anything
-          boardSquares[index].classList.remove('has-active-block')
-          boardSquares[index].classList.add('locked', this.styleClass)
-          boardSquares[index].setAttribute('data-style-class', this.styleClass)
-        })
-        // !!! The need to use active block here is possibly another argument to bring these functions out fo the blocks
-        activeBlock = generateBlock(width / 2)
-        // !!! This is only ness becuase you've chosen the starting co-ords for it's rotations unwisely. It's probably best to cylce them so that 2 is 0. This will require you to change the logic on the rotation blocking function. Be Warned
-        if(activeBlock instanceof IBlock) {
-          activeBlock.homeInext - width
-        }
-        activeBlock.move()
-      }
     }
     move(direction) {
       const newHomeIndex = this.newHomeIfCanMove(direction)
       if (newHomeIndex) {
-        this.clearBlock()
+        clearBlocks(boardSquares)
         this.homeIndex = newHomeIndex
         /// !!! Consider changeing position name
         this.indexesOccupied.forEach(index => {
@@ -202,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       this.homeIndex = newHomeIndex
       this.move()
-      this.clearBlock()
+      clearBlocks(boardSquares)
       this.rotationIndex = newRotationIndex
       return true
     }
@@ -381,8 +358,6 @@ document.addEventListener('DOMContentLoaded', () => {
       ${shuffledBlocks[1].name},
       ${shuffledBlocks[2].name}`
     return new nextBlock(width / 2)
-    // return new ZBlock(width / 2)
-
   }
 
   function checkForCompleteLines() {
@@ -436,6 +411,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function lockBlock(block) {
+    if(checkForGameOver()) {
+      gameOver()
+    } else {
+      block.indexesOccupied.forEach(index => {
+        boardSquares[index].classList.remove('has-active-block')
+        boardSquares[index].classList.add('locked', this.styleClass)
+        boardSquares[index].setAttribute('data-style-class', this.styleClass)
+      })
+      // !!! The need to use active block here is possibly another argument to bring these functions out fo the blocks
+      activeBlock = generateBlock(width / 2)
+      // !!! This is only ness becuase you've chosen the starting co-ords for it's rotations unwisely. It's probably best to cylce them so that 2 is 0. This will require you to change the logic on the rotation blocking function. Be Warned
+      if(activeBlock instanceof IBlock) {
+        activeBlock.homeInext - width
+      }
+      activeBlock.move()
+    }
+  }
+
   function dropBlocks() {
     if (
       activeBlock
@@ -448,7 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return true
         })
     ) {
-      activeBlock.lockBlock()
+      lockBlock(activeBlock)
       clearFullLines()
     } else {
       activeBlock.move('down')
