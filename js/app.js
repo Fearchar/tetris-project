@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         })
       }
-      this.projectDrop()
+
     }
     // !!! Update and move are doing awfully similar things. Intergrate somehow?
     // !!! everything relating to the checks for movement and walls are super dodgey. Firstly they need to happen repeatedly. Secondly they won't work for anything other than walls (so not the blocks at the bottom), thirdly I've added this really dodgey  boolean to move to ignore the checkIfMovingIntoWall. I need a major restructure / rethink
@@ -215,66 +215,35 @@ document.addEventListener('DOMContentLoaded', () => {
         })
       }
     }
-    projectDrop() {
-      // !! Change placeholder name
-      const placeHolder = this.indexesOccupied.map(occupiedIndex => {
-        const columnOffset = ((occupiedIndex + width) % width)
-        for (let i = 0; i <= height - 1; i ++) {
-          const currentLine = i *  width
-          const currentSquareIndex = currentLine + columnOffset
-          if (boardSquares[currentSquareIndex].classList.contains('locked')) {
-            return currentSquareIndex - width
-          }
-        }
-        const lowestSquareIndex = ((height -1) * width) + columnOffset
-        return lowestSquareIndex
-      })
-      const highestLine = placeHolder.reduce((line, current) => {
-        const currentLine = Math.floor((current / width))
-        return currentLine <= line ? currentLine : line
-      }, height - 1)
-      const indexOfHighest = placeHolder.reduce((highestIndex, current, i) => {
-        return Math.floor(current / width) > Math.floor(placeHolder[highestIndex] / width) ? highestIndex : i
-      }, 0)
-      const a = +(this.rotations[this.rotationIndex][indexOfHighest] / width).toFixed(0)
-      const homeOffset = this.homeIndex % width
-      const projectionHomeIndex = homeOffset + (width * (highestLine - a))
-      const indexesToOccupy = this.rotations[this.rotationIndex].map(index => index + projectionHomeIndex)
-      boardSquares.forEach(square => square.classList.remove('project'))
-      indexesToOccupy.forEach(index => {
-        boardSquares[index].classList.add('project')
-      })
-      // const projectionHomeIndex = this.homeIndex + this.rotations[this.rotationIndex][indexOfHighest]
-      // boardSquares[projectionHomeIndex].classList.add('o-sqare')
-      // placeHolder.forEach(p => {
-      //   boardSquares[p].classList.add('project')
-      // })
-    }
     // projectDrop() {
-    //   // !!! Need to move this into move and or rotate inorder make project move more responsively with the block
-    //   boardSquares.forEach(square => {
-    //     square.classList.remove('project')
-    //   })
-    //   // !!! Change blah name
-    //   const blah = this.indexesOccupied.reduce((aboveHighestLocked, current) => {
-    //     const lowestSquareIndex = ((height - 1) * width) + (current % width)
-    //     let store = aboveHighestLocked
-    //     for (let i = height - 1; i >= 0; i--) {
-    //       const indexToCheck = (i * width) + (current % width)
-    //       const squareToCheck = boardSquares[indexToCheck]
-    //       if (squareToCheck.classList.contains('locked') && indexToCheck < aboveHighestLocked) {
-    //         store = indexToCheck
-    //       } else if (lowestSquareIndex < aboveHighestLocked) {
-    //         store = lowestSquareIndex
-    //       } else {
-    //         store = aboveHighestLocked
+    //   // !! Change placeholder name
+    //   const placeHolder = this.indexesOccupied.map(occupiedIndex => {
+    //     const columnOffset = ((occupiedIndex + width) % width)
+    //     for (let i = 0; i <= height - 1; i ++) {
+    //       const currentLine = i *  width
+    //       const currentSquareIndex = currentLine + columnOffset
+    //       if (boardSquares[currentSquareIndex].classList.contains('locked')) {
+    //         return currentSquareIndex - width
     //       }
     //     }
-    //     return store
-    //   }, (height * width) - 1)
-    //   boardSquares[blah].classList.add('project')
-    //   const lineToProjectOn = Math.floor(blah / width)
-    //
+    //     const lowestSquareIndex = ((height -1) * width) + columnOffset
+    //     return lowestSquareIndex
+    //   })
+    //   const highestLine = placeHolder.reduce((line, current) => {
+    //     const currentLine = Math.floor((current / width))
+    //     return currentLine <= line ? currentLine : line
+    //   }, height - 1)
+    //   const indexOfHighest = placeHolder.reduce((highestIndex, current, i) => {
+    //     return Math.floor(current / width) <= Math.floor(placeHolder[highestIndex] / width) ? i : highestIndex
+    //   }, 0)
+    //   const a = +(this.rotations[this.rotationIndex][indexOfHighest] / width).toFixed(0)
+    //   const homeOffset = this.homeIndex % width
+    //   const projectionHomeIndex = homeOffset + (width * (highestLine - a))
+    //   const indexesToOccupy = this.rotations[this.rotationIndex].map(index => index + projectionHomeIndex)
+    //   boardSquares.forEach(square => square.classList.remove('project'))
+    //   indexesToOccupy.forEach(index => {
+    //     boardSquares[index].classList.add('project')
+    //   })
     // }
   }
 
