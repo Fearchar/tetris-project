@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // !! Change placeholder name
       const placeHolder = this.indexesOccupied.map(occupiedIndex => {
         const columnOffset = ((occupiedIndex + width) % width)
-        for (let i = 0; i < height - 1; i ++) {
+        for (let i = 0; i <= height - 1; i ++) {
           const currentLine = i *  width
           const currentSquareIndex = currentLine + columnOffset
           if (boardSquares[currentSquareIndex].classList.contains('locked')) {
@@ -231,17 +231,19 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       const highestLine = placeHolder.reduce((line, current) => {
         const currentLine = Math.floor((current / width))
-        return currentLine < line ? currentLine : line
+        return currentLine <= line ? currentLine : line
       }, height - 1)
-      const projectionHomeIndex = (this.homeIndex % width) + (width * (highestLine))
+      const indexOfHighest = placeHolder.reduce((highestIndex, current, i) => {
+        return Math.floor(current / width) > Math.floor(placeHolder[highestIndex] / width) ? highestIndex : i
+      }, 0)
+      const a = +(this.rotations[this.rotationIndex][indexOfHighest] / width).toFixed(0)
+      const homeOffset = this.homeIndex % width
+      const projectionHomeIndex = homeOffset + (width * (highestLine - a))
       const indexesToOccupy = this.rotations[this.rotationIndex].map(index => index + projectionHomeIndex)
       boardSquares.forEach(square => square.classList.remove('project'))
       indexesToOccupy.forEach(index => {
         boardSquares[index].classList.add('project')
       })
-      // const indexOfHighest = placeHolder.reduce((highestIndex, current, i) => {
-      //   return current < placeHolder[highestIndex] ? i : highestIndex
-      // }, 0)
       // const projectionHomeIndex = this.homeIndex + this.rotations[this.rotationIndex][indexOfHighest]
       // boardSquares[projectionHomeIndex].classList.add('o-sqare')
       // placeHolder.forEach(p => {
@@ -410,6 +412,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ${shuffledBlocks[1].name},
       ${shuffledBlocks[2].name}`
     return new nextBlock(width / 2)
+    // return new ZBlock(width / 2)
 
   }
 
