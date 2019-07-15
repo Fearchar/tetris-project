@@ -41,7 +41,6 @@ function calculateBlockIndexes(block, rotationIndex, homeIndex) {
   return block.rotations[rotationIndex].map(index => index + homeIndex)
 }
 
-
 // !!! Change updateHome name to something to do with moving
 function updateHome(direction, block) {
   let newHomeIndex = block.homeIndex
@@ -73,6 +72,30 @@ function canBlockMove(boardSquares, direction, index) {
   else return false
 }
 
+function move(boardSquares, block, direction) {
+  const newHomeIndex = newHomeIfCanMove(boardSquares, block, direction)
+  if (newHomeIndex) {
+    clearBlocks(boardSquares)
+    block.homeIndex = newHomeIndex
+    block.indexesOccupied.forEach(index => {
+      if (index >= 0) {
+        boardSquares[index].classList.add('has-active-block', block.styleClass)
+      }
+    })
+  }
+}
+
+// !!! Update and move are doing awfully similar things. Intergrate somehow?
+// !!! everything relating to the checks for movement and walls are super dodgey. Firstly they need to happen repeatedly. Secondly they won't work for anything other than walls (so not the blocks at the bottom), thirdly I've added this really dodgey  boolean to move to ignore the checkIfMovingIntoWall. I need a major restructure / rethink
+//!!! Change name
+function correctPlacement(block, direction, amount=1) {
+  if (direction === 'right') {
+    return block.homeIndex + amount
+  } else if (direction === 'left') {
+    return block.homeIndex - amount
+  }
+}
+
 function newHomeIfCanMove(boardSquares, block, direction) {
   // !!! Also bring the logic that stops it from going through the bottom into here maybe?
   const potentialHomeIndex = updateHome(direction, block)
@@ -80,6 +103,20 @@ function newHomeIfCanMove(boardSquares, block, direction) {
   return !indexesToOccupy.some(index => {
     return canBlockMove(boardSquares, direction, index)
   }) ? potentialHomeIndex : false
+}
+
+function rotatingIntoWall(indexesToOccupy) {
+  let atLeftWall
+  let atRightWall
+  // ### Checking if in wall
+  for (const squareIndex of indexesToOccupy) {
+    if (squareIndex % width === 0) {
+      atLeftWall = squareIndex
+    } else if (squareIndex % width === width - 1) {
+      atRightWall = squareIndex
+    }
+  }
+  return !atLeftWall || !atRightWall
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -104,28 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
     get indexesOccupied() {
       return calculateBlockIndexes(this, this.rotationIndex, this.homeIndex)
     }
-    move(direction) {
-      const newHomeIndex = newHomeIfCanMove(boardSquares, this, direction)
-      if (newHomeIndex) {
-        clearBlocks(boardSquares)
-        this.homeIndex = newHomeIndex
-        this.indexesOccupied.forEach(index => {
-          if (index >= 0) {
-            boardSquares[index].classList.add('has-active-block', this.styleClass)
-          }
-        })
-      }
-    }
-    // !!! Update and move are doing awfully similar things. Intergrate somehow?
-    // !!! everything relating to the checks for movement and walls are super dodgey. Firstly they need to happen repeatedly. Secondly they won't work for anything other than walls (so not the blocks at the bottom), thirdly I've added this really dodgey  boolean to move to ignore the checkIfMovingIntoWall. I need a major restructure / rethink
-    //!!! Change name
-    correctPlacement(direction, amount=1) {
-      if (direction === 'right') {
-        return this.homeIndex + amount
-      } else if (direction === 'left') {
-        return this.homeIndex - amount
-      }
-    }
+
     // !!! Change name
     // So much refactoring needed
     newPositionIfCanRotate() {
@@ -133,39 +149,25 @@ document.addEventListener('DOMContentLoaded', () => {
       const newRotationIndex = (this.rotationIndex + 1) % 4
       let indexesToOccupy = this.rotations[newRotationIndex].map(index => index + this.homeIndex)
       let newHomeIndex = this.homeIndex
-      let atLeftWall
-      let atRightWall
-      // ### Checking if in wall
-      for (const index of indexesToOccupy) {
-        if (index % width === 0) {
-          atLeftWall = index
-        } else if (index % width === width - 1) {
-          atRightWall = index
-        }
-      }
-      if (!atLeftWall || !atRightWall) {
-        /// !!! Doing nothing, but the condtition is important. Figure out how to safely remove this
-        canRotate = true
-        // ### Responding if in wall
-      } else if (
-        !(this instanceof IBlock)
-      ) {
-        if (this.homeIndex % width === 0) {
-          newHomeIndex = this.correctPlacement('right')
+      if (!rotatingIntoWall(indexesToOccupy)) {
+        if (!(this instanceof IBlock)) {
+          if (this.homeIndex % width === 0) {
+            newHomeIndex = correctPlacement(this, 'right')
+          } else {
+            newHomeIndex = correctPlacement(this, 'left')
+          }
         } else {
-          newHomeIndex = this.correctPlacement('left')
+          if (newRotationIndex === 2 && this.homeIndex % width === 0) {
+            newHomeIndex = correctPlacement(this, 'right')
+          } else if (newRotationIndex === 2) {
+            newHomeIndex = correctPlacement(this, 'left', 2)
+          } else if (newRotationIndex === 0 && this.homeIndex % width === width - 1) {
+            newHomeIndex = correctPlacement(this, 'right', 2)
+          } else {
+            newHomeIndex = correctPlacement(this, 'left')
+          }
+          indexesToOccupy = this.rotations[newRotationIndex].map(index => index + newHomeIndex)
         }
-      } else {
-        if (newRotationIndex === 2 && this.homeIndex % width === 0) {
-          newHomeIndex = this.correctPlacement('right')
-        } else if (newRotationIndex === 2) {
-          newHomeIndex = this.correctPlacement('left', 2)
-        } else if (newRotationIndex === 0 && this.homeIndex % width === width - 1) {
-          newHomeIndex = this.correctPlacement('right', 2)
-        } else {
-          newHomeIndex = this.correctPlacement('left')
-        }
-        indexesToOccupy = this.rotations[newRotationIndex].map(index => index + newHomeIndex)
       }
       // ### Checking if rotating into locked block
       for (const index of indexesToOccupy) {
@@ -181,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
       this.homeIndex = newHomeIndex
-      this.move()
+      move(boardSquares, this)
       clearBlocks(boardSquares)
       this.rotationIndex = newRotationIndex
       return true
@@ -410,7 +412,7 @@ document.addEventListener('DOMContentLoaded', () => {
         nextLevelDisplay.textContent = levelsAtLines[level] - linesCleared || '∞'
       })
       dropLockedLines(linesToRemove)
-      activeBlock.move()
+      move(boardSquares, activeBlock)
     }
   }
 
@@ -429,7 +431,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if(activeBlock instanceof IBlock) {
         activeBlock.homeInext - width
       }
-      activeBlock.move()
+      move(boardSquares, activeBlock)
     }
   }
 
@@ -448,7 +450,7 @@ document.addEventListener('DOMContentLoaded', () => {
       lockBlock(activeBlock)
       clearFullLines()
     } else {
-      activeBlock.move('down')
+      move(boardSquares, activeBlock, 'down')
     }
   }
 
@@ -496,10 +498,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if(activeBlock) {
       switch(e.keyCode) {
         case 37:
-          activeBlock.move('left')
+          move(boardSquares, activeBlock, 'left')
           break
         case 39:
-          activeBlock.move('right')
+          move(boardSquares, activeBlock, 'right')
           break
         case 40:
           // !!! Good argument to add this to the block itself? (or maybe take all the functions off the block?)
