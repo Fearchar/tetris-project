@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // So much refactoring needed
     newPositionIfCanRotate() {
       const newRotationIndex = (this.rotationIndex + 1) % 4
-      let indexesToOccupy = this.rotations[newRotationIndex].map(index => index + this.homeIndex)
+      let indexesToOccupy = calculateBlockIndexes(this, newRotationIndex, this.homeIndex)
       let newHomeIndex = this.homeIndex
       if (!rotatingIntoWall(indexesToOccupy)) {
         if (!(this instanceof IBlock)) {
@@ -459,12 +459,6 @@ document.addEventListener('DOMContentLoaded', () => {
     boardSquares.forEach(square => {
       square.className = 'board-square'
     })
-    level = 1
-    levelDisplay.textContent = level
-    linesCleared = 0
-    linelsClearedDisplay.textContent = linesCleared
-    nextLevelDisplay.textContent = 5
-    score
   }
 
   function checkForGameOver() {
@@ -484,6 +478,11 @@ document.addEventListener('DOMContentLoaded', () => {
       score = 0
       scoreDisplay.textContent = 0
       dropInterval = setInterval(dropBlocks, 500)
+      level = 1
+      levelDisplay.textContent = level
+      linesCleared = 0
+      linelsClearedDisplay.textContent = linesCleared
+      nextLevelDisplay.textContent = 5
     }
   }
 
