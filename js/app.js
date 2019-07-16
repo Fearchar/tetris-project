@@ -124,6 +124,7 @@ function rotatingIntoWall(indexesToOccupy) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // !!! Reorganise dom consts by order on the page
   const board = document.querySelector('#board')
   const boardSquares = buildBoard(board)
   const scoreDisplay = document.querySelector('#score-display')
@@ -137,6 +138,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const gameOverScoreDisplay = document.querySelector('#game-over-score-display')
   const gameOverLevelDisplay = document.querySelector('#game-over-level-display')
   const gameOverLinesClearedDisplay = document.querySelector('#game-over-lines-cleared-display')
+  // !!! change name once these are being built automatically
+  const queuedBlocks = [document.querySelectorAll('.queued-block:nth-child(1) div'), document.querySelectorAll('.queued-block:nth-child(2) div'), document.querySelectorAll('.queued-block:nth-child(3) div')]
+
 
   // !!! Consider adding boardSquares to the parameters for the block class so that it can increase in purity and move up out of the dom to it's rightful place near the top of the code.
   class Block {
@@ -253,14 +257,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // !!! swap minus widths with units so it goes X Y not Y X
 
   class IBlock extends Block {
-    constructor(homeIndex) {
+    constructor(homeIndex, boardWidth=width) {
       super(
         homeIndex,
         [
           [-1, 0, +1, +2],
-          [-width*2, -width, 0, +width],
-          [-width-1, -width, -width+1, -width+2],
-          [-width*2+1, -width+1, +1, +width+1]
+          [-boardWidth*2, -boardWidth, 0, +boardWidth],
+          [-boardWidth-1, -boardWidth, -boardWidth+1, -boardWidth+2],
+          [-boardWidth*2+1, -boardWidth+1, +1, +boardWidth+1]
         ]
       )
       this.styleClass = 'i-square'
@@ -269,14 +273,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   class JBlock extends Block {
-    constructor(homeIndex) {
+    constructor(homeIndex, boardWidth=width) {
       super(
         homeIndex,
         [
-          [-width-1, -1, 0, +1],
-          [-width, -width+1, 0, +width],
-          [-1, 0, +1, +width+1],
-          [-width, 0, +width-1, +width]
+          [-boardWidth-1, -1, 0, +1],
+          [-boardWidth, -boardWidth+1, 0, +boardWidth],
+          [-1, 0, +1, +boardWidth+1],
+          [-boardWidth, 0, +boardWidth-1, +boardWidth]
         ]
       )
       this.styleClass = 'j-square'
@@ -285,14 +289,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   class LBlock extends Block {
-    constructor(homeIndex) {
+    constructor(homeIndex, boardWidth=width) {
       super(
         homeIndex,
         [
-          [-width+1, -1, 0, +1],
-          [-width, 0, +width, +width+1],
-          [-1, 0, +1, +width-1],
-          [-width-1, -width, 0, width]
+          [-boardWidth+1, -1, 0, +1],
+          [-boardWidth, 0, +boardWidth, +boardWidth+1],
+          [-1, 0, +1, +boardWidth-1],
+          [-boardWidth-1, -boardWidth, 0, boardWidth]
         ]
       )
       this.styleClass = 'l-square'
@@ -301,11 +305,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   class OBlock extends Block {
-    constructor(homeIndex) {
+    constructor(homeIndex, boardWidth=width) {
       super(
         homeIndex,
         [
-          [-width-1, -width, -1, 0]
+          [-boardWidth-1, -boardWidth, -1, 0]
         ]
       )
       this.styleClass = 'o-square'
@@ -317,14 +321,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   class SBlock extends Block {
-    constructor(homeIndex) {
+    constructor(homeIndex, boardWidth=width) {
       super(
         homeIndex,
         [
-          [-width, -width+1, -1, 0],
-          [-width, 0, +1, +width+1],
-          [0, +1, +width-1, +width],
-          [-width-1, -1, 0, +width]
+          [-boardWidth, -boardWidth+1, -1, 0],
+          [-boardWidth, 0, +1, +boardWidth+1],
+          [0, +1, +boardWidth-1, +boardWidth],
+          [-boardWidth-1, -1, 0, +boardWidth]
         ]
       )
       this.styleClass = 's-square'
@@ -333,14 +337,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   class TBlock extends Block {
-    constructor(homeIndex) {
+    constructor(homeIndex, boardWidth=width) {
       super(
         homeIndex,
         [
-          [-width, -1, 0, +1],
-          [-width, 0, +1, +width],
-          [-1, 0, +1, +width],
-          [-width, -1, 0, +width]
+          [-boardWidth, -1, 0, +1],
+          [-boardWidth, 0, +1, +boardWidth],
+          [-1, 0, +1, +boardWidth],
+          [-boardWidth, -1, 0, +boardWidth]
         ]
       )
       this.styleClass = 't-square'
@@ -349,14 +353,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   class ZBlock extends Block {
-    constructor(homeIndex) {
+    constructor(homeIndex, boardWidth=width) {
       super(
         homeIndex,
         [
-          [-width-1, -width, 0, +1],
-          [-width+1, 0, +1, +width],
-          [-1, 0, +width, +width+1],
-          [-width, -1, 0, +width-1]
+          [-boardWidth-1, -boardWidth, 0, +1],
+          [-boardWidth+1, 0, +1, +boardWidth],
+          [-1, 0, +boardWidth, +boardWidth+1],
+          [-boardWidth, -1, 0, +boardWidth-1]
         ]
       )
       this.styleClass = 'z-square'
@@ -381,11 +385,27 @@ document.addEventListener('DOMContentLoaded', () => {
     return blockSequence
   }
 
+  // !!! Change name
+  function queueBlocks() {
+    // !! change board pram name?
+    queuedBlocks.forEach((board, i) => {
+      board.forEach(square => {
+        square.className = 'next-display-square'
+      })
+      const block = new shuffledBlocks[i](5, 4)
+      block.indexesOccupied.forEach(index => {
+        board[index].classList.add(block.styleClass)
+      })
+    })
+    console.log((new blockPrototypes[0]).rotations[0])
+  }
+
   function generateBlock() {
     if (shuffledBlocks.length <= 3) {
       shuffledBlocks = shuffledBlocks.concat(shuffleBlocks())
     }
     const nextBlock = shuffledBlocks.shift()
+    queueBlocks()
     // !!! nextThreeDisplay.textContent =
     //   `${shuffledBlocks[0].name},
     //   ${shuffledBlocks[1].name},

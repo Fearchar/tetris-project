@@ -35,71 +35,20 @@ body {
             height: $squareWidth;
             border: 2px solid grey;
             color: grey;
-
-            &.i-projection {
-              background-color: pink;
-            }
-
-            &.j-projection {
-              background-color: lightgreen;
-            }
-
-            &.l-projection {
-              background-color: lightblue;
-            }
-
-            &.o-projection {
-              background-color: lightyellow;
-            }
-
-            &.s-projection {
-              background-color: #c53fc5;
-            }
-
-            &.t-projection {
-              background-color: lightgrey;
-            }
-
-            &.z-projection {
-              background-color: darkgrey;
-            }
-
-            &.i-square {
-              background: red;
-              border: 2px solid grey;
-            }
-
-            &.j-square {
-              background: green;
-            }
-
-            &.l-square {
-              background: blue;
-            }
-
-            &.o-square {
-              background: gold;
-            }
-
-            &.s-square {
-              background: purple;
-            }
-
-            &.t-square {
-              background: lightgrey;
-            }
-
-            &.z-square {
-              background: black;
-            }
-
           }
         }
       }
 
       div#next-three-display {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        width: $squareWidth * 5;
+        height: $squareWidth * 8;
+        border: 2px solid black;
 
-        div.displayed-block {
+        div.queued-block {
           display: flex;
           flex-flow: row wrap;
           width: $squareWidth * 4;
@@ -110,6 +59,63 @@ body {
             border: 2px solid grey;
           }
         }
+      }
+
+      div.i-projection {
+        background-color: pink;
+      }
+
+      div.j-projection {
+        background-color: lightgreen;
+      }
+
+      div.l-projection {
+        background-color: lightblue;
+      }
+
+      div.o-projection {
+        background-color: lightyellow;
+      }
+
+      div.s-projection {
+        background-color: #c53fc5;
+      }
+
+      div.t-projection {
+        background-color: lightgrey;
+      }
+
+      div.z-projection {
+        background-color: darkgrey;
+      }
+
+      div.i-square {
+        background-color: red;
+        border: 2px solid grey;
+      }
+
+      div.j-square {
+        background-color: green;
+      }
+
+      div.l-square {
+        background-color: blue;
+      }
+
+      div.o-square {
+        background-color: gold;
+      }
+
+      div.s-square {
+        background-color: purple;
+      }
+
+      div.t-square {
+        background-color: lightgrey;
+      }
+
+      div.z-square {
+        background-color: black;
       }
     }
 
