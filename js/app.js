@@ -131,12 +131,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const levelDisplay = document.querySelector('#level-display')
   const linesClearedDisplay = document.querySelector('#lines-cleared-display')
   const nextLevelDisplay = document.querySelector('#next-level-display')
-  const start = document.querySelector('#start')
-  const reset = document.querySelector('#reset')
+  const startResetButton = document.querySelector('#start-reset')
+  const start = document.querySelector('#start-reset')
   const gameOverDisplay = document.querySelector('#game-over-display')
   const gameOverScoreDisplay = document.querySelector('#game-over-score-display')
   const gameOverLevelDisplay = document.querySelector('#game-over-level-display')
   const gameOverLinesClearedDisplay = document.querySelector('#game-over-lines-cleared-display')
+  const playAgainButton = document.querySelector('#play-again')
   // !!! change name once these are being built automatically
   const queuedBlocks = [document.querySelectorAll('.queued-block:nth-child(1) div'), document.querySelectorAll('.queued-block:nth-child(2) div'), document.querySelectorAll('.queued-block:nth-child(3) div')]
 
@@ -549,13 +550,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function resetGame() {
-    endGame()
-    startGame()
+  function toggleStartReset() {
+    if (gameOverDisplay.style.display === 'none') {
+      if (startResetButton.textContent === 'Start') {
+        startGame()
+        startResetButton.textContent = 'Reset'
+      } else {
+        endGame()
+        startResetButton.textContent = 'Start'
+      }
+    }
   }
 
-  start.addEventListener('click', startGame)
-  reset.addEventListener('click', resetGame)
+  startResetButton.addEventListener('click', toggleStartReset)
+  playAgainButton.addEventListener('click', startGame)
   document.addEventListener('keydown', (e) => {
     if(activeBlock) {
       switch(e.keyCode) {

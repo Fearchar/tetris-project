@@ -26,6 +26,8 @@ body {
           height: 30px;
           border: 2px solid grey;
           color: grey; }
+      body div.wrapper div#play-area div#game button#start-reset {
+        width: 100%; }
       body div.wrapper div#play-area div#next-three-display {
         display: flex;
         flex-direction: column;
