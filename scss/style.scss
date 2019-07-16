@@ -9,12 +9,15 @@ $testColor: #ffe599;
 }
 
 body {
+  display: flex;
+  justify-content: space-around;
   margin: 0;
   height: 100vh;
 
   div.wrapper {
     display: flex;
     flex-direction: column;
+    width: $squareWidth * 20;
 
     div#play-area {
       display: flex;
@@ -120,13 +123,14 @@ body {
     }
 
     div#game-over-display {
-      display: flex;
       position: relative;
       top: -400px;
-      left: 50px;
-      width: 200px;
+      left: $squareWidth * 3.23;
+      display: flex;
+      flex-direction: column;
+      width: $squareWidth * 6;
       background-color: white;
-      border: 2px solid black;
+      border: 4px solid black;
     }
   }
 }

@@ -3,11 +3,14 @@
   margin: 0; }
 
 body {
+  display: flex;
+  justify-content: space-around;
   margin: 0;
   height: 100vh; }
   body div.wrapper {
     display: flex;
-    flex-direction: column; }
+    flex-direction: column;
+    width: 600px; }
     body div.wrapper div#play-area {
       display: flex;
       justify-content: space-around; }
@@ -69,12 +72,13 @@ body {
       body div.wrapper div#play-area div.z-square {
         background-color: black; }
     body div.wrapper div#game-over-display {
-      display: flex;
       position: relative;
       top: -400px;
-      left: 50px;
-      width: 200px;
+      left: 96.9px;
+      display: flex;
+      flex-direction: column;
+      width: 180px;
       background-color: white;
-      border: 2px solid black; }
+      border: 4px solid black; }
 
 /*# sourceMappingURL=style.css.map */

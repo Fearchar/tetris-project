@@ -131,7 +131,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const levelDisplay = document.querySelector('#level-display')
   const linesClearedDisplay = document.querySelector('#lines-cleared-display')
   const nextLevelDisplay = document.querySelector('#next-level-display')
-  const nextThreeDisplay = document.querySelector('#next-three-display')
   const start = document.querySelector('#start')
   const reset = document.querySelector('#reset')
   const gameOverDisplay = document.querySelector('#game-over-display')
