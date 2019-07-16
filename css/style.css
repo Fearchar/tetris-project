@@ -17,6 +17,20 @@ body {
       height: 30px;
       border: 2px solid grey;
       color: grey; }
+      body #game div#board .board-square.i-projection {
+        background-color: pink; }
+      body #game div#board .board-square.j-projection {
+        background-color: lightgreen; }
+      body #game div#board .board-square.l-projection {
+        background-color: lightblue; }
+      body #game div#board .board-square.o-projection {
+        background-color: lightyellow; }
+      body #game div#board .board-square.s-projection {
+        background-color: #c53fc5; }
+      body #game div#board .board-square.t-projection {
+        background-color: lightgrey; }
+      body #game div#board .board-square.z-projection {
+        background-color: darkgrey; }
       body #game div#board .board-square.i-square {
         background: red;
         border: 2px solid grey; }
@@ -32,20 +46,6 @@ body {
         background: lightgrey; }
       body #game div#board .board-square.z-square {
         background: black; }
-      body #game div#board .board-square.project.i-projection {
-        background-color: pink; }
-      body #game div#board .board-square.project.j-projection {
-        background-color: lightgreen; }
-      body #game div#board .board-square.project.l-projection {
-        background-color: lightblue; }
-      body #game div#board .board-square.project.o-projection {
-        background-color: lightyellow; }
-      body #game div#board .board-square.project.s-projection {
-        background-color: #c53fc5; }
-      body #game div#board .board-square.project.t-projection {
-        background-color: lightgrey; }
-      body #game div#board .board-square.project.z-projection {
-        background-color: darkgrey; }
   body div#game-over-display {
     position: relative;
     z-index: 1;

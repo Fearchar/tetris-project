@@ -128,12 +128,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const boardSquares = buildBoard(board)
   const scoreDisplay = document.querySelector('#score-display')
   const levelDisplay = document.querySelector('#level-display')
-  const linelsClearedDisplay = document.querySelector('#lines-cleared-display')
+  const linesClearedDisplay = document.querySelector('#lines-cleared-display')
   const nextLevelDisplay = document.querySelector('#next-level-display')
   const nextThreeDisplay = document.querySelector('#next-three-display')
   const start = document.querySelector('#start')
   const reset = document.querySelector('#reset')
-
+  const gameOverDisplay = document.querySelector('#game-over-display')
+  const gameOverScoreDisplay = document.querySelector('#game-over-score-display')
+  const gameOverLevelDisplay = document.querySelector('#game-over-level-display')
+  const gameOverLinesClearedDisplay = document.querySelector('#game-over-lines-cleared-display')
 
   // !!! Consider adding boardSquares to the parameters for the block class so that it can increase in purity and move up out of the dom to it's rightful place near the top of the code.
   class Block {
@@ -429,7 +432,7 @@ document.addEventListener('DOMContentLoaded', () => {
         score += 10
         scoreDisplay.textContent = score
         linesCleared ++
-        linelsClearedDisplay.textContent = linesCleared
+        linesClearedDisplay.textContent = linesCleared
         if (linesCleared === levelsAtLines[level] && level < 9) {
           level = levelUp(level)
           levelDisplay.textContent = level
@@ -487,6 +490,10 @@ document.addEventListener('DOMContentLoaded', () => {
     boardSquares.forEach(square => {
       square.className = 'board-square'
     })
+    gameOverDisplay.style.display = 'flex'
+    gameOverScoreDisplay.textContent = score
+    gameOverLevelDisplay.textContent = level
+    gameOverLinesClearedDisplay.textContent = linesCleared
   }
 
   function checkForGameOver() {
@@ -509,11 +516,12 @@ document.addEventListener('DOMContentLoaded', () => {
       level = 1
       levelDisplay.textContent = level
       linesCleared = 0
-      linelsClearedDisplay.textContent = linesCleared
+      linesClearedDisplay.textContent = linesCleared
       nextLevelDisplay.textContent = 5
     }
   }
 
+  // !!! Reset can't trigger gameOver becuase that brings up the gameover panel
   function resetGame() {
     gameOver()
   }
