@@ -1,3 +1,5 @@
+// !!! render / paint block function
+
 const width = 10
 const height = 20
 let dropInterval = null
@@ -72,10 +74,11 @@ function canBlockMove(boardSquares, direction, index) {
   else return false
 }
 
-function move(boardSquares, block, direction) {
+// !!! This clear = true stuff, and projection block stuff is janky!
+function move(boardSquares, block, direction, clear=true, calledByDropP=false) {
   const newHomeIndex = newHomeIfCanMove(boardSquares, block, direction)
   if (newHomeIndex) {
-    clearBlocks(boardSquares)
+    if (clear) clearBlocks(boardSquares)
     block.homeIndex = newHomeIndex
     block.indexesOccupied.forEach(index => {
       if (index >= 0) {
@@ -83,6 +86,7 @@ function move(boardSquares, block, direction) {
       }
     })
   }
+  if (!calledByDropP) block.projectDrop()
 }
 
 // !!! Update and move are doing awfully similar things. Intergrate somehow?
@@ -133,10 +137,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // !!! Consider adding boardSquares to the parameters for the block class so that it can increase in purity and move up out of the dom to it's rightful place near the top of the code.
   class Block {
-    constructor(homeIndex, possibleRotations) {
+    constructor(homeIndex, possibleRotations, isProjection=false) {
       this.homeIndex = homeIndex
       this.rotationIndex = 0
       this.rotations = possibleRotations
+      this.isPorjection = isProjection
     }
     get indexesOccupied() {
       return calculateBlockIndexes(this, this.rotationIndex, this.homeIndex)
@@ -195,6 +200,41 @@ document.addEventListener('DOMContentLoaded', () => {
           if (index >= 0) boardSquares[index].classList.add('has-active-block', this.styleClass)
         })
       }
+      this.projectDrop()
+    }
+    projectDrop() {
+      let projectionBlock = null
+      if (this instanceof IBlock) {
+        projectionBlock = new IBlock()
+      } else if (this instanceof JBlock) {
+        projectionBlock = new JBlock()
+      } else if (this instanceof LBlock) {
+        projectionBlock = new LBlock()
+      } else if (this instanceof OBlock) {
+        projectionBlock = new OBlock()
+      } else if (this instanceof SBlock) {
+        projectionBlock = new SBlock()
+      } else if (this instanceof TBlock) {
+        projectionBlock = new TBlock()
+      } else if (this instanceof ZBlock) {
+        projectionBlock = new ZBlock()
+      }
+      // isProjection might be pointless
+      projectionBlock.isProjection = true
+      projectionBlock.homeIndex = this.homeIndex
+      projectionBlock.rotationIndex = this.rotationIndex
+      projectionBlock.styleClass = 'a'
+      for (let i = 0; i < height - 1 && !asLowAsCanGo(projectionBlock); i ++) {
+        move(boardSquares, projectionBlock, 'down', false, true)
+      }
+      // make below part of clear or something like that
+      boardSquares.forEach(square => {
+        square.classList.remove('project')
+      })
+      projectionBlock.indexesOccupied.forEach(index => {
+        //!!! Change project CSS class to has-projection
+        boardSquares[index].classList.add('project')
+      })
     }
     // projectDrop() {
     //   // !! Change placeholder name
@@ -286,7 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
       this.styleClass = 'o-square'
     }
     rotate() {
-      return false
+      this.projectDrop()
     }
   }
 
@@ -433,19 +473,21 @@ document.addEventListener('DOMContentLoaded', () => {
       move(boardSquares, activeBlock)
     }
   }
-
+  /// !!! Turn conditional logic into it's own function
+  // !!! Change Name
+  function asLowAsCanGo(block) {
+    return block
+      .indexesOccupied
+      .some(index => {
+        const nextLineIndex = index + width
+        if (nextLineIndex > boardSquares.length - 1) {
+          return true
+        } else if (nextLineIndex >= 0 && boardSquares[nextLineIndex].classList.contains('locked'))
+          return true
+      })
+  }
   function dropBlocks() {
-    if (
-      activeBlock
-        .indexesOccupied
-        .some(index => {
-          const nextLineIndex = index + width
-          if (nextLineIndex > boardSquares.length - 1) {
-            return true
-          } else if (nextLineIndex >= 0 && boardSquares[nextLineIndex].classList.contains('locked'))
-            return true
-        })
-    ) {
+    if (asLowAsCanGo(activeBlock)) {
       lockBlock(activeBlock)
       clearFullLines()
     } else {
