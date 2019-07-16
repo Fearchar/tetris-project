@@ -10,10 +10,11 @@ $testColor: #ffe599;
 
 body {
   margin: 0;
+  height: 100vh;
 
   #game {
 
-    #board {
+    div#board {
       display: flex;
       flex-flow: row wrap;
       width: $squareWidth * $boardWidth;
@@ -88,5 +89,14 @@ body {
         }
       }
     }
+  }
+  div#game-over-display {
+    position: relative;
+    z-index: 1;
+    top: -400px;
+    left: +50px;
+    width: 200px;
+    background-color: white;
+    border: 2px solid black;
   }
 }
