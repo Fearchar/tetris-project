@@ -1,6 +1,7 @@
-$squareWidth: 30px;
+$squareWidth: 35px;
 $boardWidth: 10;
 $testColor: #ffe599;
+$squareBorder: 1px solid grey;
 
 
 * {
@@ -17,18 +18,24 @@ body {
   div.wrapper {
     display: flex;
     flex-direction: column;
-    width: $squareWidth * 20;
+    width: $squareWidth * 17;
 
     div#play-area {
       display: flex;
       justify-content: space-around;
 
       div#game {
+        background: white;
 
         div#board {
           display: flex;
           flex-flow: row wrap;
           width: $squareWidth * $boardWidth;
+          background-color: #F7ECE1;
+          width: $squareWidth * 10.03;
+          border: $squareBorder;
+          border-left: none;
+          border-bottom: none;
 
           div.board-square {
             display: flex;
@@ -36,7 +43,9 @@ body {
             align-items: center;
             width: $squareWidth;
             height: $squareWidth;
-            border: 2px solid grey;
+            border: 1px solid grey;
+            border-right: none;
+            border-top: none;
             color: grey;
           }
         }
@@ -54,6 +63,7 @@ body {
         width: $squareWidth * 5;
         height: $squareWidth * 8;
         border: 2px solid black;
+        background: white;
 
         div.queued-block {
           display: flex;
@@ -63,7 +73,7 @@ body {
           div.next-display-square {
             width: $squareWidth;
             height: $squareWidth;
-            border: 2px solid grey;
+            border: $squareBorder;
           }
         }
       }
@@ -73,7 +83,7 @@ body {
       }
 
       div.j-projection {
-        background-color: lightgreen;
+        background-color: #B7B868;
       }
 
       div.l-projection {
@@ -89,40 +99,39 @@ body {
       }
 
       div.t-projection {
-        background-color: lightgrey;
+        background-color: #F2B880;
       }
 
       div.z-projection {
-        background-color: darkgrey;
+        background-color: #B7B868;
       }
 
       div.i-square {
-        background-color: red;
-        border: 2px solid grey;
+        background-color: #5EB1BF;
       }
 
       div.j-square {
-        background-color: green;
+        background-color: #03CEA4;
       }
 
       div.l-square {
-        background-color: blue;
+        background-color: #ec8473;
       }
 
       div.o-square {
-        background-color: gold;
+        background-color: #FFE066;
       }
 
       div.s-square {
-        background-color: purple;
+        background-color: #bbacef;
       }
 
       div.t-square {
-        background-color: lightgrey;
+        background-color: #E0BAD7;
       }
 
       div.z-square {
-        background-color: black;
+        background-color: #F2B880;
       }
     }
 

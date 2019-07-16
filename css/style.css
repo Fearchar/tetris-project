@@ -10,44 +10,54 @@ body {
   body div.wrapper {
     display: flex;
     flex-direction: column;
-    width: 600px; }
+    width: 595px; }
     body div.wrapper div#play-area {
       display: flex;
       justify-content: space-around; }
-      body div.wrapper div#play-area div#game div#board {
-        display: flex;
-        flex-flow: row wrap;
-        width: 300px; }
-        body div.wrapper div#play-area div#game div#board div.board-square {
+      body div.wrapper div#play-area div#game {
+        background: white; }
+        body div.wrapper div#play-area div#game div#board {
           display: flex;
-          justify-content: center;
-          align-items: center;
-          width: 30px;
-          height: 30px;
-          border: 2px solid grey;
-          color: grey; }
-      body div.wrapper div#play-area div#game button#start-reset {
-        width: 100%; }
+          flex-flow: row wrap;
+          width: 350px;
+          background-color: #F7ECE1;
+          width: 351.05px;
+          border: 1px solid grey;
+          border-left: none;
+          border-bottom: none; }
+          body div.wrapper div#play-area div#game div#board div.board-square {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 35px;
+            height: 35px;
+            border: 1px solid grey;
+            border-right: none;
+            border-top: none;
+            color: grey; }
+        body div.wrapper div#play-area div#game button#start-reset {
+          width: 100%; }
       body div.wrapper div#play-area div#next-three-display {
         display: flex;
         flex-direction: column;
         justify-content: space-around;
         align-items: center;
-        width: 150px;
-        height: 240px;
-        border: 2px solid black; }
+        width: 175px;
+        height: 280px;
+        border: 2px solid black;
+        background: white; }
         body div.wrapper div#play-area div#next-three-display div.queued-block {
           display: flex;
           flex-flow: row wrap;
-          width: 120px; }
+          width: 140px; }
           body div.wrapper div#play-area div#next-three-display div.queued-block div.next-display-square {
-            width: 30px;
-            height: 30px;
-            border: 2px solid grey; }
+            width: 35px;
+            height: 35px;
+            border: 1px solid grey; }
       body div.wrapper div#play-area div.i-projection {
         background-color: pink; }
       body div.wrapper div#play-area div.j-projection {
-        background-color: lightgreen; }
+        background-color: #B7B868; }
       body div.wrapper div#play-area div.l-projection {
         background-color: lightblue; }
       body div.wrapper div#play-area div.o-projection {
@@ -55,31 +65,30 @@ body {
       body div.wrapper div#play-area div.s-projection {
         background-color: #c53fc5; }
       body div.wrapper div#play-area div.t-projection {
-        background-color: lightgrey; }
+        background-color: #F2B880; }
       body div.wrapper div#play-area div.z-projection {
-        background-color: darkgrey; }
+        background-color: #B7B868; }
       body div.wrapper div#play-area div.i-square {
-        background-color: red;
-        border: 2px solid grey; }
+        background-color: #5EB1BF; }
       body div.wrapper div#play-area div.j-square {
-        background-color: green; }
+        background-color: #03CEA4; }
       body div.wrapper div#play-area div.l-square {
-        background-color: blue; }
+        background-color: #ec8473; }
       body div.wrapper div#play-area div.o-square {
-        background-color: gold; }
+        background-color: #FFE066; }
       body div.wrapper div#play-area div.s-square {
-        background-color: purple; }
+        background-color: #bbacef; }
       body div.wrapper div#play-area div.t-square {
-        background-color: lightgrey; }
+        background-color: #E0BAD7; }
       body div.wrapper div#play-area div.z-square {
-        background-color: black; }
+        background-color: #F2B880; }
     body div.wrapper div#game-over-display {
       position: relative;
       top: -400px;
-      left: 96.9px;
+      left: 113.05px;
       display: flex;
       flex-direction: column;
-      width: 180px;
+      width: 210px;
       background-color: white;
       border: 4px solid black; }
 
