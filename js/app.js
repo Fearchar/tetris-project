@@ -81,7 +81,7 @@ function move(boardSquares, block, direction, clear=true, calledByDropP=false) {
     if (clear) clearBlocks(boardSquares)
     block.homeIndex = newHomeIndex
     block.indexesOccupied.forEach(index => {
-      if (index >= 0) {
+      if (index >= 0 && !calledByDropP) {
         boardSquares[index].classList.add('has-active-block', block.styleClass)
       }
     })
@@ -223,49 +223,28 @@ document.addEventListener('DOMContentLoaded', () => {
       projectionBlock.isProjection = true
       projectionBlock.homeIndex = this.homeIndex
       projectionBlock.rotationIndex = this.rotationIndex
-      projectionBlock.styleClass = 'a'
+      projectionBlock.styleClass = 'board-square'
       for (let i = 0; i < height - 1 && !asLowAsCanGo(projectionBlock); i ++) {
         move(boardSquares, projectionBlock, 'down', false, true)
       }
-      // make below part of clear or something like that
+      // make below part of clear or something like that. Can we just include this in the normal clear and get rid of this clear true / false stuff in clear?
       boardSquares.forEach(square => {
-        square.classList.remove('project')
+        square.classList.remove(
+          'project',
+          'i-projection',
+          'j-projection',
+          'l-projection',
+          'o-projection',
+          's-projection',
+          't-projection',
+          'z-projection'
+        )
       })
       projectionBlock.indexesOccupied.forEach(index => {
         //!!! Change project CSS class to has-projection
-        boardSquares[index].classList.add('project')
+        if (index > 0) boardSquares[index].classList.add('project', projectionBlock.projectionStyleClass)
       })
     }
-    // projectDrop() {
-    //   // !! Change placeholder name
-    //   const placeHolder = this.indexesOccupied.map(occupiedIndex => {
-    //     const columnOffset = ((occupiedIndex + width) % width)
-    //     for (let i = 0; i <= height - 1; i ++) {
-    //       const currentLine = i *  width
-    //       const currentSquareIndex = currentLine + columnOffset
-    //       if (boardSquares[currentSquareIndex].classList.contains('locked')) {
-    //         return currentSquareIndex - width
-    //       }
-    //     }
-    //     const lowestSquareIndex = ((height -1) * width) + columnOffset
-    //     return lowestSquareIndex
-    //   })
-    //   const highestLine = placeHolder.reduce((line, current) => {
-    //     const currentLine = Math.floor((current / width))
-    //     return currentLine <= line ? currentLine : line
-    //   }, height - 1)
-    //   const indexOfHighest = placeHolder.reduce((highestIndex, current, i) => {
-    //     return Math.floor(current / width) <= Math.floor(placeHolder[highestIndex] / width) ? i : highestIndex
-    //   }, 0)
-    //   const a = +(this.rotations[this.rotationIndex][indexOfHighest] / width).toFixed(0)
-    //   const homeOffset = this.homeIndex % width
-    //   const projectionHomeIndex = homeOffset + (width * (highestLine - a))
-    //   const indexesToOccupy = this.rotations[this.rotationIndex].map(index => index + projectionHomeIndex)
-    //   boardSquares.forEach(square => square.classList.remove('project'))
-    //   indexesToOccupy.forEach(index => {
-    //     boardSquares[index].classList.add('project')
-    //   })
-    // }
   }
 
   // !!! swap minus widths with units so it goes X Y not Y X
@@ -282,6 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ]
       )
       this.styleClass = 'i-square'
+      this.projectionStyleClass = 'i-projection'
     }
   }
 
@@ -297,6 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ]
       )
       this.styleClass = 'j-square'
+      this.projectionStyleClass = 'j-projection'
     }
   }
 
@@ -312,6 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ]
       )
       this.styleClass = 'l-square'
+      this.projectionStyleClass = 'l-projection'
     }
   }
 
@@ -324,6 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ]
       )
       this.styleClass = 'o-square'
+      this.projectionStyleClass = 'o-projection'
     }
     rotate() {
       this.projectDrop()
@@ -342,6 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ]
       )
       this.styleClass = 's-square'
+      this.projectionStyleClass = 's-projection'
     }
   }
 
@@ -357,6 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ]
       )
       this.styleClass = 't-square'
+      this.projectionStyleClass = 't-projection'
     }
   }
 
@@ -372,6 +357,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ]
       )
       this.styleClass = 'z-square'
+      this.projectionStyleClass = 'z-projection'
     }
   }
 

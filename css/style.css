@@ -17,7 +17,8 @@ body {
       border: 2px solid grey;
       color: grey; }
       body #game #board .board-square.i-square {
-        background: red; }
+        background: red;
+        border: 2px solid grey; }
       body #game #board .board-square.j-square {
         background: green; }
       body #game #board .board-square.l-square {
@@ -30,7 +31,19 @@ body {
         background: lightgrey; }
       body #game #board .board-square.z-square {
         background: black; }
-      body #game #board .board-square.project {
-        border: 2px solid black; }
+      body #game #board .board-square.project.i-projection {
+        background-color: pink; }
+      body #game #board .board-square.project.j-projection {
+        background-color: lightgreen; }
+      body #game #board .board-square.project.l-projection {
+        background-color: lightblue; }
+      body #game #board .board-square.project.o-projection {
+        background-color: lightyellow; }
+      body #game #board .board-square.project.s-projection {
+        background-color: #c53fc5; }
+      body #game #board .board-square.project.t-projection {
+        background-color: lightgrey; }
+      body #game #board .board-square.project.z-projection {
+        background-color: darkgrey; }
 
 /*# sourceMappingURL=style.css.map */

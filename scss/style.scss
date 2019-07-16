@@ -27,12 +27,9 @@ body {
         border: 2px solid grey;
         color: grey;
 
-        &.has-active-block {
-          // background-color: $testColor;
-        }
-
         &.i-square {
           background: red;
+          border: 2px solid grey;
         }
 
         &.j-square {
@@ -60,7 +57,34 @@ body {
         }
 
         &.project {
-          border: 2px solid black;
+
+          &.i-projection {
+            background-color: pink;
+          }
+
+          &.j-projection {
+            background-color: lightgreen;
+          }
+
+          &.l-projection {
+            background-color: lightblue;
+          }
+
+          &.o-projection {
+            background-color: lightyellow;
+          }
+
+          &.s-projection {
+            background-color: #c53fc5;
+          }
+
+          &.t-projection {
+            background-color: lightgrey;
+          }
+
+          &.z-projection {
+            background-color: darkgrey;
+          }
         }
       }
     }
