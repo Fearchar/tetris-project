@@ -386,10 +386,10 @@ document.addEventListener('DOMContentLoaded', () => {
       shuffledBlocks = shuffledBlocks.concat(shuffleBlocks())
     }
     const nextBlock = shuffledBlocks.shift()
-    nextThreeDisplay.textContent =
-      `${shuffledBlocks[0].name},
-      ${shuffledBlocks[1].name},
-      ${shuffledBlocks[2].name}`
+    // !!! nextThreeDisplay.textContent =
+    //   `${shuffledBlocks[0].name},
+    //   ${shuffledBlocks[1].name},
+    //   ${shuffledBlocks[2].name}`
     return new nextBlock(width / 2)
   }
 
