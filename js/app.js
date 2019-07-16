@@ -15,7 +15,7 @@ function buildBoard(boardSelector) {
   for (var i = 0; i < width * height; i++) {
     const square = document.createElement('div')
     square.className = 'board-square'
-    square.textContent = i
+    //!!! square.textContent = i
     boardSelector.appendChild(square)
     boardSquares.push(square)
   }
@@ -444,6 +444,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function checkForGameOver() {
+    if(activeBlock.indexesOccupied.some(index => index < 0)) {
+      return true
+    }
+    return false
+  }
+
   function lockBlock(block) {
     if(checkForGameOver()) {
       gameOver()
@@ -483,24 +490,25 @@ document.addEventListener('DOMContentLoaded', () => {
       move(boardSquares, activeBlock, 'down')
     }
   }
-
-  function gameOver() {
+  function fastDropBlock() {
+    score ++
+    scoreDisplay.textContent = score
+    dropBlocks()
+  }
+  function endGame() {
     activeBlock = null
     clearInterval(dropInterval)
     boardSquares.forEach(square => {
       square.className = 'board-square'
     })
-    gameOverDisplay.style.display = 'flex'
+  }
+
+  function gameOver() {
+    endGame()
+    gameOverDisplay.style.display = ''
     gameOverScoreDisplay.textContent = score
     gameOverLevelDisplay.textContent = level
     gameOverLinesClearedDisplay.textContent = linesCleared
-  }
-
-  function checkForGameOver() {
-    if(activeBlock.indexesOccupied.some(index => index < 0)) {
-      return true
-    }
-    return false
   }
 
   function startGame() {
@@ -518,12 +526,13 @@ document.addEventListener('DOMContentLoaded', () => {
       linesCleared = 0
       linesClearedDisplay.textContent = linesCleared
       nextLevelDisplay.textContent = 5
+      gameOverDisplay.style.display = 'none'
     }
   }
 
-  // !!! Reset can't trigger gameOver becuase that brings up the gameover panel
   function resetGame() {
-    gameOver()
+    endGame()
+    startGame()
   }
 
   start.addEventListener('click', startGame)
@@ -538,10 +547,7 @@ document.addEventListener('DOMContentLoaded', () => {
           move(boardSquares, activeBlock, 'right')
           break
         case 40:
-          // !!! Good argument to add this to the block itself? (or maybe take all the functions off the block?)
-          dropBlocks()
-          score ++
-          scoreDisplay.textContent = score
+          fastDropBlock()
           break
         case 38:
           activeBlock.rotate()

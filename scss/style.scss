@@ -12,89 +12,115 @@ body {
   margin: 0;
   height: 100vh;
 
-  #game {
+  div.wrapper {
+    display: flex;
+    flex-direction: column;
 
-    div#board {
+    div#play-area {
       display: flex;
-      flex-flow: row wrap;
-      width: $squareWidth * $boardWidth;
+      justify-content: space-around;
 
-      .board-square {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: $squareWidth;
-        height: $squareWidth;
-        border: 2px solid grey;
-        color: grey;
+      div#game {
 
-        &.i-projection {
-          background-color: pink;
+        div#board {
+          display: flex;
+          flex-flow: row wrap;
+          width: $squareWidth * $boardWidth;
+
+          div.board-square {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: $squareWidth;
+            height: $squareWidth;
+            border: 2px solid grey;
+            color: grey;
+
+            &.i-projection {
+              background-color: pink;
+            }
+
+            &.j-projection {
+              background-color: lightgreen;
+            }
+
+            &.l-projection {
+              background-color: lightblue;
+            }
+
+            &.o-projection {
+              background-color: lightyellow;
+            }
+
+            &.s-projection {
+              background-color: #c53fc5;
+            }
+
+            &.t-projection {
+              background-color: lightgrey;
+            }
+
+            &.z-projection {
+              background-color: darkgrey;
+            }
+
+            &.i-square {
+              background: red;
+              border: 2px solid grey;
+            }
+
+            &.j-square {
+              background: green;
+            }
+
+            &.l-square {
+              background: blue;
+            }
+
+            &.o-square {
+              background: gold;
+            }
+
+            &.s-square {
+              background: purple;
+            }
+
+            &.t-square {
+              background: lightgrey;
+            }
+
+            &.z-square {
+              background: black;
+            }
+
+          }
         }
+      }
 
-        &.j-projection {
-          background-color: lightgreen;
+      div#next-three-display {
+
+        div.displayed-block {
+          display: flex;
+          flex-flow: row wrap;
+          width: $squareWidth * 4;
+
+          div.next-display-square {
+            width: $squareWidth;
+            height: $squareWidth;
+            border: 2px solid grey;
+          }
         }
-
-        &.l-projection {
-          background-color: lightblue;
-        }
-
-        &.o-projection {
-          background-color: lightyellow;
-        }
-
-        &.s-projection {
-          background-color: #c53fc5;
-        }
-
-        &.t-projection {
-          background-color: lightgrey;
-        }
-
-        &.z-projection {
-          background-color: darkgrey;
-        }
-
-        &.i-square {
-          background: red;
-          border: 2px solid grey;
-        }
-
-        &.j-square {
-          background: green;
-        }
-
-        &.l-square {
-          background: blue;
-        }
-
-        &.o-square {
-          background: gold;
-        }
-
-        &.s-square {
-          background: purple;
-        }
-
-        &.t-square {
-          background: lightgrey;
-        }
-
-        &.z-square {
-          background: black;
-        }
-
       }
     }
-  }
-  div#game-over-display {
-    position: relative;
-    z-index: 1;
-    top: -400px;
-    left: +50px;
-    width: 200px;
-    background-color: white;
-    border: 2px solid black;
+
+    div#game-over-display {
+      display: flex;
+      position: relative;
+      top: -400px;
+      left: 50px;
+      width: 200px;
+      background-color: white;
+      border: 2px solid black;
+    }
   }
 }

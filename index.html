@@ -7,32 +7,69 @@
     <script src="js/app.js" charset="utf-8"></script>
   </head>
   <body>
-    <div id="game">
-      <div id="board">
+    <div class="wrapper">
+      <div id="play-area">
+        <div id="game">
+          <div id="board">
+          </div>
+          <div>
+            <button id="start">Start</button>
+            <button id="reset">Reset</button>
+          </div>
+        </div>
+        <div>
+          <div id="next-three-display">
+            <div class="displayed-block">
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+            </div>
+            <div class="displayed-block">
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+            </div>
+            <div class="displayed-block">
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+            </div>
+          </div>
+          <div>
+            <p>Score:<span id="score-display">0</span></p>
+            <p>Level:<span id="level-display">1</span></p>
+            <p>Lines Cleared:<span id="lines-cleared-display">0</span></p>
+            <p>Lines Till Next Level:<span id="next-level-display">5</span></p>
+            <p>Next Three Blocks:<span ></span></p>
+          </div>
+        </div>
+        <div id="game-over-display" style="display: none;">
+          <h2>Game over</h2>
+          <div>
+            <p>Score:<span id="game-over-score-display">0</span></p>
+            <p>Level:<span id="game-over-level-display">1</span></p>
+            <p>Lines Cleared:<span id="game-over-lines-cleared-display">0</span></p>
+          </div>
+            <button>Play again?</button>
+        </div>
       </div>
+
     </div>
-    <div>
-      <p>Score:<span id="score-display">0</span></p>
-      <p>Level:<span id="level-display">1</span></p>
-      <p>Lines Cleared:<span id="lines-cleared-display">0</span></p>
-      <p>Lines Till Next Level:<span id="next-level-display">5</span></p>
-      <p>Next Three Blocks:<span id="next-three-display"></span></p>
-    </div>
-    <button id="start">Start</button>
-    <button id="reset">Reset</button>
   </body>
-  <div id="game-over-display" style="display: none;">
-    <h2>Game over</h2>
-    <div>
-      <p>Score:<span id="game-over-score-display">0</span></p>
-      <p>Level:<span id="game-over-level-display">1</span></p>
-      <p>Lines Cleared:<span id="game-over-lines-cleared-display">0</span></p>
-    </div>
-    <div>
-      <p>Play again?</p>
-      <button>Yes</button>
-      <button>No</button>
-    </div>
-  </div>
 </html>
 </html>
