@@ -476,22 +476,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const linesToRemove = checkForCompleteLines(boardSquares)
     if (linesToRemove) {
       linesToRemove.forEach(line => {
+        //!!! Could be added to the clear
         for (var i = 0; i < width; i++) {
           boardSquares[(line * width) + i].className = 'board-square'
         }
-        score += 10
-        scoreDisplay.textContent = score
-        linesCleared ++
-        linesClearedDisplay.textContent = linesCleared
-        if (linesCleared === levelsAtLines[level] && level < 9) {
-          level = levelUp(level)
-          levelDisplay.textContent = level
-        }
-        nextLevelDisplay.textContent = levelsAtLines[level] - linesCleared || '∞'
       })
       dropLockedLines(boardSquares, linesToRemove)
       move(boardSquares, activeBlock)
     }
+    return linesToRemove.length
   }
 
   function checkForGameOver() {
@@ -520,14 +513,28 @@ document.addEventListener('DOMContentLoaded', () => {
     move(boardSquares, activeBlock)
   }
 
+  function scoreLines(lines) {
+    score += 10 * lines
+    scoreDisplay.textContent = score
+    linesCleared += lines
+    linesClearedDisplay.textContent = linesCleared
+    if (linesCleared >= levelsAtLines[level] && level < 9) {
+      level = levelUp(level)
+      levelDisplay.textContent = level
+    }
+    nextLevelDisplay.textContent = levelsAtLines[level] - linesCleared || '∞'
+  }
+
+  //!! Consider changing the name so that it reflects that it actually handles the whole itteration of the game
   function dropBlock() {
     if (asLowAsCanGo(boardSquares, activeBlock)) {
       if (checkForGameOver()) {
         gameOver()
       } else {
         lockBlock(activeBlock)
+        const numberOfClearedLines = clearFullLines()
+        if (numberOfClearedLines > 0) scoreLines(numberOfClearedLines)
         startBlockFall(boardSquares)
-        clearFullLines()
       }
     } else {
       move(boardSquares, activeBlock, 'down')
