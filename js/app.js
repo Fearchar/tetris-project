@@ -89,17 +89,6 @@ function move(boardSquares, block, direction, clear=true, calledByDropP=false) {
   if (!calledByDropP) block.projectDrop()
 }
 
-// !!! Update and move are doing awfully similar things. Intergrate somehow?
-// !!! everything relating to the checks for movement and walls are super dodgey. Firstly they need to happen repeatedly. Secondly they won't work for anything other than walls (so not the blocks at the bottom), thirdly I've added this really dodgey  boolean to move to ignore the checkIfMovingIntoWall. I need a major restructure / rethink
-//!!! Change name
-function correctPlacement(block, direction, amount=1) {
-  if (direction === 'right') {
-    return block.homeIndex + amount
-  } else if (direction === 'left') {
-    return block.homeIndex - amount
-  }
-}
-
 function newHomeIfCanMove(boardSquares, block, direction) {
   // !!! Also bring the logic that stops it from going through the bottom into here maybe?
   const potentialHomeIndex = updateHome(direction, block)
@@ -121,6 +110,58 @@ function rotatingIntoWall(indexesToOccupy) {
     }
   }
   return !atLeftWall || !atRightWall
+}
+
+// !!! Update and move are doing awfully similar things. Intergrate somehow?
+// !!! everything relating to the checks for movement and walls are super dodgey. Firstly they need to happen repeatedly. Secondly they won't work for anything other than walls (so not the blocks at the bottom), thirdly I've added this really dodgey  boolean to move to ignore the checkIfMovingIntoWall. I need a major restructure / rethink
+//!!! Change name
+function correctPlacement(block, direction, amount=1) {
+  if (direction === 'right') {
+    return block.homeIndex + amount
+  } else if (direction === 'left') {
+    return block.homeIndex - amount
+  }
+}
+// !!! Change name
+// !!! Remove need for blockPrototypes to be passed once their above the dom line
+function wallRotationCorrections(block, indexesToOccupy, newRotationIndex, IBlock) {
+  let newHomeIndex = block.homeIndex
+  if (!rotatingIntoWall(indexesToOccupy)) {
+    if (!(block instanceof IBlock)) {
+      if (block.homeIndex % width === 0) {
+        newHomeIndex = correctPlacement(block, 'right')
+      } else {
+        newHomeIndex = correctPlacement(block, 'left')
+      }
+    } else {
+      if (newRotationIndex === 2 && block.homeIndex % width === 0) {
+        newHomeIndex = correctPlacement(block, 'right')
+      } else if (newRotationIndex === 2) {
+        newHomeIndex = correctPlacement(block, 'left', 2)
+      } else if (newRotationIndex === 0 && block.homeIndex % width === width - 1) {
+        newHomeIndex = correctPlacement(block, 'right', 2)
+      } else {
+        newHomeIndex = correctPlacement(block, 'left')
+      }
+      indexesToOccupy = calculateBlockIndexes(block, newRotationIndex, newHomeIndex)
+    }
+  }
+  return {newHomeIndex: newHomeIndex, indexesToOccupy: indexesToOccupy}
+}
+
+function canBlockRotate(boardSquares, indexesToOccupy) {
+  // ### Checking if rotating into locked block
+  for (const index of indexesToOccupy) {
+    // !!! Can be replaced by a terniary?
+    if (
+      index >= boardSquares.length  ||
+      (index >= 0 &&
+      boardSquares[index].classList.contains('locked'))
+    ) {
+      return false
+    }
+  }
+  return true
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -157,42 +198,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // !!! Change name
     // So much refactoring needed
     newPositionIfCanRotate() {
+      //!!! the below could be a getter if it comes up more than once
       const newRotationIndex = (this.rotationIndex + 1) % 4
       let indexesToOccupy = calculateBlockIndexes(this, newRotationIndex, this.homeIndex)
       let newHomeIndex = this.homeIndex
-      if (!rotatingIntoWall(indexesToOccupy)) {
-        if (!(this instanceof IBlock)) {
-          if (this.homeIndex % width === 0) {
-            newHomeIndex = correctPlacement(this, 'right')
-          } else {
-            newHomeIndex = correctPlacement(this, 'left')
-          }
-        } else {
-          if (newRotationIndex === 2 && this.homeIndex % width === 0) {
-            newHomeIndex = correctPlacement(this, 'right')
-          } else if (newRotationIndex === 2) {
-            newHomeIndex = correctPlacement(this, 'left', 2)
-          } else if (newRotationIndex === 0 && this.homeIndex % width === width - 1) {
-            newHomeIndex = correctPlacement(this, 'right', 2)
-          } else {
-            newHomeIndex = correctPlacement(this, 'left')
-          }
-          indexesToOccupy = this.rotations[newRotationIndex].map(index => index + newHomeIndex)
-        }
-      }
-      // ### Checking if rotating into locked block
-      for (const index of indexesToOccupy) {
-        // !!! Can be replaced by a terniary?
-        if (
-          index >= boardSquares.length  ||
-          (
-            index >= 0 &&
-            boardSquares[index].classList.contains('locked')
-          )
-        ) {
-          return false
-        }
-      }
+      const corrections = wallRotationCorrections(this, indexesToOccupy, newRotationIndex, IBlock)
+      newHomeIndex = corrections.newHomeIndex
+      indexesToOccupy = corrections.indexesToOccupy
+      if (!canBlockRotate(boardSquares, indexesToOccupy)) return false
       this.homeIndex = newHomeIndex
       move(boardSquares, this)
       clearBlocks(boardSquares)
