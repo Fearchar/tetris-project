@@ -21,7 +21,7 @@ body {
           flex-flow: row wrap;
           width: 350px;
           background-color: #F7ECE1;
-          width: 351.05px;
+          width: 351.4px;
           border: 1px solid grey;
           border-left: none;
           border-bottom: none; }
@@ -35,34 +35,6 @@ body {
             border-right: none;
             border-top: none;
             color: grey; }
-            body div.wrapper div#play-area div#game div#board div.board-square.i-projection {
-              background-color: pink; }
-            body div.wrapper div#play-area div#game div#board div.board-square.j-projection {
-              background-color: #B7B868; }
-            body div.wrapper div#play-area div#game div#board div.board-square.l-projection {
-              background-color: lightblue; }
-            body div.wrapper div#play-area div#game div#board div.board-square.o-projection {
-              background-color: lightyellow; }
-            body div.wrapper div#play-area div#game div#board div.board-square.s-projection {
-              background-color: #c53fc5; }
-            body div.wrapper div#play-area div#game div#board div.board-square.t-projection {
-              background-color: #F2B880; }
-            body div.wrapper div#play-area div#game div#board div.board-square.z-projection {
-              background-color: #B7B868; }
-            body div.wrapper div#play-area div#game div#board div.board-square.i-square {
-              background-color: #5EB1BF; }
-            body div.wrapper div#play-area div#game div#board div.board-square.j-square {
-              background-color: #03CEA4; }
-            body div.wrapper div#play-area div#game div#board div.board-square.l-square {
-              background-color: #ec8473; }
-            body div.wrapper div#play-area div#game div#board div.board-square.o-square {
-              background-color: #FFE066; }
-            body div.wrapper div#play-area div#game div#board div.board-square.s-square {
-              background-color: #bbacef; }
-            body div.wrapper div#play-area div#game div#board div.board-square.t-square {
-              background-color: #E0BAD7; }
-            body div.wrapper div#play-area div#game div#board div.board-square.z-square {
-              background-color: #F2B880; }
         body div.wrapper div#play-area div#game button#start-reset {
           width: 100%; }
       body div.wrapper div#play-area div#next-three-display {
@@ -82,6 +54,34 @@ body {
             width: 35px;
             height: 35px;
             border: 1px solid grey; }
+      body div.wrapper div#play-area div.i-projection {
+        background-color: pink; }
+      body div.wrapper div#play-area div.j-projection {
+        background-color: #B7B868; }
+      body div.wrapper div#play-area div.l-projection {
+        background-color: lightblue; }
+      body div.wrapper div#play-area div.o-projection {
+        background-color: lightyellow; }
+      body div.wrapper div#play-area div.s-projection {
+        background-color: #c53fc5; }
+      body div.wrapper div#play-area div.t-projection {
+        background-color: #F2B880; }
+      body div.wrapper div#play-area div.z-projection {
+        background-color: #B7B868; }
+      body div.wrapper div#play-area div.i-square {
+        background-color: #5EB1BF; }
+      body div.wrapper div#play-area div.j-square {
+        background-color: #03CEA4; }
+      body div.wrapper div#play-area div.l-square {
+        background-color: #ec8473; }
+      body div.wrapper div#play-area div.o-square {
+        background-color: #FFE066; }
+      body div.wrapper div#play-area div.s-square {
+        background-color: #bbacef; }
+      body div.wrapper div#play-area div.t-square {
+        background-color: #E0BAD7; }
+      body div.wrapper div#play-area div.z-square {
+        background-color: #F2B880; }
     body div.wrapper div#game-over-display {
       position: relative;
       top: -400px;

@@ -10,6 +10,188 @@ let linesCleared = 0
 let level = 1
 const levelsAtLines = [1, 5, 10, 15, 25, 35, 50, 70, 100]
 
+
+// !!! Consider adding boardSquares to the parameters for the block class so that it can increase in purity and move up out of the dom to it's rightful place near the top of the code.
+class Block {
+  constructor(homeIndex, possibleRotations, isProjection=false) {
+    this.homeIndex = homeIndex
+    this.rotationIndex = 0
+    this.rotations = possibleRotations
+    this.isPorjection = isProjection
+  }
+  get indexesOccupied() {
+    return calculateBlockIndexes(this, this.rotationIndex, this.homeIndex)
+  }
+
+  // !!! Might want to make it so that the blocks check if they can rotate before rotating, rather than going through the motions and adjusting
+  rotate(boardSquares) {
+    if (newPositionIfCanRotate(boardSquares, this, IBlock)) {
+      // !!! If the below stays as it is you can have a function that just paints the block where ever it is and use it on this and move (and correctPlacement? If that still exists)
+      this.indexesOccupied.forEach(index => {
+        if (index >= 0) boardSquares[index].classList.add('has-active-block', this.styleClass)
+      })
+    }
+    this.projectDrop(boardSquares)
+  }
+  projectDrop(boardSquares) {
+    let projectionBlock = null
+    if (this instanceof IBlock) {
+      projectionBlock = new IBlock()
+    } else if (this instanceof JBlock) {
+      projectionBlock = new JBlock()
+    } else if (this instanceof LBlock) {
+      projectionBlock = new LBlock()
+    } else if (this instanceof OBlock) {
+      projectionBlock = new OBlock()
+    } else if (this instanceof SBlock) {
+      projectionBlock = new SBlock()
+    } else if (this instanceof TBlock) {
+      projectionBlock = new TBlock()
+    } else if (this instanceof ZBlock) {
+      projectionBlock = new ZBlock()
+    }
+    // isProjection might be pointless
+    projectionBlock.isProjection = true
+    projectionBlock.homeIndex = this.homeIndex
+    projectionBlock.rotationIndex = this.rotationIndex
+    projectionBlock.styleClass = 'board-square'
+    for (let i = 0; i < height - 1 && !asLowAsCanGo(boardSquares, projectionBlock); i ++) {
+      move(boardSquares, projectionBlock, 'down', false, true)
+    }
+    // make below part of clear or something like that. Can we just include this in the normal clear and get rid of this clear true / false stuff in clear?
+    boardSquares.forEach(square => {
+      square.classList.remove(
+        'project',
+        'i-projection',
+        'j-projection',
+        'l-projection',
+        'o-projection',
+        's-projection',
+        't-projection',
+        'z-projection'
+      )
+    })
+    projectionBlock.indexesOccupied.forEach(index => {
+      //!!! Change project CSS class to has-projection
+      if (index > 0) boardSquares[index].classList.add('project', projectionBlock.projectionStyleClass)
+    })
+  }
+}
+
+// !!! swap minus widths with units so it goes X Y not Y X
+
+class IBlock extends Block {
+  constructor(homeIndex, boardWidth=width) {
+    super(
+      homeIndex,
+      [
+        [-1, 0, +1, +2],
+        [-boardWidth*2, -boardWidth, 0, +boardWidth],
+        [-boardWidth-1, -boardWidth, -boardWidth+1, -boardWidth+2],
+        [-boardWidth*2+1, -boardWidth+1, +1, +boardWidth+1]
+      ]
+    )
+    this.styleClass = 'i-square'
+    this.projectionStyleClass = 'i-projection'
+  }
+}
+
+class JBlock extends Block {
+  constructor(homeIndex, boardWidth=width) {
+    super(
+      homeIndex,
+      [
+        [-boardWidth-1, -1, 0, +1],
+        [-boardWidth, -boardWidth+1, 0, +boardWidth],
+        [-1, 0, +1, +boardWidth+1],
+        [-boardWidth, 0, +boardWidth-1, +boardWidth]
+      ]
+    )
+    this.styleClass = 'j-square'
+    this.projectionStyleClass = 'j-projection'
+  }
+}
+
+class LBlock extends Block {
+  constructor(homeIndex, boardWidth=width) {
+    super(
+      homeIndex,
+      [
+        [-boardWidth+1, -1, 0, +1],
+        [-boardWidth, 0, +boardWidth, +boardWidth+1],
+        [-1, 0, +1, +boardWidth-1],
+        [-boardWidth-1, -boardWidth, 0, boardWidth]
+      ]
+    )
+    this.styleClass = 'l-square'
+    this.projectionStyleClass = 'l-projection'
+  }
+}
+
+class OBlock extends Block {
+  constructor(homeIndex, boardWidth=width) {
+    super(
+      homeIndex,
+      [
+        [-boardWidth-1, -boardWidth, -1, 0]
+      ]
+    )
+    this.styleClass = 'o-square'
+    this.projectionStyleClass = 'o-projection'
+  }
+  rotate(boardSquares) {
+    this.projectDrop(boardSquares)
+  }
+}
+
+class SBlock extends Block {
+  constructor(homeIndex, boardWidth=width) {
+    super(
+      homeIndex,
+      [
+        [-boardWidth, -boardWidth+1, -1, 0],
+        [-boardWidth, 0, +1, +boardWidth+1],
+        [0, +1, +boardWidth-1, +boardWidth],
+        [-boardWidth-1, -1, 0, +boardWidth]
+      ]
+    )
+    this.styleClass = 's-square'
+    this.projectionStyleClass = 's-projection'
+  }
+}
+
+class TBlock extends Block {
+  constructor(homeIndex, boardWidth=width) {
+    super(
+      homeIndex,
+      [
+        [-boardWidth, -1, 0, +1],
+        [-boardWidth, 0, +1, +boardWidth],
+        [-1, 0, +1, +boardWidth],
+        [-boardWidth, -1, 0, +boardWidth]
+      ]
+    )
+    this.styleClass = 't-square'
+    this.projectionStyleClass = 't-projection'
+  }
+}
+
+class ZBlock extends Block {
+  constructor(homeIndex, boardWidth=width) {
+    super(
+      homeIndex,
+      [
+        [-boardWidth-1, -boardWidth, 0, +1],
+        [-boardWidth+1, 0, +1, +boardWidth],
+        [-1, 0, +boardWidth, +boardWidth+1],
+        [-boardWidth, -1, 0, +boardWidth-1]
+      ]
+    )
+    this.styleClass = 'z-square'
+    this.projectionStyleClass = 'z-projection'
+  }
+}
+
 function buildBoard(boardSelector) {
   const boardSquares = []
   for (var i = 0; i < width * height; i++) {
@@ -86,7 +268,7 @@ function move(boardSquares, block, direction, clear=true, calledByDropP=false) {
       }
     })
   }
-  if (!calledByDropP) block.projectDrop()
+  if (!calledByDropP) block.projectDrop(boardSquares)
 }
 
 function newHomeIfCanMove(boardSquares, block, direction) {
@@ -182,6 +364,20 @@ function newPositionIfCanRotate(boardSquares, block, IBlock) {
   return true
 }
 
+/// !!! Turn conditional logic into it's own function
+// !!! Change Name
+function asLowAsCanGo(boardSquares, block) {
+  return block
+    .indexesOccupied
+    .some(index => {
+      const nextLineIndex = index + width
+      if (nextLineIndex > boardSquares.length - 1) {
+        return true
+      } else if (nextLineIndex >= 0 && boardSquares[nextLineIndex].classList.contains('locked'))
+        return true
+    })
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // !!! Reorganise dom consts by order on the page
   const board = document.querySelector('#board')
@@ -200,186 +396,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const queuedBlocks = [document.querySelectorAll('.queued-block:nth-child(1) div'), document.querySelectorAll('.queued-block:nth-child(2) div'), document.querySelectorAll('.queued-block:nth-child(3) div')]
 
 
-  // !!! Consider adding boardSquares to the parameters for the block class so that it can increase in purity and move up out of the dom to it's rightful place near the top of the code.
-  class Block {
-    constructor(homeIndex, possibleRotations, isProjection=false) {
-      this.homeIndex = homeIndex
-      this.rotationIndex = 0
-      this.rotations = possibleRotations
-      this.isPorjection = isProjection
-    }
-    get indexesOccupied() {
-      return calculateBlockIndexes(this, this.rotationIndex, this.homeIndex)
-    }
 
-    // !!! Might want to make it so that the blocks check if they can rotate before rotating, rather than going through the motions and adjusting
-    rotate() {
-      if (newPositionIfCanRotate(boardSquares, this, IBlock)) {
-        // !!! If the below stays as it is you can have a function that just paints the block where ever it is and use it on this and move (and correctPlacement? If that still exists)
-        this.indexesOccupied.forEach(index => {
-          if (index >= 0) boardSquares[index].classList.add('has-active-block', this.styleClass)
-        })
-      }
-      projectDrop(this)
-    }
-    projectDrop() {
-      let projectionBlock = null
-      if (this instanceof IBlock) {
-        projectionBlock = new IBlock()
-      } else if (this instanceof JBlock) {
-        projectionBlock = new JBlock()
-      } else if (this instanceof LBlock) {
-        projectionBlock = new LBlock()
-      } else if (this instanceof OBlock) {
-        projectionBlock = new OBlock()
-      } else if (this instanceof SBlock) {
-        projectionBlock = new SBlock()
-      } else if (this instanceof TBlock) {
-        projectionBlock = new TBlock()
-      } else if (this instanceof ZBlock) {
-        projectionBlock = new ZBlock()
-      }
-      // isProjection might be pointless
-      projectionBlock.isProjection = true
-      projectionBlock.homeIndex = this.homeIndex
-      projectionBlock.rotationIndex = this.rotationIndex
-      projectionBlock.styleClass = 'board-square'
-      for (let i = 0; i < height - 1 && !asLowAsCanGo(projectionBlock); i ++) {
-        move(boardSquares, projectionBlock, 'down', false, true)
-      }
-      // make below part of clear or something like that. Can we just include this in the normal clear and get rid of this clear true / false stuff in clear?
-      boardSquares.forEach(square => {
-        square.classList.remove(
-          'project',
-          'i-projection',
-          'j-projection',
-          'l-projection',
-          'o-projection',
-          's-projection',
-          't-projection',
-          'z-projection'
-        )
-      })
-      projectionBlock.indexesOccupied.forEach(index => {
-        //!!! Change project CSS class to has-projection
-        if (index > 0) boardSquares[index].classList.add('project', projectionBlock.projectionStyleClass)
-      })
-    }
-  }
-
-  // !!! swap minus widths with units so it goes X Y not Y X
-
-  class IBlock extends Block {
-    constructor(homeIndex, boardWidth=width) {
-      super(
-        homeIndex,
-        [
-          [-1, 0, +1, +2],
-          [-boardWidth*2, -boardWidth, 0, +boardWidth],
-          [-boardWidth-1, -boardWidth, -boardWidth+1, -boardWidth+2],
-          [-boardWidth*2+1, -boardWidth+1, +1, +boardWidth+1]
-        ]
-      )
-      this.styleClass = 'i-square'
-      this.projectionStyleClass = 'i-projection'
-    }
-  }
-
-  class JBlock extends Block {
-    constructor(homeIndex, boardWidth=width) {
-      super(
-        homeIndex,
-        [
-          [-boardWidth-1, -1, 0, +1],
-          [-boardWidth, -boardWidth+1, 0, +boardWidth],
-          [-1, 0, +1, +boardWidth+1],
-          [-boardWidth, 0, +boardWidth-1, +boardWidth]
-        ]
-      )
-      this.styleClass = 'j-square'
-      this.projectionStyleClass = 'j-projection'
-    }
-  }
-
-  class LBlock extends Block {
-    constructor(homeIndex, boardWidth=width) {
-      super(
-        homeIndex,
-        [
-          [-boardWidth+1, -1, 0, +1],
-          [-boardWidth, 0, +boardWidth, +boardWidth+1],
-          [-1, 0, +1, +boardWidth-1],
-          [-boardWidth-1, -boardWidth, 0, boardWidth]
-        ]
-      )
-      this.styleClass = 'l-square'
-      this.projectionStyleClass = 'l-projection'
-    }
-  }
-
-  class OBlock extends Block {
-    constructor(homeIndex, boardWidth=width) {
-      super(
-        homeIndex,
-        [
-          [-boardWidth-1, -boardWidth, -1, 0]
-        ]
-      )
-      this.styleClass = 'o-square'
-      this.projectionStyleClass = 'o-projection'
-    }
-    rotate() {
-      projectDrop(this)
-    }
-  }
-
-  class SBlock extends Block {
-    constructor(homeIndex, boardWidth=width) {
-      super(
-        homeIndex,
-        [
-          [-boardWidth, -boardWidth+1, -1, 0],
-          [-boardWidth, 0, +1, +boardWidth+1],
-          [0, +1, +boardWidth-1, +boardWidth],
-          [-boardWidth-1, -1, 0, +boardWidth]
-        ]
-      )
-      this.styleClass = 's-square'
-      this.projectionStyleClass = 's-projection'
-    }
-  }
-
-  class TBlock extends Block {
-    constructor(homeIndex, boardWidth=width) {
-      super(
-        homeIndex,
-        [
-          [-boardWidth, -1, 0, +1],
-          [-boardWidth, 0, +1, +boardWidth],
-          [-1, 0, +1, +boardWidth],
-          [-boardWidth, -1, 0, +boardWidth]
-        ]
-      )
-      this.styleClass = 't-square'
-      this.projectionStyleClass = 't-projection'
-    }
-  }
-
-  class ZBlock extends Block {
-    constructor(homeIndex, boardWidth=width) {
-      super(
-        homeIndex,
-        [
-          [-boardWidth-1, -boardWidth, 0, +1],
-          [-boardWidth+1, 0, +1, +boardWidth],
-          [-1, 0, +boardWidth, +boardWidth+1],
-          [-boardWidth, -1, 0, +boardWidth-1]
-        ]
-      )
-      this.styleClass = 'z-square'
-      this.projectionStyleClass = 'z-projection'
-    }
-  }
 
   function projectDrop(block) {
     let projectionBlock = null
@@ -403,7 +420,7 @@ document.addEventListener('DOMContentLoaded', () => {
     projectionBlock.homeIndex = block.homeIndex
     projectionBlock.rotationIndex = block.rotationIndex
     projectionBlock.styleClass = 'board-square'
-    for (let i = 0; i < height - 1 && !asLowAsCanGo(projectionBlock); i ++) {
+    for (let i = 0; i < height - 1 && !asLowAsCanGo(boardSquares, projectionBlock); i ++) {
       move(boardSquares, projectionBlock, 'down', false, true)
     }
     // make below part of clear or something like that. Can we just include this in the normal clear and get rid of this clear true / false stuff in clear?
@@ -547,21 +564,9 @@ document.addEventListener('DOMContentLoaded', () => {
       move(boardSquares, activeBlock)
     }
   }
-  /// !!! Turn conditional logic into it's own function
-  // !!! Change Name
-  function asLowAsCanGo(block) {
-    return block
-      .indexesOccupied
-      .some(index => {
-        const nextLineIndex = index + width
-        if (nextLineIndex > boardSquares.length - 1) {
-          return true
-        } else if (nextLineIndex >= 0 && boardSquares[nextLineIndex].classList.contains('locked'))
-          return true
-      })
-  }
+
   function dropBlocks() {
-    if (asLowAsCanGo(activeBlock)) {
+    if (asLowAsCanGo(boardSquares, activeBlock)) {
       lockBlock(activeBlock)
       clearFullLines()
     } else {
@@ -635,7 +640,7 @@ document.addEventListener('DOMContentLoaded', () => {
           fastDropBlock()
           break
         case 38:
-          activeBlock.rotate()
+          activeBlock.rotate(boardSquares)
           break
       }
     }

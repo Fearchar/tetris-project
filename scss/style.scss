@@ -32,7 +32,7 @@ body {
           flex-flow: row wrap;
           width: $squareWidth * $boardWidth;
           background-color: #F7ECE1;
-          width: $squareWidth * 10.03;
+          width: $squareWidth * 10.04;
           border: $squareBorder;
           border-left: none;
           border-bottom: none;
@@ -47,62 +47,6 @@ body {
             border-right: none;
             border-top: none;
             color: grey;
-
-            &.i-projection {
-              background-color: pink;
-            }
-
-            &.j-projection {
-              background-color: #B7B868;
-            }
-
-            &.l-projection {
-              background-color: lightblue;
-            }
-
-            &.o-projection {
-              background-color: lightyellow;
-            }
-
-            &.s-projection {
-              background-color: #c53fc5;
-            }
-
-            &.t-projection {
-              background-color: #F2B880;
-            }
-
-            &.z-projection {
-              background-color: #B7B868;
-            }
-
-            &.i-square {
-              background-color: #5EB1BF;
-            }
-
-            &.j-square {
-              background-color: #03CEA4;
-            }
-
-            &.l-square {
-              background-color: #ec8473;
-            }
-
-            &.o-square {
-              background-color: #FFE066;
-            }
-
-            &.s-square {
-              background-color: #bbacef;
-            }
-
-            &.t-square {
-              background-color: #E0BAD7;
-            }
-
-            &.z-square {
-              background-color: #F2B880;
-            }
           }
         }
 
@@ -132,6 +76,62 @@ body {
             border: $squareBorder;
           }
         }
+      }
+
+      div.i-projection {
+        background-color: pink;
+      }
+
+      div.j-projection {
+        background-color: #B7B868;
+      }
+
+      div.l-projection {
+        background-color: lightblue;
+      }
+
+      div.o-projection {
+        background-color: lightyellow;
+      }
+
+      div.s-projection {
+        background-color: #c53fc5;
+      }
+
+      div.t-projection {
+        background-color: #F2B880;
+      }
+
+      div.z-projection {
+        background-color: #B7B868;
+      }
+
+      div.i-square {
+        background-color: #5EB1BF;
+      }
+
+      div.j-square {
+        background-color: #03CEA4;
+      }
+
+      div.l-square {
+        background-color: #ec8473;
+      }
+
+      div.o-square {
+        background-color: #FFE066;
+      }
+
+      div.s-square {
+        background-color: #bbacef;
+      }
+
+      div.t-square {
+        background-color: #E0BAD7;
+      }
+
+      div.z-square {
+        background-color: #F2B880;
       }
     }
 
