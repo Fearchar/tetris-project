@@ -164,6 +164,24 @@ function canBlockRotate(boardSquares, indexesToOccupy) {
   return true
 }
 
+// !!! Change name
+// So much refactoring needed
+function newPositionIfCanRotate(boardSquares, block, IBlock) {
+  //!!! the below could be a getter if it comes up more than once
+  const newRotationIndex = (block.rotationIndex + 1) % 4
+  let indexesToOccupy = calculateBlockIndexes(block, newRotationIndex, block.homeIndex)
+  let newHomeIndex = block.homeIndex
+  const corrections = wallRotationCorrections(block, indexesToOccupy, newRotationIndex, IBlock)
+  newHomeIndex = corrections.newHomeIndex
+  indexesToOccupy = corrections.indexesToOccupy
+  if (!canBlockRotate(boardSquares, indexesToOccupy)) return false
+  block.homeIndex = newHomeIndex
+  move(boardSquares, block)
+  clearBlocks(boardSquares)
+  block.rotationIndex = newRotationIndex
+  return true
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // !!! Reorganise dom consts by order on the page
   const board = document.querySelector('#board')
@@ -195,26 +213,9 @@ document.addEventListener('DOMContentLoaded', () => {
       return calculateBlockIndexes(this, this.rotationIndex, this.homeIndex)
     }
 
-    // !!! Change name
-    // So much refactoring needed
-    newPositionIfCanRotate() {
-      //!!! the below could be a getter if it comes up more than once
-      const newRotationIndex = (this.rotationIndex + 1) % 4
-      let indexesToOccupy = calculateBlockIndexes(this, newRotationIndex, this.homeIndex)
-      let newHomeIndex = this.homeIndex
-      const corrections = wallRotationCorrections(this, indexesToOccupy, newRotationIndex, IBlock)
-      newHomeIndex = corrections.newHomeIndex
-      indexesToOccupy = corrections.indexesToOccupy
-      if (!canBlockRotate(boardSquares, indexesToOccupy)) return false
-      this.homeIndex = newHomeIndex
-      move(boardSquares, this)
-      clearBlocks(boardSquares)
-      this.rotationIndex = newRotationIndex
-      return true
-    }
     // !!! Might want to make it so that the blocks check if they can rotate before rotating, rather than going through the motions and adjusting
     rotate() {
-      if (this.newPositionIfCanRotate()) {
+      if (newPositionIfCanRotate(boardSquares, this, IBlock)) {
         // !!! If the below stays as it is you can have a function that just paints the block where ever it is and use it on this and move (and correctPlacement? If that still exists)
         this.indexesOccupied.forEach(index => {
           if (index >= 0) boardSquares[index].classList.add('has-active-block', this.styleClass)
