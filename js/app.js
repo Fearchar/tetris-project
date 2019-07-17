@@ -387,6 +387,67 @@ function projectDrop(boardSquares, block) {
   })
 }
 
+function shuffleBlocks(blockConstructors) {
+  const blockSequence = blockConstructors.slice(0)
+  let currentIndex = blockSequence.length
+  let temporaryValue
+  let randomIndex
+  while (currentIndex !== 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex)
+    currentIndex -= 1
+    temporaryValue = blockSequence[currentIndex]
+    blockSequence[currentIndex] = blockSequence[randomIndex]
+    blockSequence[randomIndex] = temporaryValue
+  }
+  return blockSequence
+}
+
+// !!! Change name
+function queueBlocks(queuedBlocks) {
+  // !! change board pram name?
+  queuedBlocks.forEach((board, i) => {
+    board.forEach(square => {
+      square.className = 'next-display-square'
+    })
+    const block = new shuffledBlocks[i](5, 4)
+    block.indexesOccupied.forEach(index => {
+      board[index].classList.add(block.styleClass)
+    })
+  })
+}
+
+function generateBlock(queuedBlocks, homeIndex) {
+  if (shuffledBlocks.length <= 3) {
+    shuffledBlocks = [...shuffledBlocks, ...shuffleBlocks(blockConstructors)]
+  }
+  const nextBlock = shuffledBlocks.shift()
+  queueBlocks(queuedBlocks)
+  return new nextBlock(homeIndex)
+}
+
+function checkForCompleteLines(boardSquares) {
+  const linesToRemove = []
+  const numberOfLines = boardSquares.length / width
+  for (var i = numberOfLines - 1; i >= 0; i--) {
+    if(boardSquares.slice(i * width, (i * width) + width).every(square => {
+      return square.classList.contains('locked')
+    })) linesToRemove.push(i)
+  }
+  return linesToRemove[0] ? linesToRemove : false
+}
+
+function dropLockedLines(boardSquares, removedLines) {
+  removedLines.forEach((line, i) => {
+    for (let j = ((line + i) * width) - 1 ; j >= 0; j--) {
+      const square = boardSquares[j]
+      const newSquare = boardSquares[j + width]
+      newSquare.className = square.className
+      square.className = 'board-square'
+    }
+  })
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
   // !!! Reorganise dom consts by order on the page
   const board = document.querySelector('#board')
@@ -404,70 +465,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // !!! change name once these are being built automatically
   const queuedBlocks = [Array.from(document.querySelectorAll('.queued-block:nth-child(1) div')), Array.from(document.querySelectorAll('.queued-block:nth-child(2) div')), Array.from(document.querySelectorAll('.queued-block:nth-child(3) div'))]
 
-  function shuffleBlocks() {
-    const blockSequence = blockConstructors.slice(0)
-    let currentIndex = blockSequence.length
-    let temporaryValue
-    let randomIndex
-    while (currentIndex !== 0) {
-      randomIndex = Math.floor(Math.random() * currentIndex)
-      currentIndex -= 1
-      temporaryValue = blockSequence[currentIndex]
-      blockSequence[currentIndex] = blockSequence[randomIndex]
-      blockSequence[randomIndex] = temporaryValue
-    }
-    return blockSequence
-  }
-
-  // !!! Change name
-  function queueBlocks() {
-    // !! change board pram name?
-    queuedBlocks.forEach((board, i) => {
-      board.forEach(square => {
-        square.className = 'next-display-square'
-      })
-      const block = new shuffledBlocks[i](5, 4)
-      block.indexesOccupied.forEach(index => {
-        board[index].classList.add(block.styleClass)
-      })
-    })
-  }
-
-  function generateBlock() {
-    if (shuffledBlocks.length <= 3) {
-      shuffledBlocks = shuffledBlocks.concat(shuffleBlocks())
-    }
-    const nextBlock = shuffledBlocks.shift()
-    queueBlocks()
-    // !!! nextThreeDisplay.textContent =
-    //   `${shuffledBlocks[0].name},
-    //   ${shuffledBlocks[1].name},
-    //   ${shuffledBlocks[2].name}`
-    return new nextBlock(width / 2)
-  }
-
-  function checkForCompleteLines() {
-    const linesToRemove = []
-    const numberOfLines = boardSquares.length / width
-    for (var i = numberOfLines - 1; i >= 0; i--) {
-      if(boardSquares.slice(i * width, (i * width) + width).every(square => {
-        return square.classList.contains('locked')
-      })) linesToRemove.push(i)
-    }
-    return linesToRemove[0] ? linesToRemove : false
-  }
-
-  function dropLockedLines(removedLines) {
-    removedLines.forEach((line, i) => {
-      for (let j = ((line + i) * width) - 1 ; j >= 0; j--) {
-        const square = boardSquares[j]
-        const newSquare = boardSquares[j + width]
-        newSquare.className = square.className
-        square.className = 'board-square'
-      }
-    })
-  }
-
   function levelUp(currentLevel) {
     clearInterval(dropInterval)
     console.log(500 - (currentLevel * 60))
@@ -476,7 +473,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function clearFullLines() {
-    const linesToRemove = checkForCompleteLines()
+    const linesToRemove = checkForCompleteLines(boardSquares)
     if (linesToRemove) {
       linesToRemove.forEach(line => {
         for (var i = 0; i < width; i++) {
@@ -492,7 +489,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         nextLevelDisplay.textContent = levelsAtLines[level] - linesCleared || '∞'
       })
-      dropLockedLines(linesToRemove)
+      dropLockedLines(boardSquares, linesToRemove)
       move(boardSquares, activeBlock)
     }
   }
@@ -514,7 +511,7 @@ document.addEventListener('DOMContentLoaded', () => {
         boardSquares[index].setAttribute('data-style-class', this.styleClass)
       })
       // !!! The need to use active block here is possibly another argument to bring these functions out fo the blocks
-      activeBlock = generateBlock(width / 2)
+      activeBlock = generateBlock(queuedBlocks, width / 2)
       // !!! This is only ness becuase you've chosen the starting co-ords for it's rotations unwisely. It's probably best to cylce them so that 2 is 0. This will require you to change the logic on the rotation blocking function. Be Warned
       if(activeBlock instanceof IBlock) {
         activeBlock.homeInext - width
@@ -557,10 +554,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function startGame() {
     if(!activeBlock) {
-      activeBlock = generateBlock(width / 2)
+      activeBlock = generateBlock(queuedBlocks, width / 2)
       // !!! This is only ness becuase you've chosen the starting co-ords for it's rotations unwisely. It's probably best to cylce them so that 2 is 0. This will require you to change the logic on the rotation blocking function. Be Warned
       if(activeBlock instanceof IBlock) {
-        activeBlock.homeInext - width
+        move(boardSquares, activeBlock, 'left')
       }
       score = 0
       scoreDisplay.textContent = 0
