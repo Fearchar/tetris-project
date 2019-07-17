@@ -191,7 +191,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const linesClearedDisplay = document.querySelector('#lines-cleared-display')
   const nextLevelDisplay = document.querySelector('#next-level-display')
   const startResetButton = document.querySelector('#start-reset')
-  const start = document.querySelector('#start-reset')
   const gameOverDisplay = document.querySelector('#game-over-display')
   const gameOverScoreDisplay = document.querySelector('#game-over-score-display')
   const gameOverLevelDisplay = document.querySelector('#game-over-level-display')
@@ -221,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (index >= 0) boardSquares[index].classList.add('has-active-block', this.styleClass)
         })
       }
-      this.projectDrop()
+      projectDrop(this)
     }
     projectDrop() {
       let projectionBlock = null
@@ -330,7 +329,7 @@ document.addEventListener('DOMContentLoaded', () => {
       this.projectionStyleClass = 'o-projection'
     }
     rotate() {
-      this.projectDrop()
+      projectDrop(this)
     }
   }
 
@@ -381,6 +380,51 @@ document.addEventListener('DOMContentLoaded', () => {
       this.projectionStyleClass = 'z-projection'
     }
   }
+
+  function projectDrop(block) {
+    let projectionBlock = null
+    if (block instanceof IBlock) {
+      projectionBlock = new IBlock()
+    } else if (block instanceof JBlock) {
+      projectionBlock = new JBlock()
+    } else if (block instanceof LBlock) {
+      projectionBlock = new LBlock()
+    } else if (block instanceof OBlock) {
+      projectionBlock = new OBlock()
+    } else if (block instanceof SBlock) {
+      projectionBlock = new SBlock()
+    } else if (block instanceof TBlock) {
+      projectionBlock = new TBlock()
+    } else if (block instanceof ZBlock) {
+      projectionBlock = new ZBlock()
+    }
+    // isProjection might be pointless
+    projectionBlock.isProjection = true
+    projectionBlock.homeIndex = block.homeIndex
+    projectionBlock.rotationIndex = block.rotationIndex
+    projectionBlock.styleClass = 'board-square'
+    for (let i = 0; i < height - 1 && !asLowAsCanGo(projectionBlock); i ++) {
+      move(boardSquares, projectionBlock, 'down', false, true)
+    }
+    // make below part of clear or something like that. Can we just include this in the normal clear and get rid of this clear true / false stuff in clear?
+    boardSquares.forEach(square => {
+      square.classList.remove(
+        'project',
+        'i-projection',
+        'j-projection',
+        'l-projection',
+        'o-projection',
+        's-projection',
+        't-projection',
+        'z-projection'
+      )
+    })
+    projectionBlock.indexesOccupied.forEach(index => {
+      //!!! Change project CSS class to has-projection
+      if (index > 0) boardSquares[index].classList.add('project', projectionBlock.projectionStyleClass)
+    })
+  }
+
 
   const blockPrototypes = [TBlock, IBlock, JBlock, LBlock, SBlock, ZBlock, OBlock]
 
