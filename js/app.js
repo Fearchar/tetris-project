@@ -1,23 +1,12 @@
+// #### Constructors ####
 // !!! render / paint block function
-
-const width = 10
-const height = 20
-let dropInterval = null
-let activeBlock = null
-let shuffledBlocks = []
-let score = 0
-let linesCleared = 0
-let level = 1
-const levelsAtLines = [1, 5, 10, 15, 25, 35, 50, 70, 100]
-
 
 // !!! Consider adding boardSquares to the parameters for the block class so that it can increase in purity and move up out of the dom to it's rightful place near the top of the code.
 class Block {
-  constructor(homeIndex, possibleRotations, isProjection=false) {
+  constructor(homeIndex, possibleRotations) {
     this.homeIndex = homeIndex
     this.rotationIndex = 0
     this.rotations = possibleRotations
-    this.isPorjection = isProjection
   }
   get indexesOccupied() {
     return calculateBlockIndexes(this, this.rotationIndex, this.homeIndex)
@@ -31,50 +20,7 @@ class Block {
         if (index >= 0) boardSquares[index].classList.add('has-active-block', this.styleClass)
       })
     }
-    this.projectDrop(boardSquares)
-  }
-  projectDrop(boardSquares) {
-    let projectionBlock = null
-    if (this instanceof IBlock) {
-      projectionBlock = new IBlock()
-    } else if (this instanceof JBlock) {
-      projectionBlock = new JBlock()
-    } else if (this instanceof LBlock) {
-      projectionBlock = new LBlock()
-    } else if (this instanceof OBlock) {
-      projectionBlock = new OBlock()
-    } else if (this instanceof SBlock) {
-      projectionBlock = new SBlock()
-    } else if (this instanceof TBlock) {
-      projectionBlock = new TBlock()
-    } else if (this instanceof ZBlock) {
-      projectionBlock = new ZBlock()
-    }
-    // isProjection might be pointless
-    projectionBlock.isProjection = true
-    projectionBlock.homeIndex = this.homeIndex
-    projectionBlock.rotationIndex = this.rotationIndex
-    projectionBlock.styleClass = 'board-square'
-    for (let i = 0; i < height - 1 && !asLowAsCanGo(boardSquares, projectionBlock); i ++) {
-      move(boardSquares, projectionBlock, 'down', false, true)
-    }
-    // make below part of clear or something like that. Can we just include this in the normal clear and get rid of this clear true / false stuff in clear?
-    boardSquares.forEach(square => {
-      square.classList.remove(
-        'project',
-        'i-projection',
-        'j-projection',
-        'l-projection',
-        'o-projection',
-        's-projection',
-        't-projection',
-        'z-projection'
-      )
-    })
-    projectionBlock.indexesOccupied.forEach(index => {
-      //!!! Change project CSS class to has-projection
-      if (index > 0) boardSquares[index].classList.add('project', projectionBlock.projectionStyleClass)
-    })
+    projectDrop(boardSquares, this)
   }
 }
 
@@ -140,7 +86,7 @@ class OBlock extends Block {
     this.projectionStyleClass = 'o-projection'
   }
   rotate(boardSquares) {
-    this.projectDrop(boardSquares)
+    projectDrop(boardSquares, this)
   }
 }
 
@@ -192,6 +138,21 @@ class ZBlock extends Block {
   }
 }
 
+
+/// ### Global Variables
+const width = 10
+const height = 20
+let dropInterval = null
+let activeBlock = null
+let shuffledBlocks = []
+let score = 0
+let linesCleared = 0
+let level = 1
+const levelsAtLines = [1, 5, 10, 15, 25, 35, 50, 70, 100]
+const blockConstructors = [TBlock, IBlock, JBlock, LBlock, SBlock, ZBlock, OBlock]
+
+// ### Global Functions
+
 function buildBoard(boardSelector) {
   const boardSquares = []
   for (var i = 0; i < width * height; i++) {
@@ -204,9 +165,27 @@ function buildBoard(boardSelector) {
   return boardSquares
 }
 
-function clearBlocks(squares){
+function clearBlocks(squares, blockStyleClass){
   squares.forEach(square => {
-    if (square.classList.contains('has-active-block')) square.className = 'board-square'
+    if (
+      blockStyleClass === 'has-active-block' &&
+      square.classList.contains('has-active-block')
+    ) square.className = 'board-square'
+    else if (
+      blockStyleClass === 'has-active-block' &&
+      square.classList.contains('project')
+    ) {
+      square.classList.remove(
+        'project',
+        'i-projection',
+        'j-projection',
+        'l-projection',
+        'o-projection',
+        's-projection',
+        't-projection',
+        'z-projection'
+      )
+    }
   })
 }
 
@@ -260,7 +239,7 @@ function canBlockMove(boardSquares, direction, index) {
 function move(boardSquares, block, direction, clear=true, calledByDropP=false) {
   const newHomeIndex = newHomeIfCanMove(boardSquares, block, direction)
   if (newHomeIndex) {
-    if (clear) clearBlocks(boardSquares)
+    if (clear) clearBlocks(boardSquares, 'has-active-block')
     block.homeIndex = newHomeIndex
     block.indexesOccupied.forEach(index => {
       if (index >= 0 && !calledByDropP) {
@@ -268,7 +247,7 @@ function move(boardSquares, block, direction, clear=true, calledByDropP=false) {
       }
     })
   }
-  if (!calledByDropP) block.projectDrop(boardSquares)
+  if (!calledByDropP) projectDrop(boardSquares, block)
 }
 
 function newHomeIfCanMove(boardSquares, block, direction) {
@@ -305,7 +284,7 @@ function correctPlacement(block, direction, amount=1) {
   }
 }
 // !!! Change name
-// !!! Remove need for blockPrototypes to be passed once their above the dom line
+// !!! Remove need for blockConstructors to be passed once their above the dom line
 function wallRotationCorrections(block, indexesToOccupy, newRotationIndex, IBlock) {
   let newHomeIndex = block.homeIndex
   if (!rotatingIntoWall(indexesToOccupy)) {
@@ -359,7 +338,7 @@ function newPositionIfCanRotate(boardSquares, block, IBlock) {
   if (!canBlockRotate(boardSquares, indexesToOccupy)) return false
   block.homeIndex = newHomeIndex
   move(boardSquares, block)
-  clearBlocks(boardSquares)
+  clearBlocks(boardSquares, 'has-active-block')
   block.rotationIndex = newRotationIndex
   return true
 }
@@ -376,6 +355,31 @@ function asLowAsCanGo(boardSquares, block) {
       } else if (nextLineIndex >= 0 && boardSquares[nextLineIndex].classList.contains('locked'))
         return true
     })
+}
+
+function copyBlock(block) {
+  return new (blockConstructors.find(constructor => block instanceof constructor))()
+}
+
+function generateProjection(block) {
+  const projectionBlock = copyBlock(block)
+  projectionBlock.homeIndex = block.homeIndex
+  projectionBlock.rotationIndex = block.rotationIndex
+  projectionBlock.styleClass = 'board-square'
+  return projectionBlock
+}
+
+function projectDrop(boardSquares, block) {
+  const projectionBlock = generateProjection(block)
+  for (let i = 0; i < height - 1 && !asLowAsCanGo(boardSquares, projectionBlock); i ++) {
+    move(boardSquares, projectionBlock, 'down', false, true)
+  }
+  // make below part of clear or something like that. Can we just include this in the normal clear and get rid of this clear true / false stuff in clear?
+  clearBlocks(boardSquares, 'project')
+  projectionBlock.indexesOccupied.forEach(index => {
+    //!!! Change project CSS class to has-projection
+    if (index > 0) boardSquares[index].classList.add('project', projectionBlock.projectionStyleClass)
+  })
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -395,58 +399,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // !!! change name once these are being built automatically
   const queuedBlocks = [document.querySelectorAll('.queued-block:nth-child(1) div'), document.querySelectorAll('.queued-block:nth-child(2) div'), document.querySelectorAll('.queued-block:nth-child(3) div')]
 
-
-
-
-  function projectDrop(block) {
-    let projectionBlock = null
-    if (block instanceof IBlock) {
-      projectionBlock = new IBlock()
-    } else if (block instanceof JBlock) {
-      projectionBlock = new JBlock()
-    } else if (block instanceof LBlock) {
-      projectionBlock = new LBlock()
-    } else if (block instanceof OBlock) {
-      projectionBlock = new OBlock()
-    } else if (block instanceof SBlock) {
-      projectionBlock = new SBlock()
-    } else if (block instanceof TBlock) {
-      projectionBlock = new TBlock()
-    } else if (block instanceof ZBlock) {
-      projectionBlock = new ZBlock()
-    }
-    // isProjection might be pointless
-    projectionBlock.isProjection = true
-    projectionBlock.homeIndex = block.homeIndex
-    projectionBlock.rotationIndex = block.rotationIndex
-    projectionBlock.styleClass = 'board-square'
-    for (let i = 0; i < height - 1 && !asLowAsCanGo(boardSquares, projectionBlock); i ++) {
-      move(boardSquares, projectionBlock, 'down', false, true)
-    }
-    // make below part of clear or something like that. Can we just include this in the normal clear and get rid of this clear true / false stuff in clear?
-    boardSquares.forEach(square => {
-      square.classList.remove(
-        'project',
-        'i-projection',
-        'j-projection',
-        'l-projection',
-        'o-projection',
-        's-projection',
-        't-projection',
-        'z-projection'
-      )
-    })
-    projectionBlock.indexesOccupied.forEach(index => {
-      //!!! Change project CSS class to has-projection
-      if (index > 0) boardSquares[index].classList.add('project', projectionBlock.projectionStyleClass)
-    })
-  }
-
-
-  const blockPrototypes = [TBlock, IBlock, JBlock, LBlock, SBlock, ZBlock, OBlock]
-
   function shuffleBlocks() {
-    const blockSequence = blockPrototypes.slice(0)
+    const blockSequence = blockConstructors.slice(0)
     let currentIndex = blockSequence.length
     let temporaryValue
     let randomIndex
@@ -472,7 +426,7 @@ document.addEventListener('DOMContentLoaded', () => {
         board[index].classList.add(block.styleClass)
       })
     })
-    console.log((new blockPrototypes[0]).rotations[0])
+    console.log((new blockConstructors[0]).rotations[0])
   }
 
   function generateBlock() {
