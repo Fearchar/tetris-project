@@ -468,7 +468,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function levelUp(currentLevel) {
     clearInterval(dropInterval)
     console.log(500 - (currentLevel * 60))
-    dropInterval = setInterval(dropBlocks, 500 - (currentLevel * 60))
+    dropInterval = setInterval(dropBlock, 500 - (currentLevel * 60))
     return currentLevel + 1
   }
 
@@ -502,28 +502,33 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function lockBlock(block) {
-    if(checkForGameOver()) {
-      gameOver()
-    } else {
-      block.indexesOccupied.forEach(index => {
-        boardSquares[index].classList.remove('has-active-block')
-        boardSquares[index].classList.add('locked', this.styleClass)
-        boardSquares[index].setAttribute('data-style-class', this.styleClass)
-      })
-      // !!! The need to use active block here is possibly another argument to bring these functions out fo the blocks
-      activeBlock = generateBlock(queuedBlocks, width / 2)
-      // !!! This is only ness becuase you've chosen the starting co-ords for it's rotations unwisely. It's probably best to cylce them so that 2 is 0. This will require you to change the logic on the rotation blocking function. Be Warned
-      if(activeBlock instanceof IBlock) {
-        activeBlock.homeInext - width
-      }
-      move(boardSquares, activeBlock)
-    }
+    block.indexesOccupied.forEach(index => {
+      boardSquares[index].classList.remove('has-active-block')
+      boardSquares[index].classList.add('locked', this.styleClass)
+      boardSquares[index].setAttribute('data-style-class', this.styleClass)
+    })
   }
 
-  function dropBlocks() {
+  function startBlockFall(boardSquares) {
+    activeBlock = generateBlock(queuedBlocks, width / 2)
+    // !!! This is only ness becuase you've chosen the starting co-ords for it's rotations unwisely. It's probably best to cylce them so that 2 is 0. This will require you to change the logic on the rotation blocking function. Be Warned. Although on third throughts. I'm not sure it's even doing anything
+    if(activeBlock instanceof IBlock) {
+      activeBlock.homeInext - width
+      // !!! This is only ness becuase you've chosen the starting co-ords for it's rotations unwisely. It's probably best to cylce them so that 2 is 0. This will require you to change the logic on the rotation blocking function. Be Warned
+      move(boardSquares, activeBlock, 'left')
+    }
+    move(boardSquares, activeBlock)
+  }
+
+  function dropBlock() {
     if (asLowAsCanGo(boardSquares, activeBlock)) {
-      lockBlock(activeBlock)
-      clearFullLines()
+      if (checkForGameOver()) {
+        gameOver()
+      } else {
+        lockBlock(activeBlock)
+        startBlockFall(boardSquares)
+        clearFullLines()
+      }
     } else {
       move(boardSquares, activeBlock, 'down')
     }
@@ -531,7 +536,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function fastDropBlock() {
     score ++
     scoreDisplay.textContent = score
-    dropBlocks()
+    dropBlock()
   }
   function endGame() {
     activeBlock = null
@@ -554,14 +559,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function startGame() {
     if(!activeBlock) {
-      activeBlock = generateBlock(queuedBlocks, width / 2)
-      // !!! This is only ness becuase you've chosen the starting co-ords for it's rotations unwisely. It's probably best to cylce them so that 2 is 0. This will require you to change the logic on the rotation blocking function. Be Warned
-      if(activeBlock instanceof IBlock) {
-        move(boardSquares, activeBlock, 'left')
-      }
+      startBlockFall(boardSquares)
       score = 0
       scoreDisplay.textContent = 0
-      dropInterval = setInterval(dropBlocks, 500)
+      dropInterval = setInterval(dropBlock, 500)
       level = 1
       levelDisplay.textContent = level
       linesCleared = 0
