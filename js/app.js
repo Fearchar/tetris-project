@@ -14,7 +14,7 @@ class Block {
 
   // !!! Might want to make it so that the blocks check if they can rotate before rotating, rather than going through the motions and adjusting
   rotate(boardSquares) {
-    if (newPositionIfCanRotate(boardSquares, this, IBlock)) {
+    if (newPositionIfCanRotate(boardSquares, this)) {
       // !!! If the below stays as it is you can have a function that just paints the block where ever it is and use it on this and move (and correctPlacement? If that still exists)
       this.indexesOccupied.forEach(index => {
         if (index >= 0) boardSquares[index].classList.add('has-active-block', this.styleClass)
@@ -164,7 +164,8 @@ function buildBoard(boardSelector) {
   }
   return boardSquares
 }
-
+//!!! Add a lockBlock version for end game
+/// !!! Or even better, refactor so that one version suits every situation. I also don't like the second pram
 function clearBlocks(squares, blockStyleClass){
   squares.forEach(square => {
     if (
@@ -185,6 +186,10 @@ function clearBlocks(squares, blockStyleClass){
         't-projection',
         'z-projection'
       )
+    } else if (
+      blockStyleClass === 'next-display-square'
+    ) {
+      square.className = 'next-display-square'
     }
   })
 }
@@ -285,7 +290,7 @@ function correctPlacement(block, direction, amount=1) {
 }
 // !!! Change name
 // !!! Remove need for blockConstructors to be passed once their above the dom line
-function wallRotationCorrections(block, indexesToOccupy, newRotationIndex, IBlock) {
+function wallRotationCorrections(block, indexesToOccupy, newRotationIndex) {
   let newHomeIndex = block.homeIndex
   if (!rotatingIntoWall(indexesToOccupy)) {
     if (!(block instanceof IBlock)) {
@@ -327,12 +332,12 @@ function canBlockRotate(boardSquares, indexesToOccupy) {
 
 // !!! Change name
 // So much refactoring needed
-function newPositionIfCanRotate(boardSquares, block, IBlock) {
+function newPositionIfCanRotate(boardSquares, block) {
   //!!! the below could be a getter if it comes up more than once
   const newRotationIndex = (block.rotationIndex + 1) % 4
   let indexesToOccupy = calculateBlockIndexes(block, newRotationIndex, block.homeIndex)
   let newHomeIndex = block.homeIndex
-  const corrections = wallRotationCorrections(block, indexesToOccupy, newRotationIndex, IBlock)
+  const corrections = wallRotationCorrections(block, indexesToOccupy, newRotationIndex)
   newHomeIndex = corrections.newHomeIndex
   indexesToOccupy = corrections.indexesToOccupy
   if (!canBlockRotate(boardSquares, indexesToOccupy)) return false
@@ -397,14 +402,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const gameOverLinesClearedDisplay = document.querySelector('#game-over-lines-cleared-display')
   const playAgainButton = document.querySelector('#play-again')
   // !!! change name once these are being built automatically
-  const queuedBlocks = [document.querySelectorAll('.queued-block:nth-child(1) div'), document.querySelectorAll('.queued-block:nth-child(2) div'), document.querySelectorAll('.queued-block:nth-child(3) div')]
+  const queuedBlocks = [Array.from(document.querySelectorAll('.queued-block:nth-child(1) div')), Array.from(document.querySelectorAll('.queued-block:nth-child(2) div')), Array.from(document.querySelectorAll('.queued-block:nth-child(3) div'))]
 
   function shuffleBlocks() {
     const blockSequence = blockConstructors.slice(0)
     let currentIndex = blockSequence.length
     let temporaryValue
     let randomIndex
-    while (0 !== currentIndex) {
+    while (currentIndex !== 0) {
       randomIndex = Math.floor(Math.random() * currentIndex)
       currentIndex -= 1
       temporaryValue = blockSequence[currentIndex]
@@ -426,7 +431,6 @@ document.addEventListener('DOMContentLoaded', () => {
         board[index].classList.add(block.styleClass)
       })
     })
-    console.log((new blockConstructors[0]).rotations[0])
   }
 
   function generateBlock() {
@@ -534,10 +538,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function endGame() {
     activeBlock = null
+    shuffledBlocks = []
     clearInterval(dropInterval)
     boardSquares.forEach(square => {
       square.className = 'board-square'
     })
+    clearBlocks([...queuedBlocks[0], ...queuedBlocks[1], ...queuedBlocks[2]], 'next-display-square')
+
   }
 
   function gameOver() {
