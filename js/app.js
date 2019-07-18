@@ -467,7 +467,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function levelUp(currentLevel) {
     clearInterval(dropInterval)
-    console.log(500 - (currentLevel * 60))
     dropInterval = setInterval(dropBlock, 500 - (currentLevel * 60))
     return currentLevel + 1
   }
