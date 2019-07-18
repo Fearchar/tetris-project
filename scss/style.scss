@@ -64,7 +64,7 @@ body {
     display: flex;
     flex-direction: column;
 
-    div#play-area {
+    div.play-area {
       display: flex;
       justify-content: space-around;
       width: $squareWidth * 19;
@@ -126,9 +126,9 @@ body {
         background-color: rgba(160, 242, 128, 0.85);
       }
 
-      div#game {
+      div.game {
 
-        div#board {
+        div.game-board {
           display: flex;
           flex-flow: row wrap;
           background-color: $boardColor;
@@ -149,7 +149,7 @@ body {
           }
         }
 
-        button#start-reset {
+        & div button {
           width: 100%;
           margin-top: 10px;
           font-size: 20px;
@@ -210,7 +210,8 @@ body {
       }
     }
   }
-  div#game-over-display {
+
+  div.game-over-display {
     position: absolute;
     display: flex;
     justify-content: center;

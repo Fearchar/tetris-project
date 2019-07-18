@@ -168,10 +168,10 @@ function clearBlocks(squares, blockStyleClass){
     ) square.className = 'board-square'
     else if (
       blockStyleClass === 'has-active-block' &&
-      square.classList.contains('projection')
+      square.classList.contains('has-projection')
     ) {
       square.classList.remove(
-        'projection',
+        'has-projection',
         'i-projection',
         'j-projection',
         'l-projection',
@@ -360,10 +360,9 @@ function projectDrop(boardSquares, block) {
     move(boardSquares, projectionBlock, 'down', false, true)
   }
   //!!! make below part of clear or something like that. Can we just include this in the normal clear and get rid of this clear true / false stuff in clear?
-  clearBlocks(boardSquares, 'projection')
+  clearBlocks(boardSquares, 'has-projection')
   projectionBlock.indexesOccupied.forEach(index => {
-    //!!! Change project CSS class to has-projection
-    if (index > 0) boardSquares[index].classList.add('projection', projectionBlock.projectionStyleClass)
+    if (index > 0) boardSquares[index].classList.add('has-projection', projectionBlock.projectionStyleClass)
   })
 }
 
@@ -429,8 +428,7 @@ function dropLockedLines(boardSquares, removedLines) {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  // !!! Reorganise dom consts by order on the page
-  const board = document.querySelector('#board')
+  const board = document.querySelector('.game-board')
   const boardSquares = buildBoard(board)
   const scoreDisplay = document.querySelector('#score-display')
   const levelDisplay = document.querySelector('#level-display')
@@ -442,7 +440,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const gameOverLevelDisplay = document.querySelector('#game-over-level-display')
   const gameOverLinesClearedDisplay = document.querySelector('#game-over-lines-cleared-display')
   const playAgainButton = document.querySelector('#play-again')
-  // !!! change name once these are being built automatically
   const queuedBlocks = [Array.from(document.querySelectorAll('.queued-board:nth-child(1) div')), Array.from(document.querySelectorAll('.queued-board:nth-child(2) div')), Array.from(document.querySelectorAll('.queued-board:nth-child(3) div'))]
 
   function levelUp(currentLevel) {
@@ -483,10 +480,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function startBlockFall(boardSquares) {
     activeBlock = generateBlock(queuedBlocks, width / 2)
-    // !!! This is only ness becuase you've chosen the starting co-ords for it's rotations unwisely. It's probably best to cylce them so that 2 is 0. This will require you to change the logic on the rotation blocking function. Be Warned. Although on third throughts. I'm not sure it's even doing anything
     if(activeBlock instanceof IBlock) {
       activeBlock.homeInext - width
-      // !!! This is only ness becuase you've chosen the starting co-ords for it's rotations unwisely. It's probably best to cylce them so that 2 is 0. This will require you to change the logic on the rotation blocking function. Be Warned
       move(boardSquares, activeBlock, 'left')
     }
     move(boardSquares, activeBlock)
