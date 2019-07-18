@@ -1,0 +1,260 @@
+$squareWidth: 30px;
+$testColor: #ffe599;
+$squareBorder: 1px solid rgba(100,100, 100, 0.8);
+$boardColor: rgba(20,20,20,0.3);
+$secondaryColor: rgba(200, 200, 200, 0.7);
+
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  font-family: 'Concert One', cursive;
+  color: #31384f;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  height: 100vh;
+  background: url('../images/adrian-pelletier-HWXSmUoP66E-unsplash.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  // background-position: -900px;
+  background-color: #1f1f1f;
+
+  h1 {
+    margin: -50px 0 20px 0;
+    padding: 0 20px 0 20px;
+    font-size: 100px;
+    border: 5px solid $secondaryColor;
+    border-left: none;
+    border-right: none;
+    border-radius: 20px;
+
+    span:nth-child(1) {
+      color: rgba(91, 208, 255, 0.95);
+    }
+
+    span:nth-child(2) {
+      color: rgba(239, 81, 53, 0.95);
+    }
+
+    span:nth-child(3) {
+      color: rgba(40, 222, 184, 0.95);
+    }
+
+    span:nth-child(4) {
+      color: rgba(253, 228, 35, 0.95);
+    }
+
+    span:nth-child(5) {
+      color: rgba(225, 133, 226, 0.95);
+    }
+
+    span:nth-child(6) {
+      color: rgba(255, 143, 43, 0.95);
+    }
+  }
+
+  div.wrapper {
+    display: flex;
+    flex-direction: column;
+    width: $squareWidth * 17;
+    height:$squareWidth * 20;
+
+    div#play-area {
+      display: flex;
+      justify-content: space-around;
+
+      div.i-projection {
+        background-color: rgba(91, 208, 255, 0.3);
+      }
+
+      div.j-projection {
+        background-color: rgba(239, 81, 53, 0.3);
+      }
+
+      div.l-projection {
+        background-color: rgba(40, 222, 184, 0.3);
+      }
+
+      div.o-projection {
+        background-color: rgba(253, 228, 35, 0.3);
+      }
+
+      div.s-projection {
+        background-color: rgba(225, 133, 226, 0.3);
+      }
+
+      div.t-projection {
+        background-color: rgba(255, 143, 43, 0.3);
+      }
+
+      div.z-projection {
+        background-color: rgba(160, 242, 128, 0.3);
+      }
+
+      div.i-square {
+        background-color: rgba(91, 208, 255, 0.85);
+      }
+
+      div.j-square {
+        background-color: rgba(239, 81, 53, 0.85);
+      }
+
+      div.l-square {
+        background-color: rgba(40, 222, 184, 0.85);
+      }
+
+      div.o-square {
+        background-color: rgba(253, 228, 35, 0.85);
+      }
+
+      div.s-square {
+        background-color: rgba(225, 133, 226, 0.85);
+      }
+
+      div.t-square {
+        background-color: rgba(255, 143, 43, 0.85);
+      }
+
+      div.z-square {
+        background-color: rgba(160, 242, 128, 0.85);
+      }
+
+      div#game {
+
+        div#board {
+          display: flex;
+          flex-flow: row wrap;
+          background-color: $boardColor;
+          width: $squareWidth * 10.15;
+          border: 2px solid $secondaryColor;
+          // border-left: none;
+          // border-bottom: none;
+
+          div.board-square {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: $squareWidth;
+            height: $squareWidth;
+            border: $squareBorder;
+            border-right: none;
+            border-top: none;
+          }
+        }
+
+        button#start-reset {
+          width: 100%;
+          margin-top: 10px;
+          font-size: 20px;
+          border-radius: 10px;
+          opacity: 0.9;
+          background-color: $secondaryColor;
+          outline: none
+        }
+
+      }
+
+      div.nongame-displays {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 38%;
+        height: 60%;
+        border: 7px solid $secondaryColor;
+        background-color: $boardColor;
+
+        div.next-three-display {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-around;
+          align-items: center;
+          width: 100%;
+          height: $squareWidth * 8;
+
+          div.queued-block {
+            display: flex;
+            flex-flow: row wrap;
+            width: $squareWidth * 4.04;
+            border: $squareBorder;
+            border-left: none;
+            border-bottom: none;
+
+            div.next-display-square {
+              width: $squareWidth;
+              height: $squareWidth;
+              border: $squareBorder;
+              border-right: none;
+              border-top: none;
+            }
+          }
+        }
+
+        div.scoring-display {
+          background-color: $secondaryColor;
+
+          p {
+            font-size: 25px;
+
+            span {
+              margin-left: 4px;
+            }
+          }
+        }
+      }
+    }
+  }
+  div#game-over-display {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background: rgba(193, 193, 193, 0.4);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+
+    div:nth-child(1) {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      // align-content: center;
+      width: 50%;
+      height: 50%;
+      font-size: 50px;
+      background: rgba(193, 193, 193, 1);
+      border-radius: 125px;
+
+      div {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: space-around;
+      }
+
+      h2, div p {
+        text-align: center;
+
+        span {
+          margin-left: 10px;
+        }
+      }
+
+      button {
+        width: 50%;
+        margin: 0 auto;
+        font-size: 30px;
+        border-radius: 150px;
+        outline: none;
+      }
+    }
+  }
+}

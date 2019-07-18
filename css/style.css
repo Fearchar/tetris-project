@@ -1,3 +1,167 @@
 * {
-  background: gold;
-}
+  box-sizing: border-box;
+  margin: 0;
+  font-family: 'Concert One', cursive;
+  color: #31384f; }
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  height: 100vh;
+  background: url("../images/adrian-pelletier-HWXSmUoP66E-unsplash.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-color: #1f1f1f; }
+  body h1 {
+    margin: -50px 0 20px 0;
+    padding: 0 20px 0 20px;
+    font-size: 100px;
+    border: 5px solid rgba(200, 200, 200, 0.7);
+    border-left: none;
+    border-right: none;
+    border-radius: 20px; }
+    body h1 span:nth-child(1) {
+      color: rgba(91, 208, 255, 0.95); }
+    body h1 span:nth-child(2) {
+      color: rgba(239, 81, 53, 0.95); }
+    body h1 span:nth-child(3) {
+      color: rgba(40, 222, 184, 0.95); }
+    body h1 span:nth-child(4) {
+      color: rgba(253, 228, 35, 0.95); }
+    body h1 span:nth-child(5) {
+      color: rgba(225, 133, 226, 0.95); }
+    body h1 span:nth-child(6) {
+      color: rgba(255, 143, 43, 0.95); }
+  body div.wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 510px;
+    height: 600px; }
+    body div.wrapper div#play-area {
+      display: flex;
+      justify-content: space-around; }
+      body div.wrapper div#play-area div.i-projection {
+        background-color: rgba(91, 208, 255, 0.3); }
+      body div.wrapper div#play-area div.j-projection {
+        background-color: rgba(239, 81, 53, 0.3); }
+      body div.wrapper div#play-area div.l-projection {
+        background-color: rgba(40, 222, 184, 0.3); }
+      body div.wrapper div#play-area div.o-projection {
+        background-color: rgba(253, 228, 35, 0.3); }
+      body div.wrapper div#play-area div.s-projection {
+        background-color: rgba(225, 133, 226, 0.3); }
+      body div.wrapper div#play-area div.t-projection {
+        background-color: rgba(255, 143, 43, 0.3); }
+      body div.wrapper div#play-area div.z-projection {
+        background-color: rgba(160, 242, 128, 0.3); }
+      body div.wrapper div#play-area div.i-square {
+        background-color: rgba(91, 208, 255, 0.85); }
+      body div.wrapper div#play-area div.j-square {
+        background-color: rgba(239, 81, 53, 0.85); }
+      body div.wrapper div#play-area div.l-square {
+        background-color: rgba(40, 222, 184, 0.85); }
+      body div.wrapper div#play-area div.o-square {
+        background-color: rgba(253, 228, 35, 0.85); }
+      body div.wrapper div#play-area div.s-square {
+        background-color: rgba(225, 133, 226, 0.85); }
+      body div.wrapper div#play-area div.t-square {
+        background-color: rgba(255, 143, 43, 0.85); }
+      body div.wrapper div#play-area div.z-square {
+        background-color: rgba(160, 242, 128, 0.85); }
+      body div.wrapper div#play-area div#game div#board {
+        display: flex;
+        flex-flow: row wrap;
+        background-color: rgba(20, 20, 20, 0.3);
+        width: 304.5px;
+        border: 2px solid rgba(200, 200, 200, 0.7); }
+        body div.wrapper div#play-area div#game div#board div.board-square {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 30px;
+          height: 30px;
+          border: 1px solid rgba(100, 100, 100, 0.8);
+          border-right: none;
+          border-top: none; }
+      body div.wrapper div#play-area div#game button#start-reset {
+        width: 100%;
+        margin-top: 10px;
+        font-size: 20px;
+        border-radius: 10px;
+        opacity: 0.9;
+        background-color: rgba(200, 200, 200, 0.7);
+        outline: none; }
+      body div.wrapper div#play-area div.nongame-displays {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 38%;
+        height: 60%;
+        border: 7px solid rgba(200, 200, 200, 0.7);
+        background-color: rgba(20, 20, 20, 0.3); }
+        body div.wrapper div#play-area div.nongame-displays div.next-three-display {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-around;
+          align-items: center;
+          width: 100%;
+          height: 240px; }
+          body div.wrapper div#play-area div.nongame-displays div.next-three-display div.queued-block {
+            display: flex;
+            flex-flow: row wrap;
+            width: 121.2px;
+            border: 1px solid rgba(100, 100, 100, 0.8);
+            border-left: none;
+            border-bottom: none; }
+            body div.wrapper div#play-area div.nongame-displays div.next-three-display div.queued-block div.next-display-square {
+              width: 30px;
+              height: 30px;
+              border: 1px solid rgba(100, 100, 100, 0.8);
+              border-right: none;
+              border-top: none; }
+        body div.wrapper div#play-area div.nongame-displays div.scoring-display {
+          background-color: rgba(200, 200, 200, 0.7); }
+          body div.wrapper div#play-area div.nongame-displays div.scoring-display p {
+            font-size: 25px; }
+            body div.wrapper div#play-area div.nongame-displays div.scoring-display p span {
+              margin-left: 4px; }
+  body div#game-over-display {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background: rgba(193, 193, 193, 0.4);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center; }
+    body div#game-over-display div:nth-child(1) {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      width: 50%;
+      height: 50%;
+      font-size: 50px;
+      background: #c1c1c1;
+      border-radius: 125px; }
+      body div#game-over-display div:nth-child(1) div {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: space-around; }
+      body div#game-over-display div:nth-child(1) h2, body div#game-over-display div:nth-child(1) div p {
+        text-align: center; }
+        body div#game-over-display div:nth-child(1) h2 span, body div#game-over-display div:nth-child(1) div p span {
+          margin-left: 10px; }
+      body div#game-over-display div:nth-child(1) button {
+        width: 50%;
+        margin: 0 auto;
+        font-size: 30px;
+        border-radius: 150px;
+        outline: none; }
+
+/*# sourceMappingURL=style.css.map */
