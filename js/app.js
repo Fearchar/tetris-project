@@ -1,5 +1,4 @@
 // #### Constructors ####
-// !!! render / paint block function
 
 class Block {
   constructor(homeIndex, possibleRotations) {
@@ -12,7 +11,6 @@ class Block {
   }
   rotate(boardSquares) {
     if (newPositionIfCanRotate(boardSquares, this)) {
-      // !!! If the below stays as it is you can have a function that just paints the block where ever it is and use it on this and move (and correctPlacement? If that still exists)
       this.indexesOccupied.forEach(index => {
         if (index >= 0) boardSquares[index].classList.add('has-active-block', this.styleClass)
       })
@@ -133,8 +131,7 @@ class ZBlock extends Block {
   }
 }
 
-
-/// ### Global Variables
+/// #### Global Variables ####
 const width = 10
 const height = 20
 let dropInterval = null
@@ -146,7 +143,7 @@ let level = 1
 const levelsAtLines = [1, 5, 10, 15, 25, 35, 50, 70, 100]
 const blockConstructors = [TBlock, IBlock, JBlock, LBlock, SBlock, ZBlock, OBlock]
 
-// ### Global Functions
+// #### Global Functions ###
 
 function buildBoard(boardSelector) {
   const boardSquares = []
@@ -158,8 +155,7 @@ function buildBoard(boardSelector) {
   }
   return boardSquares
 }
-//!!! Add a lockBlock version for end game
-/// !!! Or even better, refactor so that one version suits every situation. I also don't like the second pram
+
 function clearBlocks(squares, blockStyleClass){
   squares.forEach(square => {
     if (
@@ -231,7 +227,6 @@ function canBlockMove(boardSquares, direction, index) {
   else return false
 }
 
-// !!! This clear = true stuff, and projection block stuff is janky!
 function move(boardSquares, block, direction, clear=true, calledByDropP=false) {
   const newHomeIndex = newHomeIfCanMove(boardSquares, block, direction)
   if (newHomeIndex) {
@@ -257,7 +252,6 @@ function newHomeIfCanMove(boardSquares, block, direction) {
 function rotatingIntoWall(indexesToOccupy) {
   let atLeftWall
   let atRightWall
-  // ### Checking if in wall
   for (const squareIndex of indexesToOccupy) {
     if (squareIndex % width === 0) {
       atLeftWall = squareIndex
@@ -359,7 +353,6 @@ function projectDrop(boardSquares, block) {
   for (let i = 0; i < height - 1 && !asLowAsCanGo(boardSquares, projectionBlock); i ++) {
     move(boardSquares, projectionBlock, 'down', false, true)
   }
-  //!!! make below part of clear or something like that. Can we just include this in the normal clear and get rid of this clear true / false stuff in clear?
   clearBlocks(boardSquares, 'has-projection')
   projectionBlock.indexesOccupied.forEach(index => {
     if (index > 0) boardSquares[index].classList.add('has-projection', projectionBlock.projectionStyleClass)
@@ -381,9 +374,7 @@ function shuffleBlocks(blockConstructors) {
   return blockSequence
 }
 
-// !!! Change name
 function queueBlocks(queuedBlocks) {
-  // !! change board pram name?
   queuedBlocks.forEach((queueBoard, i) => {
     queueBoard.forEach(square => {
       square.className = 'next-display-square'
@@ -426,8 +417,10 @@ function dropLockedLines(boardSquares, removedLines) {
   })
 }
 
-
 document.addEventListener('DOMContentLoaded', () => {
+
+  // #### DOM Dependant Variables ####
+
   const board = document.querySelector('.game-board')
   const boardSquares = buildBoard(board)
   const scoreDisplay = document.querySelector('#score-display')
@@ -442,6 +435,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const playAgainButton = document.querySelector('#play-again')
   const queuedBlocks = [Array.from(document.querySelectorAll('.queued-board:nth-child(1) div')), Array.from(document.querySelectorAll('.queued-board:nth-child(2) div')), Array.from(document.querySelectorAll('.queued-board:nth-child(3) div'))]
 
+  // #### DOM Dependant Functions ####
+
   function levelUp(currentLevel) {
     clearInterval(dropInterval)
     dropInterval = setInterval(dropBlock, 500 - (currentLevel * 60))
@@ -452,7 +447,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const linesToRemove = checkForCompleteLines(boardSquares)
     if (linesToRemove) {
       linesToRemove.forEach(line => {
-        //!!! Could be added to the clear
         for (var i = 0; i < width; i++) {
           boardSquares[(line * width) + i].className = 'board-square'
         }
@@ -499,7 +493,6 @@ document.addEventListener('DOMContentLoaded', () => {
     nextLevelDisplay.textContent = levelsAtLines[level] - linesCleared || '∞'
   }
 
-  //!! Consider changing the name so that it reflects that it actually handles the whole itteration of the game
   function dropBlock() {
     if (asLowAsCanGo(boardSquares, activeBlock)) {
       if (checkForGameOver(activeBlock)) {
@@ -582,6 +575,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   }
+
+  // #### Event Listeners ####
 
   startResetButton.addEventListener('click', toggleStartReset)
   playAgainButton.addEventListener('click', startGame)
