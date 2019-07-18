@@ -28,7 +28,8 @@ body {
   h1 {
     margin: -50px 0 20px 0;
     padding: 0 20px 0 20px;
-    font-size: 100px;
+    font-size: 90px;
+    letter-spacing: 5px;
     border: 5px solid $secondaryColor;
     border-left: none;
     border-right: none;
@@ -62,12 +63,12 @@ body {
   div.wrapper {
     display: flex;
     flex-direction: column;
-    width: $squareWidth * 17;
-    height:$squareWidth * 20;
 
     div#play-area {
       display: flex;
       justify-content: space-around;
+      width: $squareWidth * 19;
+      height:$squareWidth * 20;
 
       div.i-projection {
         background-color: rgba(91, 208, 255, 0.3);
@@ -164,7 +165,7 @@ body {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        width: 38%;
+        width: 37%;
         height: 60%;
         border: 7px solid $secondaryColor;
         background-color: $boardColor;
