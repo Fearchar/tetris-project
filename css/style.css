@@ -90,7 +90,10 @@ body {
         width: 100%;
         margin-top: 10px;
         font-size: 20px;
-        border-radius: 10px; }
+        border-radius: 10px;
+        opacity: 0.9;
+        background-color: rgba(200, 200, 200, 0.7);
+        outline: none; }
       body div.wrapper div#play-area div.nongame-displays {
         display: flex;
         flex-direction: column;
@@ -144,7 +147,7 @@ body {
       height: 50%;
       font-size: 50px;
       background: #c1c1c1;
-      border-radius: 200px; }
+      border-radius: 125px; }
       body div#game-over-display div:nth-child(1) div {
         display: flex;
         flex-direction: column;
@@ -158,6 +161,7 @@ body {
         width: 50%;
         margin: 0 auto;
         font-size: 30px;
-        border-radius: 150px; }
+        border-radius: 150px;
+        outline: none; }
 
 /*# sourceMappingURL=style.css.map */

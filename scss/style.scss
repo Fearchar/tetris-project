@@ -153,6 +153,9 @@ body {
           margin-top: 10px;
           font-size: 20px;
           border-radius: 10px;
+          opacity: 0.9;
+          background-color: $secondaryColor;
+          outline: none
         }
 
       }
@@ -228,7 +231,7 @@ body {
       height: 50%;
       font-size: 50px;
       background: rgba(193, 193, 193, 1);
-      border-radius: 200px;
+      border-radius: 125px;
 
       div {
         display: flex;
@@ -250,6 +253,7 @@ body {
         margin: 0 auto;
         font-size: 30px;
         border-radius: 150px;
+        outline: none;
       }
     }
   }
