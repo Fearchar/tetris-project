@@ -1,9 +1,8 @@
-$squareWidth: 35px;
-$boardWidth: 10;
+$squareWidth: 30px;
 $testColor: #ffe599;
 $squareBorder: 1px solid rgba(100,100, 100, 0.8);
 $boardColor: rgba(20,20,20,0.3);
-$secondaryColor: rgba(193, 193, 193, 0.7);
+$secondaryColor: rgba(200, 200, 200, 0.7);
 
 
 * {
@@ -25,6 +24,40 @@ body {
   background-repeat: no-repeat;
   // background-position: -900px;
   background-color: #1f1f1f;
+
+  h1 {
+    margin: -50px 0 20px 0;
+    padding: 0 20px 0 20px;
+    font-size: 100px;
+    border: 5px solid $secondaryColor;
+    border-left: none;
+    border-right: none;
+    border-radius: 20px;
+
+    span:nth-child(1) {
+      color: rgba(91, 208, 255, 0.95);
+    }
+
+    span:nth-child(2) {
+      color: rgba(239, 81, 53, 0.95);
+    }
+
+    span:nth-child(3) {
+      color: rgba(40, 222, 184, 0.95);
+    }
+
+    span:nth-child(4) {
+      color: rgba(253, 228, 35, 0.95);
+    }
+
+    span:nth-child(5) {
+      color: rgba(225, 133, 226, 0.95);
+    }
+
+    span:nth-child(6) {
+      color: rgba(255, 143, 43, 0.95);
+    }
+  }
 
   div.wrapper {
     display: flex;
@@ -97,9 +130,8 @@ body {
         div#board {
           display: flex;
           flex-flow: row wrap;
-          width: $squareWidth * $boardWidth;
           background-color: $boardColor;
-          width: $squareWidth * 10.1145;
+          width: $squareWidth * 10.15;
           border: 2px solid $secondaryColor;
           // border-left: none;
           // border-bottom: none;
@@ -118,6 +150,9 @@ body {
 
         button#start-reset {
           width: 100%;
+          margin-top: 10px;
+          font-size: 20px;
+          border-radius: 10px;
         }
 
       }
@@ -126,6 +161,7 @@ body {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        width: 38%;
         height: 60%;
         border: 7px solid $secondaryColor;
         background-color: $boardColor;
@@ -135,7 +171,7 @@ body {
           flex-direction: column;
           justify-content: space-around;
           align-items: center;
-          width: $squareWidth * 5;
+          width: 100%;
           height: $squareWidth * 8;
 
           div.queued-block {
