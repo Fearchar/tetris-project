@@ -1,7 +1,7 @@
 $squareWidth: 35px;
 $boardWidth: 10;
 $testColor: #ffe599;
-$squareBorder: 1px solid grey;
+$squareBorder: 1px solid rgba(100,100, 100, 0.8);
 
 
 * {
@@ -14,6 +14,11 @@ body {
   justify-content: space-around;
   margin: 0;
   height: 100vh;
+  background: url('../adrian-pelletier-HWXSmUoP66E-unsplash.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  // background-position: -900px;
+  background-color: #1f1f1f;
 
   div.wrapper {
     display: flex;
@@ -25,29 +30,27 @@ body {
       justify-content: space-around;
 
       div#game {
-        background: white;
+
+        div.board-square {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: $squareWidth;
+          height: $squareWidth;
+          border: $squareBorder;
+          border-right: none;
+          border-top: none;
+        }
 
         div#board {
           display: flex;
           flex-flow: row wrap;
           width: $squareWidth * $boardWidth;
-          background-color: #F7ECE1;
+          background-color: rgba(20,20,20,0.3);
           width: $squareWidth * 10.04;
           border: $squareBorder;
           border-left: none;
           border-bottom: none;
-
-          div.board-square {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: $squareWidth;
-            height: $squareWidth;
-            border: 1px solid grey;
-            border-right: none;
-            border-top: none;
-            color: grey;
-          }
         }
 
         button#start-reset {
@@ -62,76 +65,83 @@ body {
         align-items: center;
         width: $squareWidth * 5;
         height: $squareWidth * 8;
-        border: 2px solid black;
-        background: white;
 
         div.queued-block {
           display: flex;
           flex-flow: row wrap;
-          width: $squareWidth * 4;
+          width: $squareWidth * 4.05;
+          border: $squareBorder;
+          border-left: none;
+          border-bottom: none;
 
           div.next-display-square {
             width: $squareWidth;
             height: $squareWidth;
             border: $squareBorder;
+            border-right: none;
+            border-top: none;
           }
         }
       }
 
+      & div:nth-child(2) div:nth-child(2) {
+        border: ($squareWidth / 2) solid rgba(255,255,255, 0.8);
+        background: white;
+      }
       div.i-projection {
-        background-color: pink;
+        background-color: rgba(91, 208, 255, 0.3);
       }
 
       div.j-projection {
-        background-color: #B7B868;
+        background-color: rgba(239, 81, 53, 0.3);
       }
 
       div.l-projection {
-        background-color: lightblue;
+        background-color: rgba(40, 222, 184, 0.3);
       }
 
       div.o-projection {
-        background-color: lightyellow;
+        background-color: rgba(253, 228, 35, 0.3);
       }
 
       div.s-projection {
-        background-color: #c53fc5;
+        background-color: rgba(225, 133, 226, 0.3);
       }
 
       div.t-projection {
-        background-color: #F2B880;
+        background-color: rgba(255, 143, 43, 0.3);
       }
 
       div.z-projection {
-        background-color: #B7B868;
+        background-color: rgba(160, 242, 128, 0.3);
       }
 
       div.i-square {
-        background-color: #5EB1BF;
+        background-color: rgba(91, 208, 255, 0.85);
       }
 
       div.j-square {
-        background-color: #03CEA4;
+        background-color: rgba(239, 81, 53, 0.85);
       }
 
       div.l-square {
-        background-color: #ec8473;
+        background-color: rgba(40, 222, 184, 0.85);
       }
 
       div.o-square {
-        background-color: #FFE066;
+        background-color: rgba(253, 228, 35, 0.85);
       }
 
       div.s-square {
-        background-color: #bbacef;
+        background-color: rgba(225, 133, 226, 0.85);
       }
 
       div.t-square {
-        background-color: #E0BAD7;
+        background-color: rgba(255, 143, 43, 0.85);
       }
 
       div.z-square {
-        background-color: #F2B880;
+        background-color: rgba(160, 242, 128, 0.85);
       }
     }
 
@@ -142,8 +152,6 @@ body {
       display: flex;
       flex-direction: column;
       width: $squareWidth * 6;
-      background-color: white;
-      border: 4px solid black;
     }
   }
 }

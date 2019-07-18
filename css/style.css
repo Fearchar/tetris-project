@@ -6,7 +6,11 @@ body {
   display: flex;
   justify-content: space-around;
   margin: 0;
-  height: 100vh; }
+  height: 100vh;
+  background: url("../adrian-pelletier-HWXSmUoP66E-unsplash.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-color: #1f1f1f; }
   body div.wrapper {
     display: flex;
     flex-direction: column;
@@ -14,82 +18,83 @@ body {
     body div.wrapper div#play-area {
       display: flex;
       justify-content: space-around; }
-      body div.wrapper div#play-area div#game {
-        background: white; }
-        body div.wrapper div#play-area div#game div#board {
-          display: flex;
-          flex-flow: row wrap;
-          width: 350px;
-          background-color: #F7ECE1;
-          width: 351.4px;
-          border: 1px solid grey;
-          border-left: none;
-          border-bottom: none; }
-          body div.wrapper div#play-area div#game div#board div.board-square {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 35px;
-            height: 35px;
-            border: 1px solid grey;
-            border-right: none;
-            border-top: none;
-            color: grey; }
-        body div.wrapper div#play-area div#game button#start-reset {
-          width: 100%; }
+      body div.wrapper div#play-area div#game div.board-square {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 35px;
+        height: 35px;
+        border: 1px solid rgba(100, 100, 100, 0.8);
+        border-right: none;
+        border-top: none; }
+      body div.wrapper div#play-area div#game div#board {
+        display: flex;
+        flex-flow: row wrap;
+        width: 350px;
+        background-color: rgba(20, 20, 20, 0.3);
+        width: 351.4px;
+        border: 1px solid rgba(100, 100, 100, 0.8);
+        border-left: none;
+        border-bottom: none; }
+      body div.wrapper div#play-area div#game button#start-reset {
+        width: 100%; }
       body div.wrapper div#play-area div#next-three-display {
         display: flex;
         flex-direction: column;
         justify-content: space-around;
         align-items: center;
         width: 175px;
-        height: 280px;
-        border: 2px solid black;
-        background: white; }
+        height: 280px; }
         body div.wrapper div#play-area div#next-three-display div.queued-block {
           display: flex;
           flex-flow: row wrap;
-          width: 140px; }
+          width: 141.75px;
+          border: 1px solid rgba(100, 100, 100, 0.8);
+          border-left: none;
+          border-bottom: none; }
           body div.wrapper div#play-area div#next-three-display div.queued-block div.next-display-square {
             width: 35px;
             height: 35px;
-            border: 1px solid grey; }
+            border: 1px solid rgba(100, 100, 100, 0.8);
+            border-right: none;
+            border-top: none; }
+      body div.wrapper div#play-area div:nth-child(2) div:nth-child(2) {
+        border: 17.5px solid rgba(255, 255, 255, 0.8);
+        background: white; }
       body div.wrapper div#play-area div.i-projection {
-        background-color: pink; }
+        background-color: rgba(91, 208, 255, 0.3); }
       body div.wrapper div#play-area div.j-projection {
-        background-color: #B7B868; }
+        background-color: rgba(239, 81, 53, 0.3); }
       body div.wrapper div#play-area div.l-projection {
-        background-color: lightblue; }
+        background-color: rgba(40, 222, 184, 0.3); }
       body div.wrapper div#play-area div.o-projection {
-        background-color: lightyellow; }
+        background-color: rgba(253, 228, 35, 0.3); }
       body div.wrapper div#play-area div.s-projection {
-        background-color: #c53fc5; }
+        background-color: rgba(225, 133, 226, 0.3); }
       body div.wrapper div#play-area div.t-projection {
-        background-color: #F2B880; }
+        background-color: rgba(255, 143, 43, 0.3); }
       body div.wrapper div#play-area div.z-projection {
-        background-color: #B7B868; }
+        background-color: rgba(160, 242, 128, 0.3); }
       body div.wrapper div#play-area div.i-square {
-        background-color: #5EB1BF; }
+        background-color: rgba(91, 208, 255, 0.85); }
       body div.wrapper div#play-area div.j-square {
-        background-color: #03CEA4; }
+        background-color: rgba(239, 81, 53, 0.85); }
       body div.wrapper div#play-area div.l-square {
-        background-color: #ec8473; }
+        background-color: rgba(40, 222, 184, 0.85); }
       body div.wrapper div#play-area div.o-square {
-        background-color: #FFE066; }
+        background-color: rgba(253, 228, 35, 0.85); }
       body div.wrapper div#play-area div.s-square {
-        background-color: #bbacef; }
+        background-color: rgba(225, 133, 226, 0.85); }
       body div.wrapper div#play-area div.t-square {
-        background-color: #E0BAD7; }
+        background-color: rgba(255, 143, 43, 0.85); }
       body div.wrapper div#play-area div.z-square {
-        background-color: #F2B880; }
+        background-color: rgba(160, 242, 128, 0.85); }
     body div.wrapper div#game-over-display {
       position: relative;
       top: -400px;
       left: 113.05px;
       display: flex;
       flex-direction: column;
-      width: 210px;
-      background-color: white;
-      border: 4px solid black; }
+      width: 210px; }
 
 /*# sourceMappingURL=style.css.map */
