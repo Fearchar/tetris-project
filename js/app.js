@@ -557,7 +557,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function handleInput(e) {
+  function handleKeyInput(e) {
     if(activeBlock) {
       switch(e.keyCode) {
         case 37:
@@ -580,5 +580,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
   startResetButton.addEventListener('click', toggleStartReset)
   playAgainButton.addEventListener('click', startGame)
-  document.addEventListener('keydown', handleInput)
+  document.addEventListener('keydown', handleKeyInput)
 })
