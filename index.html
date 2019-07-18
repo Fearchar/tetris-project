@@ -3,11 +3,11 @@
   <head>
     <meta charset="utf-8">
     <title>Tetris</title>
+    <link href="https://fonts.googleapis.com/css?family=Concert+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <script src="js/app.js" charset="utf-8"></script>
   </head>
   <body>
-    <div>
       <div class="wrapper">
         <div id="play-area">
           <div id="game">
@@ -17,8 +17,8 @@
               <button id="start-reset">Start</button>
             </div>
           </div>
-          <div>
-            <div id="next-three-display">
+          <div class="nongame-displays">
+            <div id="next-three-display" class="next-three-display">
               <div class="queued-block">
                 <div class="next-display-square"></div>
                 <div class="next-display-square"></div>
@@ -50,25 +50,26 @@
                 <div class="next-display-square"></div>
               </div>
             </div>
-            <div>
+            <div class="scoring-display">
               <p>Score:<span id="score-display">0</span></p>
-              <p>Level:<span id="level-display">1</span></p>
               <p>Lines Cleared:<span id="lines-cleared-display">0</span></p>
-              <p>Lines Till Next Level:<span id="next-level-display">5</span></p>
-              <p>Next Three Blocks:<span ></span></p>
+              <p>Level:<span id="level-display">1</span></p>
+              <p>Level Up In:<span id="next-level-display">5</span></p>
             </div>
           </div>
         </div>
-        <div id="game-over-display" style="display: none;">
-          <h2>Game over</h2>
+      </div>
+      <div id="game-over-display">
+        <div>
+          <h2>Game Over</h2>
           <div>
             <p>Score:<span id="game-over-score-display">0</span></p>
             <p>Level:<span id="game-over-level-display">1</span></p>
             <p>Lines Cleared:<span id="game-over-lines-cleared-display">0</span></p>
           </div>
-            <button id="play-again">Play Again</button>
+          <button id="play-again">Play Again</button>
         </div>
-      </div>
+    </div>
   </body>
 </html>
 </html>
