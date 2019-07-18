@@ -110,14 +110,14 @@ body {
           align-items: center;
           width: 100%;
           height: 240px; }
-          body div.wrapper div#play-area div.nongame-displays div.next-three-display div.queued-block {
+          body div.wrapper div#play-area div.nongame-displays div.next-three-display div.queued-board {
             display: flex;
             flex-flow: row wrap;
             width: 121.2px;
             border: 1px solid rgba(100, 100, 100, 0.8);
             border-left: none;
             border-bottom: none; }
-            body div.wrapper div#play-area div.nongame-displays div.next-three-display div.queued-block div.next-display-square {
+            body div.wrapper div#play-area div.nongame-displays div.next-three-display div.queued-board div.next-display-square {
               width: 30px;
               height: 30px;
               border: 1px solid rgba(100, 100, 100, 0.8);

@@ -1,7 +1,6 @@
 // #### Constructors ####
 // !!! render / paint block function
 
-// !!! Consider adding boardSquares to the parameters for the block class so that it can increase in purity and move up out of the dom to it's rightful place near the top of the code.
 class Block {
   constructor(homeIndex, possibleRotations) {
     this.homeIndex = homeIndex
@@ -11,8 +10,6 @@ class Block {
   get indexesOccupied() {
     return calculateBlockIndexes(this, this.rotationIndex, this.homeIndex)
   }
-
-  // !!! Might want to make it so that the blocks check if they can rotate before rotating, rather than going through the motions and adjusting
   rotate(boardSquares) {
     if (newPositionIfCanRotate(boardSquares, this)) {
       // !!! If the below stays as it is you can have a function that just paints the block where ever it is and use it on this and move (and correctPlacement? If that still exists)
@@ -23,8 +20,6 @@ class Block {
     projectDrop(boardSquares, this)
   }
 }
-
-// !!! swap minus widths with units so it goes X Y not Y X
 
 class IBlock extends Block {
   constructor(homeIndex, boardWidth=width) {
@@ -158,7 +153,6 @@ function buildBoard(boardSelector) {
   for (var i = 0; i < width * height; i++) {
     const square = document.createElement('div')
     square.className = 'board-square'
-    //!!! square.textContent = i
     boardSelector.appendChild(square)
     boardSquares.push(square)
   }
@@ -174,10 +168,10 @@ function clearBlocks(squares, blockStyleClass){
     ) square.className = 'board-square'
     else if (
       blockStyleClass === 'has-active-block' &&
-      square.classList.contains('project')
+      square.classList.contains('projection')
     ) {
       square.classList.remove(
-        'project',
+        'projection',
         'i-projection',
         'j-projection',
         'l-projection',
@@ -195,7 +189,6 @@ function clearBlocks(squares, blockStyleClass){
 }
 
 function checkIfMovingIntoWall(direction, squareIndex) {
-  // !!! Change squareIndex name
   if ((squareIndex + width) % width === width - 1 && direction === 'left') {
     return true
   } else if (squareIndex % width === 0 && direction === 'right') {
@@ -204,12 +197,10 @@ function checkIfMovingIntoWall(direction, squareIndex) {
   return false
 }
 
-//!! If classes get moved up to the top this may need to moved
 function calculateBlockIndexes(block, rotationIndex, homeIndex) {
   return block.rotations[rotationIndex].map(index => index + homeIndex)
 }
 
-// !!! Change updateHome name to something to do with moving
 function updateHome(direction, block) {
   let newHomeIndex = block.homeIndex
   switch(direction) {
@@ -256,9 +247,8 @@ function move(boardSquares, block, direction, clear=true, calledByDropP=false) {
 }
 
 function newHomeIfCanMove(boardSquares, block, direction) {
-  // !!! Also bring the logic that stops it from going through the bottom into here maybe?
   const potentialHomeIndex = updateHome(direction, block)
-  const indexesToOccupy =  calculateBlockIndexes(block, block.rotationIndex, potentialHomeIndex)
+  const indexesToOccupy = calculateBlockIndexes(block, block.rotationIndex, potentialHomeIndex)
   return !indexesToOccupy.some(index => {
     return canBlockMove(boardSquares, direction, index)
   }) ? potentialHomeIndex : false
@@ -278,9 +268,6 @@ function rotatingIntoWall(indexesToOccupy) {
   return !atLeftWall || !atRightWall
 }
 
-// !!! Update and move are doing awfully similar things. Intergrate somehow?
-// !!! everything relating to the checks for movement and walls are super dodgey. Firstly they need to happen repeatedly. Secondly they won't work for anything other than walls (so not the blocks at the bottom), thirdly I've added this really dodgey  boolean to move to ignore the checkIfMovingIntoWall. I need a major restructure / rethink
-//!!! Change name
 function correctPlacement(block, direction, amount=1) {
   if (direction === 'right') {
     return block.homeIndex + amount
@@ -288,8 +275,8 @@ function correctPlacement(block, direction, amount=1) {
     return block.homeIndex - amount
   }
 }
-// !!! Change name
-// !!! Remove need for blockConstructors to be passed once their above the dom line
+
+
 function wallRotationCorrections(block, indexesToOccupy, newRotationIndex) {
   let newHomeIndex = block.homeIndex
   if (!rotatingIntoWall(indexesToOccupy)) {
@@ -316,9 +303,7 @@ function wallRotationCorrections(block, indexesToOccupy, newRotationIndex) {
 }
 
 function canBlockRotate(boardSquares, indexesToOccupy) {
-  // ### Checking if rotating into locked block
   for (const index of indexesToOccupy) {
-    // !!! Can be replaced by a terniary?
     if (
       index >= boardSquares.length  ||
       (index >= 0 &&
@@ -330,10 +315,7 @@ function canBlockRotate(boardSquares, indexesToOccupy) {
   return true
 }
 
-// !!! Change name
-// So much refactoring needed
 function newPositionIfCanRotate(boardSquares, block) {
-  //!!! the below could be a getter if it comes up more than once
   const newRotationIndex = (block.rotationIndex + 1) % 4
   let indexesToOccupy = calculateBlockIndexes(block, newRotationIndex, block.homeIndex)
   let newHomeIndex = block.homeIndex
@@ -348,8 +330,6 @@ function newPositionIfCanRotate(boardSquares, block) {
   return true
 }
 
-/// !!! Turn conditional logic into it's own function
-// !!! Change Name
 function asLowAsCanGo(boardSquares, block) {
   return block
     .indexesOccupied
@@ -379,11 +359,11 @@ function projectDrop(boardSquares, block) {
   for (let i = 0; i < height - 1 && !asLowAsCanGo(boardSquares, projectionBlock); i ++) {
     move(boardSquares, projectionBlock, 'down', false, true)
   }
-  // make below part of clear or something like that. Can we just include this in the normal clear and get rid of this clear true / false stuff in clear?
-  clearBlocks(boardSquares, 'project')
+  //!!! make below part of clear or something like that. Can we just include this in the normal clear and get rid of this clear true / false stuff in clear?
+  clearBlocks(boardSquares, 'projection')
   projectionBlock.indexesOccupied.forEach(index => {
     //!!! Change project CSS class to has-projection
-    if (index > 0) boardSquares[index].classList.add('project', projectionBlock.projectionStyleClass)
+    if (index > 0) boardSquares[index].classList.add('projection', projectionBlock.projectionStyleClass)
   })
 }
 
@@ -405,13 +385,13 @@ function shuffleBlocks(blockConstructors) {
 // !!! Change name
 function queueBlocks(queuedBlocks) {
   // !! change board pram name?
-  queuedBlocks.forEach((board, i) => {
-    board.forEach(square => {
+  queuedBlocks.forEach((queueBoard, i) => {
+    queueBoard.forEach(square => {
       square.className = 'next-display-square'
     })
     const block = new shuffledBlocks[i](5, 4)
     block.indexesOccupied.forEach(index => {
-      board[index].classList.add(block.styleClass)
+      queueBoard[index].classList.add(block.styleClass)
     })
   })
 }
@@ -463,7 +443,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const gameOverLinesClearedDisplay = document.querySelector('#game-over-lines-cleared-display')
   const playAgainButton = document.querySelector('#play-again')
   // !!! change name once these are being built automatically
-  const queuedBlocks = [Array.from(document.querySelectorAll('.queued-block:nth-child(1) div')), Array.from(document.querySelectorAll('.queued-block:nth-child(2) div')), Array.from(document.querySelectorAll('.queued-block:nth-child(3) div'))]
+  const queuedBlocks = [Array.from(document.querySelectorAll('.queued-board:nth-child(1) div')), Array.from(document.querySelectorAll('.queued-board:nth-child(2) div')), Array.from(document.querySelectorAll('.queued-board:nth-child(3) div'))]
 
   function levelUp(currentLevel) {
     clearInterval(dropInterval)
@@ -471,7 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return currentLevel + 1
   }
 
-  function clearFullLines() {
+  function clearFullLines(boardSquares, block) {
     const linesToRemove = checkForCompleteLines(boardSquares)
     if (linesToRemove) {
       linesToRemove.forEach(line => {
@@ -481,13 +461,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       })
       dropLockedLines(boardSquares, linesToRemove)
-      move(boardSquares, activeBlock)
+      move(boardSquares, block)
     }
     return linesToRemove.length
   }
 
-  function checkForGameOver() {
-    if(activeBlock.indexesOccupied.some(index => index < 0)) {
+  function checkForGameOver(block) {
+    if(block.indexesOccupied.some(index => index < 0)) {
       return true
     }
     return false
@@ -527,11 +507,11 @@ document.addEventListener('DOMContentLoaded', () => {
   //!! Consider changing the name so that it reflects that it actually handles the whole itteration of the game
   function dropBlock() {
     if (asLowAsCanGo(boardSquares, activeBlock)) {
-      if (checkForGameOver()) {
+      if (checkForGameOver(activeBlock)) {
         gameOver()
       } else {
         lockBlock(activeBlock)
-        const numberOfClearedLines = clearFullLines()
+        const numberOfClearedLines = clearFullLines(boardSquares, activeBlock)
         if (numberOfClearedLines > 0) scoreLines(numberOfClearedLines)
         startBlockFall(boardSquares)
       }
@@ -552,7 +532,6 @@ document.addEventListener('DOMContentLoaded', () => {
       square.className = 'board-square'
     })
     clearBlocks([...queuedBlocks[0], ...queuedBlocks[1], ...queuedBlocks[2]], 'next-display-square')
-
   }
 
   function gameOver() {
@@ -590,9 +569,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  startResetButton.addEventListener('click', toggleStartReset)
-  playAgainButton.addEventListener('click', startGame)
-  document.addEventListener('keydown', (e) => {
+  function handleInput(e) {
     if(activeBlock) {
       switch(e.keyCode) {
         case 37:
@@ -609,5 +586,9 @@ document.addEventListener('DOMContentLoaded', () => {
           break
       }
     }
-  })
+  }
+
+  startResetButton.addEventListener('click', toggleStartReset)
+  playAgainButton.addEventListener('click', startGame)
+  document.addEventListener('keydown', handleInput)
 })
