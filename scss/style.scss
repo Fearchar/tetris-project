@@ -28,7 +28,8 @@ body {
   h1 {
     margin: -50px 0 20px 0;
     padding: 0 20px 0 20px;
-    font-size: 100px;
+    font-size: 90px;
+    letter-spacing: 5px;
     border: 5px solid $secondaryColor;
     border-left: none;
     border-right: none;
@@ -62,12 +63,12 @@ body {
   div.wrapper {
     display: flex;
     flex-direction: column;
-    width: $squareWidth * 17;
-    height:$squareWidth * 20;
 
-    div#play-area {
+    div.play-area {
       display: flex;
       justify-content: space-around;
+      width: $squareWidth * 19;
+      height:$squareWidth * 20;
 
       div.i-projection {
         background-color: rgba(91, 208, 255, 0.3);
@@ -125,9 +126,9 @@ body {
         background-color: rgba(160, 242, 128, 0.85);
       }
 
-      div#game {
+      div.game {
 
-        div#board {
+        div.game-board {
           display: flex;
           flex-flow: row wrap;
           background-color: $boardColor;
@@ -148,7 +149,7 @@ body {
           }
         }
 
-        button#start-reset {
+        & div button {
           width: 100%;
           margin-top: 10px;
           font-size: 20px;
@@ -164,7 +165,7 @@ body {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        width: 38%;
+        width: 37%;
         height: 60%;
         border: 7px solid $secondaryColor;
         background-color: $boardColor;
@@ -177,7 +178,7 @@ body {
           width: 100%;
           height: $squareWidth * 8;
 
-          div.queued-block {
+          div.queued-board {
             display: flex;
             flex-flow: row wrap;
             width: $squareWidth * 4.04;
@@ -209,7 +210,8 @@ body {
       }
     }
   }
-  div#game-over-display {
+
+  div.game-over-display {
     position: absolute;
     display: flex;
     justify-content: center;

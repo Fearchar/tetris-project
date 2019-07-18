@@ -18,7 +18,8 @@ body {
   body h1 {
     margin: -50px 0 20px 0;
     padding: 0 20px 0 20px;
-    font-size: 100px;
+    font-size: 90px;
+    letter-spacing: 5px;
     border: 5px solid rgba(200, 200, 200, 0.7);
     border-left: none;
     border-right: none;
@@ -37,47 +38,47 @@ body {
       color: rgba(255, 143, 43, 0.95); }
   body div.wrapper {
     display: flex;
-    flex-direction: column;
-    width: 510px;
-    height: 600px; }
-    body div.wrapper div#play-area {
+    flex-direction: column; }
+    body div.wrapper div.play-area {
       display: flex;
-      justify-content: space-around; }
-      body div.wrapper div#play-area div.i-projection {
+      justify-content: space-around;
+      width: 570px;
+      height: 600px; }
+      body div.wrapper div.play-area div.i-projection {
         background-color: rgba(91, 208, 255, 0.3); }
-      body div.wrapper div#play-area div.j-projection {
+      body div.wrapper div.play-area div.j-projection {
         background-color: rgba(239, 81, 53, 0.3); }
-      body div.wrapper div#play-area div.l-projection {
+      body div.wrapper div.play-area div.l-projection {
         background-color: rgba(40, 222, 184, 0.3); }
-      body div.wrapper div#play-area div.o-projection {
+      body div.wrapper div.play-area div.o-projection {
         background-color: rgba(253, 228, 35, 0.3); }
-      body div.wrapper div#play-area div.s-projection {
+      body div.wrapper div.play-area div.s-projection {
         background-color: rgba(225, 133, 226, 0.3); }
-      body div.wrapper div#play-area div.t-projection {
+      body div.wrapper div.play-area div.t-projection {
         background-color: rgba(255, 143, 43, 0.3); }
-      body div.wrapper div#play-area div.z-projection {
+      body div.wrapper div.play-area div.z-projection {
         background-color: rgba(160, 242, 128, 0.3); }
-      body div.wrapper div#play-area div.i-square {
+      body div.wrapper div.play-area div.i-square {
         background-color: rgba(91, 208, 255, 0.85); }
-      body div.wrapper div#play-area div.j-square {
+      body div.wrapper div.play-area div.j-square {
         background-color: rgba(239, 81, 53, 0.85); }
-      body div.wrapper div#play-area div.l-square {
+      body div.wrapper div.play-area div.l-square {
         background-color: rgba(40, 222, 184, 0.85); }
-      body div.wrapper div#play-area div.o-square {
+      body div.wrapper div.play-area div.o-square {
         background-color: rgba(253, 228, 35, 0.85); }
-      body div.wrapper div#play-area div.s-square {
+      body div.wrapper div.play-area div.s-square {
         background-color: rgba(225, 133, 226, 0.85); }
-      body div.wrapper div#play-area div.t-square {
+      body div.wrapper div.play-area div.t-square {
         background-color: rgba(255, 143, 43, 0.85); }
-      body div.wrapper div#play-area div.z-square {
+      body div.wrapper div.play-area div.z-square {
         background-color: rgba(160, 242, 128, 0.85); }
-      body div.wrapper div#play-area div#game div#board {
+      body div.wrapper div.play-area div.game div.game-board {
         display: flex;
         flex-flow: row wrap;
         background-color: rgba(20, 20, 20, 0.3);
         width: 304.5px;
         border: 2px solid rgba(200, 200, 200, 0.7); }
-        body div.wrapper div#play-area div#game div#board div.board-square {
+        body div.wrapper div.play-area div.game div.game-board div.board-square {
           display: flex;
           justify-content: center;
           align-items: center;
@@ -86,7 +87,7 @@ body {
           border: 1px solid rgba(100, 100, 100, 0.8);
           border-right: none;
           border-top: none; }
-      body div.wrapper div#play-area div#game button#start-reset {
+      body div.wrapper div.play-area div.game div button {
         width: 100%;
         margin-top: 10px;
         font-size: 20px;
@@ -94,41 +95,41 @@ body {
         opacity: 0.9;
         background-color: rgba(200, 200, 200, 0.7);
         outline: none; }
-      body div.wrapper div#play-area div.nongame-displays {
+      body div.wrapper div.play-area div.nongame-displays {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        width: 38%;
+        width: 37%;
         height: 60%;
         border: 7px solid rgba(200, 200, 200, 0.7);
         background-color: rgba(20, 20, 20, 0.3); }
-        body div.wrapper div#play-area div.nongame-displays div.next-three-display {
+        body div.wrapper div.play-area div.nongame-displays div.next-three-display {
           display: flex;
           flex-direction: column;
           justify-content: space-around;
           align-items: center;
           width: 100%;
           height: 240px; }
-          body div.wrapper div#play-area div.nongame-displays div.next-three-display div.queued-block {
+          body div.wrapper div.play-area div.nongame-displays div.next-three-display div.queued-board {
             display: flex;
             flex-flow: row wrap;
             width: 121.2px;
             border: 1px solid rgba(100, 100, 100, 0.8);
             border-left: none;
             border-bottom: none; }
-            body div.wrapper div#play-area div.nongame-displays div.next-three-display div.queued-block div.next-display-square {
+            body div.wrapper div.play-area div.nongame-displays div.next-three-display div.queued-board div.next-display-square {
               width: 30px;
               height: 30px;
               border: 1px solid rgba(100, 100, 100, 0.8);
               border-right: none;
               border-top: none; }
-        body div.wrapper div#play-area div.nongame-displays div.scoring-display {
+        body div.wrapper div.play-area div.nongame-displays div.scoring-display {
           background-color: rgba(200, 200, 200, 0.7); }
-          body div.wrapper div#play-area div.nongame-displays div.scoring-display p {
+          body div.wrapper div.play-area div.nongame-displays div.scoring-display p {
             font-size: 25px; }
-            body div.wrapper div#play-area div.nongame-displays div.scoring-display p span {
+            body div.wrapper div.play-area div.nongame-displays div.scoring-display p span {
               margin-left: 4px; }
-  body div#game-over-display {
+  body div.game-over-display {
     position: absolute;
     display: flex;
     justify-content: center;
@@ -139,7 +140,7 @@ body {
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center; }
-    body div#game-over-display div:nth-child(1) {
+    body div.game-over-display div:nth-child(1) {
       display: flex;
       flex-direction: column;
       justify-content: space-around;
@@ -148,16 +149,16 @@ body {
       font-size: 50px;
       background: #c1c1c1;
       border-radius: 125px; }
-      body div#game-over-display div:nth-child(1) div {
+      body div.game-over-display div:nth-child(1) div {
         display: flex;
         flex-direction: column;
         justify-content: space-around;
         align-items: space-around; }
-      body div#game-over-display div:nth-child(1) h2, body div#game-over-display div:nth-child(1) div p {
+      body div.game-over-display div:nth-child(1) h2, body div.game-over-display div:nth-child(1) div p {
         text-align: center; }
-        body div#game-over-display div:nth-child(1) h2 span, body div#game-over-display div:nth-child(1) div p span {
+        body div.game-over-display div:nth-child(1) h2 span, body div.game-over-display div:nth-child(1) div p span {
           margin-left: 10px; }
-      body div#game-over-display div:nth-child(1) button {
+      body div.game-over-display div:nth-child(1) button {
         width: 50%;
         margin: 0 auto;
         font-size: 30px;

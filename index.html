@@ -9,67 +9,67 @@
   </head>
   <body>
     <h1><span>T</span><span>e</span><span>t</span><span>r</span><span>i</span><span>s</span></h1>
-      <div class="wrapper">
-        <div id="play-area">
-          <div id="game">
-            <div id="board">
+    <div class="wrapper">
+      <div class="play-area">
+        <div class="game">
+          <div class="game-board">
+          </div>
+          <div>
+            <button id="start-reset">Start</button>
+          </div>
+        </div>
+        <div class="nongame-displays">
+          <div id="next-three-display" class="next-three-display">
+            <div class="queued-board">
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
             </div>
-            <div>
-              <button id="start-reset">Start</button>
+            <div class="queued-board">
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+            </div>
+            <div class="queued-board">
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
+              <div class="next-display-square"></div>
             </div>
           </div>
-          <div class="nongame-displays">
-            <div id="next-three-display" class="next-three-display">
-              <div class="queued-block">
-                <div class="next-display-square"></div>
-                <div class="next-display-square"></div>
-                <div class="next-display-square"></div>
-                <div class="next-display-square"></div>
-                <div class="next-display-square"></div>
-                <div class="next-display-square"></div>
-                <div class="next-display-square"></div>
-                <div class="next-display-square"></div>
-              </div>
-              <div class="queued-block">
-                <div class="next-display-square"></div>
-                <div class="next-display-square"></div>
-                <div class="next-display-square"></div>
-                <div class="next-display-square"></div>
-                <div class="next-display-square"></div>
-                <div class="next-display-square"></div>
-                <div class="next-display-square"></div>
-                <div class="next-display-square"></div>
-              </div>
-              <div class="queued-block">
-                <div class="next-display-square"></div>
-                <div class="next-display-square"></div>
-                <div class="next-display-square"></div>
-                <div class="next-display-square"></div>
-                <div class="next-display-square"></div>
-                <div class="next-display-square"></div>
-                <div class="next-display-square"></div>
-                <div class="next-display-square"></div>
-              </div>
-            </div>
-            <div class="scoring-display">
-              <p>Score:<span id="score-display">0</span></p>
-              <p>Lines Cleared:<span id="lines-cleared-display">0</span></p>
-              <p>Level:<span id="level-display">1</span></p>
-              <p>Level Up In:<span id="next-level-display">5</span></p>
-            </div>
+          <div class="scoring-display">
+            <p>Score:<span id="score-display">0</span></p>
+            <p>Lines cleared:<span id="lines-cleared-display">0</span></p>
+            <p>Level:<span id="level-display">1</span></p>
+            <p>Level up in:<span id="next-level-display">5</span></p>
           </div>
         </div>
       </div>
-      <div id="game-over-display" style="display: none;">
+    </div>
+    <div id="game-over-display" class="game-over-display" style="display: none;">
+      <div>
+        <h2>Game Over</h2>
         <div>
-          <h2>Game Over</h2>
-          <div>
-            <p>Score:<span id="game-over-score-display">0</span></p>
-            <p>Level:<span id="game-over-level-display">1</span></p>
-            <p>Lines Cleared:<span id="game-over-lines-cleared-display">0</span></p>
-          </div>
-          <button id="play-again">Play Again</button>
+          <p>Score:<span id="game-over-score-display">0</span></p>
+          <p>Level:<span id="game-over-level-display">1</span></p>
+          <p>Lines Cleared:<span id="game-over-lines-cleared-display">0</span></p>
         </div>
+        <button id="play-again">Play Again</button>
+      </div>
     </div>
   </body>
 </html>
