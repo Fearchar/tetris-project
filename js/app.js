@@ -132,6 +132,7 @@ class ZBlock extends Block {
 }
 
 /// #### Global Variables ####
+
 const width = 10
 const height = 20
 let dropInterval = null
@@ -355,7 +356,7 @@ function projectDrop(boardSquares, block) {
   }
   clearBlocks(boardSquares, 'has-projection')
   projectionBlock.indexesOccupied.forEach(index => {
-    if (index > 0) boardSquares[index].classList.add('has-projection', projectionBlock.projectionStyleClass)
+    if (index >= 0) boardSquares[index].classList.add('has-projection', projectionBlock.projectionStyleClass)
   })
 }
 
