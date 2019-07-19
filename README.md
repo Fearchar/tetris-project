@@ -8,7 +8,7 @@ My Tetris project is the first solo project that I have completed as part of a G
 
 Give it a try [here!](https://fearchar.github.io/tetris-project/).
 
-![Tetris Project (Fearchar - GA)](https://user-images.githubusercontent.com/46941430/61526196-dcf94380-aa11-11e9-99bd-b0dc95e143e8.png)
+![Tetris Project (Fearchar - GA)](https://media.giphy.com/media/j2S9spaxnENrfHb08e/giphy.gif)
 
 # The Brief
 
