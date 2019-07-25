@@ -7,15 +7,167 @@ class Block {
     this.rotations = possibleRotations
   }
   get indexesOccupied() {
-    return calculateBlockIndexes(this, this.rotationIndex, this.homeIndex)
+    return this.calculateBlockIndexes(this.rotationIndex, this.homeIndex)
+  }
+  calculateBlockIndexes(rotationIndex, homeIndex) {
+    return this.rotations[rotationIndex].map(index => index + homeIndex)
+  }
+  updateHome(direction) {
+    let newHomeIndex = this.homeIndex
+    switch(direction) {
+      case 'left':
+        newHomeIndex -= 1
+        break
+      case 'right':
+        newHomeIndex += 1
+        break
+      case 'up':
+        newHomeIndex -= width
+        break
+      case 'down':
+        newHomeIndex += width
+        break
+      default:
+        newHomeIndex
+    }
+    return newHomeIndex
+  }
+  canBlockMove(boardSquares, direction, index) {
+    if (
+      (index >= 0 &&
+      boardSquares[index].classList.contains('locked')) ||
+      (checkIfMovingIntoWall(direction, index))
+    ) return true
+    else return false
+  }
+  asLowAsCanGo(boardSquares) {
+    return this
+      .indexesOccupied
+      .some(index => {
+        const nextLineIndex = index + width
+        if (nextLineIndex > boardSquares.length - 1) {
+          return true
+        } else if (nextLineIndex >= 0 && boardSquares[nextLineIndex].classList.contains('locked')) {
+          return true
+        }
+      })
+  }
+  copyBlock(block) {
+    return new (blockConstructors.find(constructor => block instanceof constructor))()
+  }
+  generateProjection(block) {
+    const projectionBlock = this.copyBlock(block)
+    projectionBlock.homeIndex = block.homeIndex
+    projectionBlock.rotationIndex = block.rotationIndex
+    projectionBlock.styleClass = 'board-square'
+    return projectionBlock
+  }
+  projectDrop(boardSquares, block) {
+    const projectionBlock = this.generateProjection(block)
+    for (let i = 0; i < height - 1 && !projectionBlock.asLowAsCanGo(boardSquares); i ++) {
+      projectionBlock.move(boardSquares, projectionBlock, 'down', false, true)
+    }
+    clearBlocks(boardSquares, 'has-projection')
+    projectionBlock.indexesOccupied.forEach(index => {
+      if (index >= 0) boardSquares[index].classList.add('has-projection', projectionBlock.projectionStyleClass)
+    })
+  }
+  move(boardSquares, block, direction, clear=true, calledByDropP=false) {
+    const newHomeIndex = this.newHomeIfCanMove(boardSquares, block, direction)
+    if (newHomeIndex) {
+      if (clear) clearBlocks(boardSquares, 'has-active-block')
+      block.homeIndex = newHomeIndex
+      block.indexesOccupied.forEach(index => {
+        if (index >= 0 && !calledByDropP) {
+          boardSquares[index].classList.add('has-active-block', block.styleClass)
+        }
+      })
+    }
+    if (!calledByDropP) this.projectDrop(boardSquares, block)
+  }
+  newHomeIfCanMove(boardSquares, block, direction) {
+    const potentialHomeIndex = this.updateHome(direction)
+    const indexesToOccupy = this.calculateBlockIndexes(block.rotationIndex, potentialHomeIndex)
+    return !indexesToOccupy.some(index => {
+      return this.canBlockMove(boardSquares, direction, index)
+    }) ? potentialHomeIndex : false
+  }
+  rotatingIntoWall(indexesToOccupy) {
+    let atLeftWall
+    let atRightWall
+    for (const squareIndex of indexesToOccupy) {
+      if (squareIndex % width === 0) {
+        atLeftWall = squareIndex
+      } else if (squareIndex % width === width - 1) {
+        atRightWall = squareIndex
+      }
+    }
+    return !atLeftWall || !atRightWall
+  }
+  correctPlacement(block, direction, amount=1) {
+    if (direction === 'right') {
+      return block.homeIndex + amount
+    } else if (direction === 'left') {
+      return block.homeIndex - amount
+    }
+  }
+  wallRotationCorrections(block, indexesToOccupy, newRotationIndex) {
+    let newHomeIndex = block.homeIndex
+    if (!this.rotatingIntoWall(indexesToOccupy)) {
+      if (!(block instanceof IBlock)) {
+        if (block.homeIndex % width === 0) {
+          newHomeIndex = this.correctPlacement(block, 'right')
+        } else {
+          newHomeIndex = this.correctPlacement(block, 'left')
+        }
+      } else {
+        if (newRotationIndex === 2 && block.homeIndex % width === 0) {
+          newHomeIndex = this.correctPlacement(block, 'right')
+        } else if (newRotationIndex === 2) {
+          newHomeIndex = this.correctPlacement(block, 'left', 2)
+        } else if (newRotationIndex === 0 && block.homeIndex % width === width - 1) {
+          newHomeIndex = this.correctPlacement(block, 'right', 2)
+        } else {
+          newHomeIndex = this.correctPlacement(block, 'left')
+        }
+        indexesToOccupy = this.calculateBlockIndexes(newRotationIndex, newHomeIndex)
+      }
+    }
+    return {newHomeIndex: newHomeIndex, indexesToOccupy: indexesToOccupy}
+  }
+  canBlockRotate(boardSquares, indexesToOccupy) {
+    for (const index of indexesToOccupy) {
+      if (
+        index >= boardSquares.length  ||
+        (index >= 0 &&
+        boardSquares[index].classList.contains('locked'))
+      ) {
+        return false
+      }
+    }
+    return true
+  }
+  newPositionIfCanRotate(boardSquares, block) {
+    const newRotationIndex = (block.rotationIndex + 1) % 4
+    let indexesToOccupy = this.calculateBlockIndexes(newRotationIndex, block.homeIndex)
+    let newHomeIndex = block.homeIndex
+    const corrections = this.wallRotationCorrections(block, indexesToOccupy, newRotationIndex)
+    newHomeIndex = corrections.newHomeIndex
+    indexesToOccupy = corrections.indexesToOccupy
+    if (!this.canBlockRotate(boardSquares, indexesToOccupy)) return false
+    block.homeIndex = newHomeIndex
+    this.move(boardSquares, block)
+    clearBlocks(boardSquares, 'has-active-block')
+    block.rotationIndex = newRotationIndex
+    return true
   }
   rotate(boardSquares) {
-    if (newPositionIfCanRotate(boardSquares, this)) {
+    if (this.newPositionIfCanRotate(boardSquares, this)) {
       this.indexesOccupied.forEach(index => {
         if (index >= 0) boardSquares[index].classList.add('has-active-block', this.styleClass)
       })
     }
-    projectDrop(boardSquares, this)
+    this.projectDrop(boardSquares, this)
   }
 }
 
@@ -79,7 +231,7 @@ class OBlock extends Block {
     this.projectionStyleClass = 'o-projection'
   }
   rotate(boardSquares) {
-    projectDrop(boardSquares, this)
+    this.projectDrop(boardSquares, this)
   }
 }
 
@@ -185,179 +337,16 @@ function clearBlocks(squares, blockStyleClass){
   })
 }
 
+// !!! ### Bringing into Block class below ###
+
 function checkIfMovingIntoWall(direction, squareIndex) {
-  if ((squareIndex + width) % width === width - 1 && direction === 'left') {
-    return true
-  } else if (squareIndex % width === 0 && direction === 'right') {
+  if (
+    (squareIndex + width) % width === width - 1 && direction === 'left' ||
+    squareIndex % width === 0 && direction === 'right'
+  ) {
     return true
   }
   return false
-}
-
-function calculateBlockIndexes(block, rotationIndex, homeIndex) {
-  return block.rotations[rotationIndex].map(index => index + homeIndex)
-}
-
-function updateHome(direction, block) {
-  let newHomeIndex = block.homeIndex
-  switch(direction) {
-    case 'left':
-      newHomeIndex -= 1
-      break
-    case 'right':
-      newHomeIndex += 1
-      break
-    case 'up':
-      newHomeIndex -= width
-      break
-    case 'down':
-      newHomeIndex += width
-      break
-    default:
-      newHomeIndex
-  }
-  return newHomeIndex
-}
-
-function canBlockMove(boardSquares, direction, index) {
-  if (
-    (index >= 0 &&
-    boardSquares[index].classList.contains('locked')) ||
-    (checkIfMovingIntoWall(direction, index))
-  ) return true
-  else return false
-}
-
-function move(boardSquares, block, direction, clear=true, calledByDropP=false) {
-  const newHomeIndex = newHomeIfCanMove(boardSquares, block, direction)
-  if (newHomeIndex) {
-    if (clear) clearBlocks(boardSquares, 'has-active-block')
-    block.homeIndex = newHomeIndex
-    block.indexesOccupied.forEach(index => {
-      if (index >= 0 && !calledByDropP) {
-        boardSquares[index].classList.add('has-active-block', block.styleClass)
-      }
-    })
-  }
-  if (!calledByDropP) projectDrop(boardSquares, block)
-}
-
-function newHomeIfCanMove(boardSquares, block, direction) {
-  const potentialHomeIndex = updateHome(direction, block)
-  const indexesToOccupy = calculateBlockIndexes(block, block.rotationIndex, potentialHomeIndex)
-  return !indexesToOccupy.some(index => {
-    return canBlockMove(boardSquares, direction, index)
-  }) ? potentialHomeIndex : false
-}
-
-function rotatingIntoWall(indexesToOccupy) {
-  let atLeftWall
-  let atRightWall
-  for (const squareIndex of indexesToOccupy) {
-    if (squareIndex % width === 0) {
-      atLeftWall = squareIndex
-    } else if (squareIndex % width === width - 1) {
-      atRightWall = squareIndex
-    }
-  }
-  return !atLeftWall || !atRightWall
-}
-
-function correctPlacement(block, direction, amount=1) {
-  if (direction === 'right') {
-    return block.homeIndex + amount
-  } else if (direction === 'left') {
-    return block.homeIndex - amount
-  }
-}
-
-
-function wallRotationCorrections(block, indexesToOccupy, newRotationIndex) {
-  let newHomeIndex = block.homeIndex
-  if (!rotatingIntoWall(indexesToOccupy)) {
-    if (!(block instanceof IBlock)) {
-      if (block.homeIndex % width === 0) {
-        newHomeIndex = correctPlacement(block, 'right')
-      } else {
-        newHomeIndex = correctPlacement(block, 'left')
-      }
-    } else {
-      if (newRotationIndex === 2 && block.homeIndex % width === 0) {
-        newHomeIndex = correctPlacement(block, 'right')
-      } else if (newRotationIndex === 2) {
-        newHomeIndex = correctPlacement(block, 'left', 2)
-      } else if (newRotationIndex === 0 && block.homeIndex % width === width - 1) {
-        newHomeIndex = correctPlacement(block, 'right', 2)
-      } else {
-        newHomeIndex = correctPlacement(block, 'left')
-      }
-      indexesToOccupy = calculateBlockIndexes(block, newRotationIndex, newHomeIndex)
-    }
-  }
-  return {newHomeIndex: newHomeIndex, indexesToOccupy: indexesToOccupy}
-}
-
-function canBlockRotate(boardSquares, indexesToOccupy) {
-  for (const index of indexesToOccupy) {
-    if (
-      index >= boardSquares.length  ||
-      (index >= 0 &&
-      boardSquares[index].classList.contains('locked'))
-    ) {
-      return false
-    }
-  }
-  return true
-}
-
-function newPositionIfCanRotate(boardSquares, block) {
-  const newRotationIndex = (block.rotationIndex + 1) % 4
-  let indexesToOccupy = calculateBlockIndexes(block, newRotationIndex, block.homeIndex)
-  let newHomeIndex = block.homeIndex
-  const corrections = wallRotationCorrections(block, indexesToOccupy, newRotationIndex)
-  newHomeIndex = corrections.newHomeIndex
-  indexesToOccupy = corrections.indexesToOccupy
-  if (!canBlockRotate(boardSquares, indexesToOccupy)) return false
-  block.homeIndex = newHomeIndex
-  move(boardSquares, block)
-  clearBlocks(boardSquares, 'has-active-block')
-  block.rotationIndex = newRotationIndex
-  return true
-}
-
-function asLowAsCanGo(boardSquares, block) {
-  return block
-    .indexesOccupied
-    .some(index => {
-      const nextLineIndex = index + width
-      if (nextLineIndex > boardSquares.length - 1) {
-        return true
-      } else if (nextLineIndex >= 0 && boardSquares[nextLineIndex].classList.contains('locked'))
-        return true
-    })
-}
-
-function copyBlock(block) {
-  return new (blockConstructors.find(constructor => block instanceof constructor))()
-}
-
-function generateProjection(block) {
-  const projectionBlock = copyBlock(block)
-  projectionBlock.homeIndex = block.homeIndex
-  projectionBlock.rotationIndex = block.rotationIndex
-  projectionBlock.styleClass = 'board-square'
-  return projectionBlock
-}
-
-function projectDrop(boardSquares, block) {
-  const projectionBlock = generateProjection(block)
-  for (let i = 0; i < height - 1 && !asLowAsCanGo(boardSquares, projectionBlock); i ++) {
-    move(boardSquares, projectionBlock, 'down', false, true)
-  }
-  clearBlocks(boardSquares, 'has-projection')
-  projectionBlock.indexesOccupied.forEach(index => {
-    if (index >= 0) boardSquares[index].classList.add('has-projection', projectionBlock.projectionStyleClass)
-  })
 }
 
 function shuffleBlocks(blockConstructors) {
@@ -434,7 +423,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const gameOverLevelDisplay = document.querySelector('#game-over-level-display')
   const gameOverLinesClearedDisplay = document.querySelector('#game-over-lines-cleared-display')
   const playAgainButton = document.querySelector('#play-again')
-  const queuedBlocks = [Array.from(document.querySelectorAll('.queued-board:nth-child(1) div')), Array.from(document.querySelectorAll('.queued-board:nth-child(2) div')), Array.from(document.querySelectorAll('.queued-board:nth-child(3) div'))]
+  const queuedBlocks = [
+    Array.from(document.querySelectorAll('.queued-board:nth-child(1) div')),
+    Array.from(document.querySelectorAll('.queued-board:nth-child(2) div')),
+    Array.from(document.querySelectorAll('.queued-board:nth-child(3) div'))
+  ]
 
   // #### DOM Dependant Functions ####
 
@@ -453,7 +446,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       })
       dropLockedLines(boardSquares, linesToRemove)
-      move(boardSquares, block)
+      block.move(boardSquares, block)
     }
     return linesToRemove.length
   }
@@ -477,9 +470,9 @@ document.addEventListener('DOMContentLoaded', () => {
     activeBlock = generateBlock(queuedBlocks, width / 2)
     if(activeBlock instanceof IBlock) {
       activeBlock.homeInext - width
-      move(boardSquares, activeBlock, 'left')
+      activeBlock.move(boardSquares, activeBlock, 'left')
     }
-    move(boardSquares, activeBlock)
+    activeBlock.move(boardSquares, activeBlock)
   }
 
   function scoreLines(lines) {
@@ -495,7 +488,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function dropBlock() {
-    if (asLowAsCanGo(boardSquares, activeBlock)) {
+    if (activeBlock.asLowAsCanGo(boardSquares, activeBlock)) {
       if (checkForGameOver(activeBlock)) {
         gameOver()
       } else {
@@ -505,7 +498,7 @@ document.addEventListener('DOMContentLoaded', () => {
         startBlockFall(boardSquares)
       }
     } else {
-      move(boardSquares, activeBlock, 'down')
+      activeBlock.move(boardSquares, activeBlock, 'down')
     }
   }
   function fastDropBlock() {
@@ -562,10 +555,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if(activeBlock) {
       switch(e.keyCode) {
         case 37:
-          move(boardSquares, activeBlock, 'left')
+          activeBlock.move(boardSquares, activeBlock, 'left')
           break
         case 39:
-          move(boardSquares, activeBlock, 'right')
+          activeBlock.move(boardSquares, activeBlock, 'right')
           break
         case 40:
           fastDropBlock()
