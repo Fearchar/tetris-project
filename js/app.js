@@ -1,4 +1,4 @@
-// #### Constructors ####
+// #### Classes ####
 
 class Block {
   constructor(homeIndex, possibleRotations) {
