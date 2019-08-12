@@ -65,9 +65,9 @@ The player scores points when they hold down the down arrow key, speeding up a b
 
 I have created a game over screen for the game which spans the length and breadth of the screen, covering the game board with partially transparent div and shows the player their score, the number of lines they have successfully cleared and the level they had reached when the game ended. This was achieved by giving the game-over-display div a style of ‘none’ when the page is loaded and then changing this style when the game ends, and resetting if the player chooses to play the game again.
 
-### Code I’m Proud Of
+## Code I’m Proud Of
 
-#### The CheckForCompleteLines function
+### The CheckForCompleteLines function
 
 ```javascript
 function checkForCompleteLines(boardSquares) {
@@ -84,7 +84,7 @@ function checkForCompleteLines(boardSquares) {
 
 This function iterates from the end of the game board array, making slices of each line and checking if every square in that line contains a locked square. It then returns an array containing the a number representing which lines need to be removed. I like this piece of code because it’s clear and succinct.
 
-#### The projectDrop Method
+### The projectDrop Method
 
 ```javascript
   projectDrop(boardSquares) {
@@ -101,15 +101,15 @@ This function iterates from the end of the game board array, making slices of ea
 
 The Block classes projectDrop method is used to create and manage the transparent projections which show the player where their block will fall. It creates a projection and moves it downwards until it comes in contact with a locked block or the bottom of the screen, at which point it displays the projection to the player. While this isn’t the most crucial piece of the projects code, I’m proud of the elegance of the solution. I struggled while adding this feature and I’m happy with it’s simplicity.
 
-### Challenges Overcome
+## Challenges Overcome
 
 While not necessarily the hardest to solve, the challenge I’m most proud of tackling the problem of how to make the block projections drop. I came up with an overly complicated function which tried to determine what the highest locked block beneath the projection was, which failed in specific edge cases. I was happy to replace this with the much simpler solution I have now.
 
-### Bugs
+## Bugs
 
 So far I’ve only been able to find one bug and only in one instance. If you rotate the blue “I” block in the right situation, it will rotate into the locked playing field.
 
-### Things to add in future
+## Things to add in future
 
 * Responsive layout for mobile and desktop, along with on screen buttons to allow for play on those devices
 * A landing page which describes the rules of Tetris
