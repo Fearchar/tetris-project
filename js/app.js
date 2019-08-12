@@ -338,8 +338,6 @@ function clearBlocks(squares, blockStyleClass){
   })
 }
 
-// !!! ### Bringing into Block class below ###
-
 function checkIfMovingIntoWall(direction, squareIndex) {
   if (
     (squareIndex + width) % width === width - 1 && direction === 'left' ||
