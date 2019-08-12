@@ -65,7 +65,7 @@ The player scores points when they hold down the down arrow key, speeding up a b
 
 I have created a game over screen for the game which spans the length and breadth of the screen, covering the game board with partially transparent div and shows the player their score, the number of lines they have successfully cleared and the level they had reached when the game ended. This was achieved by giving the game-over-display div a style of ‘none’ when the page is loaded and then changing this style when the game ends, and resetting if the player chooses to play the game again.
 
-## Code I Am Proud Of
+## Code I'm Proud Of
 
 ### The CheckForCompleteLines function
 
