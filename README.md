@@ -21,7 +21,7 @@ Give it a try [here!](https://fearchar.github.io/tetris-project/).
 
 * HTML 5
 * CSS 3
-* SCSS (?)
+* SCSS
 * JavaScript (ES6)
 * Git
 * GitHub
