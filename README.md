@@ -84,6 +84,8 @@ function checkForCompleteLines(boardSquares) {
 
 This function iterates from the end of the game board array, making slices of each line and checking if every square in that line contains a locked square. It then returns an array containing the a number representing which lines need to be removed. I like this piece of code because it’s clear and succinct.
 
+#### The projectDrop Method
+
 ```javascript
   projectDrop(boardSquares) {
     const projectionBlock = this.generateProjection()
