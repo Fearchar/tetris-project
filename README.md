@@ -6,7 +6,7 @@ Tetris is a classic arcade puzzle game created by Alexey Leonidovich Pajitnov 19
 
 My Tetris project is the first solo project that I have completed as part of a General Assembly Software Engineering Immersive course. It was built over the course of one week, using a combination of JavaScript, HTML and CSS.
 
-Give it a try [here!](https://fearchar.github.io/tetris-project/).
+Give it a try [here](https://fearchar.github.io/tetris-project/)!
 
 ![Tetris Project (Fearchar - GA)](https://media.giphy.com/media/j2S9spaxnENrfHb08e/giphy.gif)
 
