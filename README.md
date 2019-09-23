@@ -100,7 +100,7 @@ This function loops backwards over the game board array, making slices of each l
 
 The Block classes projectDrop method is used to create and manage the transparent projections which show the player where their block will fall. It creates a projection and moves it downwards until it comes in contact with a locked block or the bottom of the screen, at which point it displays the projection to the player. While this isn’t the most crucial piece of the projects code, I’m proud of the elegance of the solution. I struggled while adding this feature and I’m happy with the final result.
 
-## Challenges Overcome
+## Challenges
 
 While not necessarily the hardest to solve, the challenge I’m most proud of tackling the problem of how to make the block projections drop. I came up with an overly complicated function which tried to determine what the highest locked block beneath the projection was, which failed in specific edge cases. I was happy to replace this with the much simpler solution I have now.
 
